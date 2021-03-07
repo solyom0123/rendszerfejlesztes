@@ -59,11 +59,17 @@ class Food
      */
     private $menus;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Restaurant::class, inversedBy="food")
+     */
+    private $restaurant;
+
     public function __construct()
     {
         $this->foodImages = new ArrayCollection();
         $this->foodAllergens = new ArrayCollection();
         $this->menus = new ArrayCollection();
+        $this->restaurant = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,6 +220,30 @@ class Food
         if ($this->menus->removeElement($menu)) {
             $menu->removeFood($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Restaurant[]
+     */
+    public function getRestaurant(): Collection
+    {
+        return $this->restaurant;
+    }
+
+    public function addRestaurant(Restaurant $restaurant): self
+    {
+        if (!$this->restaurant->contains($restaurant)) {
+            $this->restaurant[] = $restaurant;
+        }
+
+        return $this;
+    }
+
+    public function removeRestaurant(Restaurant $restaurant): self
+    {
+        $this->restaurant->removeElement($restaurant);
 
         return $this;
     }

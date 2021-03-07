@@ -44,10 +44,40 @@ class Restaurant
      */
     private $password;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="restaurants")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $owner;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=FoodAllergens::class, mappedBy="restaurant")
+     */
+    private $foodAllergens;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=FoodImages::class, mappedBy="restaurant")
+     */
+    private $foodImages;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Food::class, mappedBy="restaurant")
+     */
+    private $food;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Menu::class, mappedBy="restaurant")
+     */
+    private $menus;
+
     public function __construct()
     {
         $this->openingTimes = new ArrayCollection();
         $this->restaurantCategories = new ArrayCollection();
+        $this->foodAllergens = new ArrayCollection();
+        $this->foodImages = new ArrayCollection();
+        $this->food = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -147,6 +177,126 @@ class Restaurant
     public function setPassword(?string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FoodAllergens[]
+     */
+    public function getFoodAllergens(): Collection
+    {
+        return $this->foodAllergens;
+    }
+
+    public function addFoodAllergen(FoodAllergens $foodAllergen): self
+    {
+        if (!$this->foodAllergens->contains($foodAllergen)) {
+            $this->foodAllergens[] = $foodAllergen;
+            $foodAllergen->addRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFoodAllergen(FoodAllergens $foodAllergen): self
+    {
+        if ($this->foodAllergens->removeElement($foodAllergen)) {
+            $foodAllergen->removeRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|FoodImages[]
+     */
+    public function getFoodImages(): Collection
+    {
+        return $this->foodImages;
+    }
+
+    public function addFoodImage(FoodImages $foodImage): self
+    {
+        if (!$this->foodImages->contains($foodImage)) {
+            $this->foodImages[] = $foodImage;
+            $foodImage->addRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFoodImage(FoodImages $foodImage): self
+    {
+        if ($this->foodImages->removeElement($foodImage)) {
+            $foodImage->removeRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Food[]
+     */
+    public function getFood(): Collection
+    {
+        return $this->food;
+    }
+
+    public function addFood(Food $food): self
+    {
+        if (!$this->food->contains($food)) {
+            $this->food[] = $food;
+            $food->addRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFood(Food $food): self
+    {
+        if ($this->food->removeElement($food)) {
+            $food->removeRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Menu[]
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
+            $menu->addRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        if ($this->menus->removeElement($menu)) {
+            $menu->removeRestaurant($this);
+        }
 
         return $this;
     }

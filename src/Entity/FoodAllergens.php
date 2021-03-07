@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\FoodAllergensRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -26,6 +28,16 @@ class FoodAllergens
      * @ORM\ManyToOne(targetEntity=Food::class, inversedBy="foodAllergen")
      */
     private $food;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Restaurant::class, inversedBy="foodAllergens")
+     */
+    private $restaurant;
+
+    public function __construct()
+    {
+        $this->restaurant = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -52,6 +64,30 @@ class FoodAllergens
     public function setFood(?Food $food): self
     {
         $this->food = $food;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Restaurant[]
+     */
+    public function getRestaurant(): Collection
+    {
+        return $this->restaurant;
+    }
+
+    public function addRestaurant(Restaurant $restaurant): self
+    {
+        if (!$this->restaurant->contains($restaurant)) {
+            $this->restaurant[] = $restaurant;
+        }
+
+        return $this;
+    }
+
+    public function removeRestaurant(Restaurant $restaurant): self
+    {
+        $this->restaurant->removeElement($restaurant);
 
         return $this;
     }
