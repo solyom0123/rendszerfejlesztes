@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit FoodAllergens{% endblock %}
+
+{% block body %}
+    <h1>Edit FoodAllergens</h1>
+
+    {{ include('food_allergens/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('food_allergens_index') }}">back to list</a>
+
+    {{ include('food_allergens/_delete_form.html.twig') }}
+{% endblock %}
