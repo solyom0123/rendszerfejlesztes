@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Food index{% endblock %}
+
+{% block body %}
+    <h1>Food index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>FromDate</th>
+                <th>ToDate</th>
+                <th>Price</th>
+                <th>Description</th>
+                <th>Name</th>
+                {% if is_granted("ROLE_OWNER") %}
+                <th>actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for food in food %}
+            <tr>
+                <td>{{ food.id }}</td>
+                <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ food.price }}</td>
+                <td>{{ food.description }}</td>
+                <td>{{ food.name }}</td>
+                {% if is_granted("ROLE_OWNER") %}
+                <td>
+                    <a href="{{ path('food_show', {'id': food.id}) }}">show</a>
+                    <a href="{{ path('food_edit', {'id': food.id}) }}">edit</a>
+                </td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('food_new') }}">Create new</a>
+{% endblock %}

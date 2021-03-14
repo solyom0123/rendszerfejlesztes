@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}PincérNet!{% endblock %}</title>
         {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
         {% block stylesheets %}
@@ -14,6 +14,44 @@
         {% endblock %}
     </head>
     <body>
+        {% if app.user %}
+        {% block menu %}
+            <h1>systemmenu</h1>
+
+            <table class="table">
+                <thead>
+                {% if is_granted("ROLE_OWNER") %}
+                    <tr>
+                        <a href="{{ path('restaurant_new') }}"><th>Új Étterem Létrehozása</th></a>
+                    </tr>
+                    <tr>
+                        <a href="{{ path('menu_category_new') }}"><th>Új Menü Kategoria Létrehozása</th></a>
+                    </tr>
+                    <tr>
+                        <a href="{{ path('menu_new') }}"><th>Új Menü Létrehozása</th></a>
+                    </tr>
+                    <tr>
+                        <a href="{{ path('food_new') }}"><th>Új Étel Létrehozása</th></a>
+                    </tr>
+                    <tr>
+                        <a href="{{ path('food_images_new') }}"><th>Új Étel Kép Létrehozása</th></a>
+                    </tr>
+                    <tr>
+                        <a href="{{ path('food_allergens_new') }}"><th>Új Étel Allergén Létrehozása</th></a>
+                    </tr>
+                    <tr>
+                        <a href="{{ path('food_index') }}"><th>Ételek Listázása</th></a>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <a href="{{ path('restaurant_index') }}"><th>Éttermek Listázása</th></a>
+                </tr>
+                </thead>
+            </table>
+
+            <a href="{{ path('food_new') }}">Create new</a>
+        {% endblock %}
+        {% endif %}
         {% block body %}{% endblock %}
     </body>
 </html>
