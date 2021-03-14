@@ -10,10 +10,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/restaurant/opening/time')]
+/**
+ * @Route("/restaurant/opening/time")
+*/
 class RestaurantOpeningTimeController extends AbstractController
 {
-    #[Route('/', name: 'restaurant_opening_time_index', methods: ['GET'])]
+    /**
+     * @Route("/", name="restaurant_opening_time_index", methods={"GET"})
+    */
     public function index(RestaurantOpeningTimeRepository $restaurantOpeningTimeRepository): Response
     {
         return $this->render('restaurant_opening_time/index.html.twig', [
@@ -21,8 +25,9 @@ class RestaurantOpeningTimeController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'restaurant_opening_time_new', methods: ['GET', 'POST'])]
-    public function new(Request $request): Response
+    /**
+     * @Route("/new", name="restaurant_opening_time_new", methods={"GET", "POST"})
+    */public function new(Request $request): Response
     {
         $restaurantOpeningTime = new RestaurantOpeningTime();
         $form = $this->createForm(RestaurantOpeningTimeType::class, $restaurantOpeningTime);
@@ -42,16 +47,18 @@ class RestaurantOpeningTimeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'restaurant_opening_time_show', methods: ['GET'])]
-    public function show(RestaurantOpeningTime $restaurantOpeningTime): Response
+    /**
+     * @Route("/{id}", name="restaurant_opening_time_show", methods={"GET"})
+    */public function show(RestaurantOpeningTime $restaurantOpeningTime): Response
     {
         return $this->render('restaurant_opening_time/show.html.twig', [
             'restaurant_opening_time' => $restaurantOpeningTime,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'restaurant_opening_time_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, RestaurantOpeningTime $restaurantOpeningTime): Response
+    /**
+     * @Route("/{id}/edit", name="restaurant_opening_time_edit", methods={"GET", "POST"})
+    */public function edit(Request $request, RestaurantOpeningTime $restaurantOpeningTime): Response
     {
         $form = $this->createForm(RestaurantOpeningTimeType::class, $restaurantOpeningTime);
         $form->handleRequest($request);
@@ -68,8 +75,9 @@ class RestaurantOpeningTimeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'restaurant_opening_time_delete', methods: ['DELETE'])]
-    public function delete(Request $request, RestaurantOpeningTime $restaurantOpeningTime): Response
+    /**
+     * @Route("/{id}", name="restaurant_opening_time_delete", methods={"DELETE"})
+    */public function delete(Request $request, RestaurantOpeningTime $restaurantOpeningTime): Response
     {
         if ($this->isCsrfTokenValid('delete'.$restaurantOpeningTime->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();

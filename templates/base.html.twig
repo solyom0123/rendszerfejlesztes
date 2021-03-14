@@ -16,42 +16,54 @@
     <body>
         {% if app.user %}
         {% block menu %}
-            <h1>systemmenu</h1>
+            <h1>Navigáció:</h1>
 
             <table class="table">
-                <thead>
-                {% if is_granted("ROLE_OWNER") %}
+                <tbody>
+                {% if is_granted('ROLE_OWNER') %}
                     <tr>
-                        <a href="{{ path('restaurant_new') }}"><th>Új Étterem Létrehozása</th></a>
+                        <th><a href="{{ path('restaurant_new') }}">Új Étterem Létrehozása</a></th>
                     </tr>
                     <tr>
-                        <a href="{{ path('menu_category_new') }}"><th>Új Menü Kategoria Létrehozása</th></a>
+                       <th> <a href="{{ path('menu_category_new') }}">Új Menü Kategoria Létrehozása</a></th>
                     </tr>
                     <tr>
-                        <a href="{{ path('menu_new') }}"><th>Új Menü Létrehozása</th></a>
+                        <th><a href="{{ path('menu_new') }}">Új Menü Létrehozása</a></th>
                     </tr>
                     <tr>
-                        <a href="{{ path('food_new') }}"><th>Új Étel Létrehozása</th></a>
+                      <th>  <a href="{{ path('food_new') }}">Új Étel Létrehozása</a></th>
                     </tr>
                     <tr>
-                        <a href="{{ path('food_images_new') }}"><th>Új Étel Kép Létrehozása</th></a>
+                       <th> <a href="{{ path('food_images_new') }}">Új Étel Kép Létrehozása</a></th>
                     </tr>
                     <tr>
-                        <a href="{{ path('food_allergens_new') }}"><th>Új Étel Allergén Létrehozása</th></a>
+                        <th><a href="{{ path('food_allergens_new') }}">Új Étel Allergén Létrehozása</a></th>
                     </tr>
                     <tr>
-                        <a href="{{ path('food_index') }}"><th>Ételek Listázása</th></a>
+                       <th> <a href="{{ path('food_index') }}">Ételek Listázása</a></th>
                     </tr>
                 {% endif %}
                 <tr>
-                    <a href="{{ path('restaurant_index') }}"><th>Éttermek Listázása</th></a>
+                    <th><a href="{{ path('app_logout') }}">Logout</a></th>
                 </tr>
-                </thead>
+                </tbody>
             </table>
 
-            <a href="{{ path('food_new') }}">Create new</a>
         {% endblock %}
+        {% else %}
+            <tr>
+                <th><a href="{{ path('app_login') }}">Bejelentkezés</a></th>
+            </tr>
+            <tr>
+                <th><a href="{{ path('app_register') }}">Regisztráció</a></th>
+            </tr>
+
         {% endif %}
+        <tr>
+            <th><a href="{{ path('restaurant_index') }}">Éttermek Listázása</a></th>
+        </tr>
+
         {% block body %}{% endblock %}
+
     </body>
 </html>
