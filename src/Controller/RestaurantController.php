@@ -9,23 +9,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 /**
-*@Route("/restaurant")
-*/
+ * @Route("/restaurant")
+ */
 class RestaurantController extends AbstractController
 {
     /**
-    *@Route("/", name="restaurant_index", methods={"GET"})
-    */
+     * @Route("/", name="restaurant_index", methods={"GET"})
+     */
     public function index(RestaurantRepository $restaurantRepository): Response
     {
         return $this->render('restaurant/index.html.twig', [
             'restaurants' => $restaurantRepository->findAll(),
         ]);
     }
+
     /**
-    *@Route("/new", name="restaurant_new", methods={"GET", "POST"})
-    */
+     * @Route("/new", name="restaurant_new", methods={"GET","POST"})
+     */
     public function new(Request $request): Response
     {
         $restaurant = new Restaurant();
@@ -48,7 +50,7 @@ class RestaurantController extends AbstractController
 
     /**
      * @Route("/{id}", name="restaurant_show", methods={"GET"})
-    */
+     */
     public function show(Restaurant $restaurant): Response
     {
         return $this->render('restaurant/show.html.twig', [
@@ -57,8 +59,9 @@ class RestaurantController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="restaurant_edit", methods={"GET", "POST"})
-    */public function edit(Request $request, Restaurant $restaurant): Response
+     * @Route("/{id}/edit", name="restaurant_edit", methods={"GET","POST"})
+     */
+    public function edit(Request $request, Restaurant $restaurant): Response
     {
         $form = $this->createForm(RestaurantType::class, $restaurant);
         $form->handleRequest($request);
@@ -77,7 +80,7 @@ class RestaurantController extends AbstractController
 
     /**
      * @Route("/{id}", name="restaurant_delete", methods={"DELETE"})
-    */
+     */
     public function delete(Request $request, Restaurant $restaurant): Response
     {
         if ($this->isCsrfTokenValid('delete'.$restaurant->getId(), $request->request->get('_token'))) {
