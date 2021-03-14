@@ -14,7 +14,9 @@
                 <th>Price</th>
                 <th>Description</th>
                 <th>Name</th>
+                {% if is_granted("ROLE_OWNER") %}
                 <th>actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -26,10 +28,12 @@
                 <td>{{ food.price }}</td>
                 <td>{{ food.description }}</td>
                 <td>{{ food.name }}</td>
+                {% if is_granted("ROLE_OWNER") %}
                 <td>
                     <a href="{{ path('food_show', {'id': food.id}) }}">show</a>
                     <a href="{{ path('food_edit', {'id': food.id}) }}">edit</a>
                 </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
