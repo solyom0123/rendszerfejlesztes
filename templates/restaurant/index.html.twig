@@ -12,7 +12,9 @@
                 <th>Address</th>
                 <th>WaitingTime</th>
                 <th>Password</th>
+                {% if is_granted("ROLE_OWNER") %}
                 <th>actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -22,10 +24,12 @@
                 <td>{{ restaurant.address }}</td>
                 <td>{{ restaurant.waitingTime ? restaurant.waitingTime|date('H:i:s') : '' }}</td>
                 <td>{{ restaurant.password }}</td>
+                {% if is_granted("ROLE_OWNER") %}
                 <td>
                     <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a>
                     <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a>
                 </td>
+                {% endif %}
             </tr>
         {% else %}
             <tr>
