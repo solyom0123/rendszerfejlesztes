@@ -12,7 +12,7 @@
                 <th>Address</th>
                 <th>WaitingTime</th>
                 <th>Password</th>
-                {% if is_granted("ROLE_OWNER") %}
+                {% if is_granted('ROLE_OWNER') %}
                 <th>actions</th>
                 {% endif %}
             </tr>
@@ -39,5 +39,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('restaurant_new') }}">Create new</a>
+
 {% endblock %}

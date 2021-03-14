@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -33,8 +36,20 @@
     <list default="true" id="1c63c0d3-e453-4413-9819-21053b67bb6f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/routes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/MenuCategoryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/MenuCategoryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RestaurantCategoryController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RestaurantCategoryController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RestaurantController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RestaurantController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/RestaurantOpeningTimeController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/RestaurantOpeningTimeController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/SecurityController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/SecurityController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Security/LoginFormAuthenticator.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Security/LoginFormAuthenticator.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/base.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/base.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/food/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/food/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/food_allergens/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/food_allergens/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/food_images/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/food_images/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu/index.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/menu_category/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/menu_category/index.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/restaurant/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/restaurant/index.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -189,15 +204,13 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -235,13 +248,29 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="539" y="234" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1615702143982">
+    <state x="499" y="187" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1615714063682">
       <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state x="539" y="234" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.864@0.0.1536.864" timestamp="1615702143982" />
-    <state x="2339" y="145" key="NewPhpClassDialog" timestamp="1615119719468">
-      <screen x="1920" y="-90" width="1280" height="1024" />
+    <state x="499" y="187" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1536.864@0.0.1536.864" timestamp="1615714063682" />
+    <state width="498" height="446" key="SwitcherDM" timestamp="1615711758125">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
-    <state x="2339" y="145" key="NewPhpClassDialog/0.0.1920.1080/1920.-90.1280.1024@1920.-90.1280.1024" timestamp="1615119719468" />
+    <state width="498" height="446" key="SwitcherDM/0.0.1536.864@0.0.1536.864" timestamp="1615711758125" />
+    <state x="234" y="21" width="1316" height="849" key="dock-window-1" timestamp="1615711011837">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="234" y="21" width="1316" height="849" key="dock-window-1/0.0.1536.864@0.0.1536.864" timestamp="1615711011837" />
+    <state x="762" y="0" width="781" height="870" key="dock-window-2" timestamp="1615711011837">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="762" y="0" width="781" height="870" key="dock-window-2/0.0.1536.864@0.0.1536.864" timestamp="1615711011837" />
+    <state x="478" y="165" width="586" height="534" key="find.popup" timestamp="1615714033609">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="478" y="165" width="586" height="534" key="find.popup/0.0.1536.864@0.0.1536.864" timestamp="1615714033609" />
+    <state x="46" y="185" width="672" height="678" key="search.everywhere.popup" timestamp="1615711576611">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="46" y="185" width="672" height="678" key="search.everywhere.popup/0.0.1536.864@0.0.1536.864" timestamp="1615711576611" />
   </component>
 </project>
