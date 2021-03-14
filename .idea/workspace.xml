@@ -30,17 +30,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1c63c0d3-e453-4413-9819-21053b67bb6f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/Enums/Roles.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Food.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Food.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/FoodAllergens.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/FoodAllergens.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/FoodImages.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/FoodImages.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Menu.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Menu.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/Restaurant.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Restaurant.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/User.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/symfony.lock" beforeDir="false" afterPath="$PROJECT_DIR$/symfony.lock" afterDir="false" />
-    </list>
+    <list default="true" id="1c63c0d3-e453-4413-9819-21053b67bb6f" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -169,6 +159,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -197,11 +188,6 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="2339" y="145" key="NewPhpClassDialog" timestamp="1615119719468">
-      <screen x="1920" y="-90" width="1280" height="1024" />
-    </state>
-    <state x="2339" y="145" key="NewPhpClassDialog/0.0.1920.1080/1920.-90.1280.1024@1920.-90.1280.1024" timestamp="1615119719468" />
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
