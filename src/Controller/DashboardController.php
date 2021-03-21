@@ -51,6 +51,17 @@ class DashboardController extends AbstractController
     }
 
     /**
+     * @Route("/dashboard/courier", name="dashboard_courier", methods={"GET"})
+     */
+    public function courierIndex():Response
+    {
+        return $this->render('dashboard/courier.html.twig', [
+                'customer' => $this->session->get("courier"),
+            ]
+        );
+    }
+
+    /**
      * @Route("/dashboard/clear/session/{type}", name="dashboard_clear", methods={"GET"})
      */
     public function clearSession($type):Response
