@@ -5,23 +5,26 @@ namespace App\Controller;
 use App\Entity\MenuCategory;
 use App\Form\MenuCategoryType;
 use App\Repository\MenuCategoryRepository;
+use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/menu/category")
+ * @Route("/menucategory")
  */
 class MenuCategoryController extends AbstractController
 {
     /**
      * @Route("/", name="menu_category_index", methods={"GET"})
      */
-    public function index(MenuCategoryRepository $menuCategoryRepository): Response
+    public function index(MenuCategoryRepository $menuCategoryRepository,RestaurantRepository $restaurantRepository,SessionInterface $session): Response
     {
+        $restaurant = $restaurantRepository->find($session->get('company'));
         return $this->render('menu_category/index.html.twig', [
-            'menu_categories' => $menuCategoryRepository->findAll(),
+            'menu_categories' => $menuCategoryRepository->findByRestaurant($restaurant),
         ]);
     }
 

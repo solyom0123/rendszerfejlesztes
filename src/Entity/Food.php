@@ -69,7 +69,6 @@ class Food
         $this->foodImages = new ArrayCollection();
         $this->foodAllergens = new ArrayCollection();
         $this->menus = new ArrayCollection();
-        $this->restaurant = new ArrayCollection();
     }
 
     public function getId(): ?int

@@ -10,6 +10,8 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                <th>foods</th>
+                <th>categories</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -18,6 +20,18 @@
             <tr>
                 <td>{{ menu.id }}</td>
                 <td>{{ menu.name }}</td>
+                <td>
+                    {% for food in menu.foods %}
+                        {{ food.name ~ food.price ~ ' HUF' }}
+                        <br>
+                    {% endfor %}
+                </td>
+                <td>
+                {% for cat in menu.menuCategory %}
+               {{ cat.name }}
+                    <br>
+                {% endfor %}
+                </td>
                 <td>
                     <a href="{{ path('menu_show', {'id': menu.id}) }}">show</a>
                     <a href="{{ path('menu_edit', {'id': menu.id}) }}">edit</a>

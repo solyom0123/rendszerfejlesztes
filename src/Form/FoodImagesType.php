@@ -26,7 +26,7 @@ class FoodImagesType extends AbstractType
                         'maxSize' => '20000k',
                         'mimeTypes' => [
                             'image/png',
-                            'image/jpg',
+                            'image/jpeg',
                         ],
                         'mimeTypesMessage' => 'Please upload a valid image document',
                     ])
