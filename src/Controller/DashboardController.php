@@ -39,7 +39,16 @@ class DashboardController extends AbstractController
             ]
         );
     }
-
+    /**
+     * @Route("/dashboard/customer", name="dashboard_customer", methods={"GET"})
+     */
+    public function customerIndex():Response
+    {
+        return $this->render('dashboard/customer.html.twig', [
+                'customer' => $this->session->get("customer"),
+            ]
+        );
+    }
 
     /**
      * @Route("/dashboard/clear/session/{type}", name="dashboard_clear", methods={"GET"})
