@@ -32,29 +32,24 @@ class FoodImagesController extends AbstractController
     /**
      * @Route("/new", name="food_images_new", methods={"GET","POST"})
      */
-    public function new(Request $request,SluggerInterface $slugger,SessionInterface $session,RestaurantRepository $restaurantRepository,FoodRepository $foodRepository): Response
+    public function new(Request $request, SluggerInterface $slugger, SessionInterface $session, RestaurantRepository $restaurantRepository, FoodRepository $foodRepository): Response
     {
-        $restaurant =$restaurantRepository->find($session->get('company'));
+        $restaurant = $restaurantRepository->find($session->get('company'));
         $foodImage = new FoodImages();
-        $form = $this->createForm(FoodImagesType::class, $foodImage,['company'=>$restaurant]);
+        $form = $this->createForm(FoodImagesType::class, $foodImage, ['company' => $restaurant]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $brochureFile */
             $brochureFile = $form->get('file')->getData();
 
-            for($i=0;$i<sizeof($foodImage->getFood());$i++){
-                $food = $foodImage->getFood()->get($i);
-                $food = $foodRepository->find($food->getId());
-                $food->addFoodImage($foodImage);
-            }
             // this condition is needed because the 'brochure' field is not required
             // so the PDF file must be processed only when a file is uploaded
             if ($brochureFile) {
                 $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
                 // this is needed to safely include the file name as part of the URL
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$brochureFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $brochureFile->guessExtension();
 
                 // Move the file to the directory where brochures are stored
                 try {
@@ -98,34 +93,50 @@ class FoodImagesController extends AbstractController
     /**
      * @Route("/{id}/edit", name="food_images_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, FoodImages $foodImage,SessionInterface $session,RestaurantRepository $restaurantRepository,FoodRepository $foodRepository): Response
+    public function edit(Request $request, FoodImages $foodImage, SessionInterface $session, RestaurantRepository $restaurantRepository, FoodRepository $foodRepository,SluggerInterface $slugger): Response
     {
-        $restaurant =$restaurantRepository->find($session->get('company'));
-        $form = $this->createForm(FoodImagesType::class, $foodImage,['company'=>$restaurant]);
+        $restaurant = $restaurantRepository->find($session->get('company'));
+        $form = $this->createForm(FoodImagesType::class, $foodImage, ['company' => $restaurant]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            for($i=0;$i<sizeof($foodImage->getFood());$i++){
-                $food = $foodImage->getFood()->get($i);
-                $food = $foodRepository->find($food->getId());
-                $food->addFoodImage($foodImage);
-            }
-            $foods=$foodRepository->f
-            for($i=0;$i<sizeof($teachers);$i++){
-                $teacher = $teachers[$i];
-                $teacher = $teacherRepository->find($teacher->getId());
-                if(!$this->isInArray($teacher,$studyMaterial,$teacherRepository)){
-                    $teacher->removeStudyMaterial($studyMaterial);
+            /** @var UploadedFile $brochureFile */
+            $brochureFile = $form->get('file')->getData();
+
+            // this condition is needed because the 'brochure' field is not required
+            // so the PDF file must be processed only when a file is uploaded
+            if ($brochureFile) {
+                $originalFilename = pathinfo($brochureFile->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $brochureFile->guessExtension();
+
+                // Move the file to the directory where brochures are stored
+                try {
+                    $brochureFile->move(
+                        $this->getParameter('image_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
                 }
-            $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('food_images_index');
+                // updates the 'brochureFilename' property to store the PDF file name
+                // instead of its contents
+                $foodImage->setFilePath($newFilename);
+            }
+
+
+                $this->getDoctrine()->getManager()->flush();
+
+                return $this->redirectToRoute('food_images_index');
+
         }
-
         return $this->render('food_images/edit.html.twig', [
             'food_image' => $foodImage,
             'form' => $form->createView(),
         ]);
+
     }
 
     /**
@@ -133,7 +144,7 @@ class FoodImagesController extends AbstractController
      */
     public function delete(Request $request, FoodImages $foodImage): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$foodImage->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $foodImage->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($foodImage);
             $entityManager->flush();
@@ -141,15 +152,5 @@ class FoodImagesController extends AbstractController
 
         return $this->redirectToRoute('food_images_index');
     }
-        private function isInArray($fTeacher,$studyMaterial,$teacherRepository){
-        $in = false;
-        for($i=0;$i<sizeof($studyMaterial->getTeachers());$i++){
-            $teacher = $studyMaterial->getTeachers()->get($i);
-            $teacher = $teacherRepository->find($teacher->getId());
-            if($fTeacher == $teacher) {
-                $in = true;
-            }
-        }
-        return $in;
-    }
+
 }

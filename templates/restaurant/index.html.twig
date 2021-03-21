@@ -12,9 +12,7 @@
                 <th>name</th>
                 <th>Address</th>
                 <th>WaitingTime</th>
-                {% if is_granted('ROLE_OWNER') %}
                 <th>actions</th>
-                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -24,7 +22,7 @@
                 <td>{{ restaurant.name }}</td>
                 <td>{{ restaurant.address }}</td>
                 <td>{{ restaurant.waitingTime ? restaurant.waitingTime|date('H:i:s') : '' }}</td>
-                {% if is_granted("ROLE_OWNER") %}
+                {% if app.session.get('company') %}
                 <td>
                     <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a>
                     <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a>

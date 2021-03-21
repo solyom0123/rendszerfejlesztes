@@ -224,9 +224,7 @@ class Food
         return $this;
     }
 
-    /**
-     * @return Collection|Restaurant[]
-     */
+
     public function getRestaurant(): ?Restaurant
     {
         return $this->restaurant;
@@ -237,5 +235,9 @@ class Food
         $this->restaurant = $restaurant;
 
         return $this;
+    }
+    public function __toString()
+    {
+       return $this->getName();
     }
 }
