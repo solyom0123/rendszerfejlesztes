@@ -17,8 +17,6 @@ class FoodType extends AbstractType
             ->add('price')
             ->add('description')
             ->add('name')
-            ->add('menus')
-            ->add('restaurant')
         ;
     }
 

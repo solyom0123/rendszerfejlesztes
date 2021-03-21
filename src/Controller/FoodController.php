@@ -3,11 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Food;
+use App\Entity\RestaurantCategory;
 use App\Form\FoodType;
 use App\Repository\FoodRepository;
+use App\Repository\RestaurantRepository;
+use MongoDB\Driver\Session;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -18,21 +22,25 @@ class FoodController extends AbstractController
     /**
      * @Route("/", name="food_index", methods={"GET"})
      */
-    public function index(FoodRepository $foodRepository): Response
+    public function index(FoodRepository $foodRepository,$id,RestaurantCategory $restaurantRepository,SessionInterface $session): Response
     {
+        $restaurantData = $restaurantRepository->find($id);
         return $this->render('food/index.html.twig', [
-            'food' => $foodRepository->findAll(),
+            'food_datas' => $foodRepository->findBy($restaurantData),
         ]);
     }
 
     /**
      * @Route("/new", name="food_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request,$id,RestaurantRepository $restaurantRepository): Response
     {
         $food = new Food();
         $form = $this->createForm(FoodType::class, $food);
         $form->handleRequest($request);
+
+        $restaurantData = $restaurantRepository->find($id);
+        $food->addRestaurant($restaurantData);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();

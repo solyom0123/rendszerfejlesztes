@@ -46,7 +46,8 @@ class MainController extends AbstractController
         }else if($this->session->get("customer")){
             return new RedirectResponse($this->urlGenerator->generate('dashboard_customer'));
         }else if($this->session->get("courier")){
-            return new RedirectResponse($this->urlGenerator->generate('dashboard_courier'));
+          //  return new RedirectResponse($this->urlGenerator->generate('dashboard_courier'));
+            return new RedirectResponse($this->urlGenerator->generate('dashboard_company'));
         }
     }
 
