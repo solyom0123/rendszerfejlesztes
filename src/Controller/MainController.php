@@ -44,10 +44,9 @@ class MainController extends AbstractController
         }else if($this->session->get("company")){
             return new RedirectResponse($this->urlGenerator->generate('dashboard_company'));
         }else if($this->session->get("customer")){
-            return new RedirectResponse($this->urlGenerator->generate('dashboard_company'));
+            return new RedirectResponse($this->urlGenerator->generate('dashboard_customer'));
         }else if($this->session->get("courier")){
-          //  return new RedirectResponse($this->urlGenerator->generate('dashboard_courier'));
-            return new RedirectResponse($this->urlGenerator->generate('dashboard_company'));
+            return new RedirectResponse($this->urlGenerator->generate('dashboard_courier'));
         }
     }
 
@@ -65,7 +64,7 @@ class MainController extends AbstractController
     /**
      * @Route("/main/save/session/customer/{id}", name="app_main_set_session_customer", methods={"GET"})
      */
-    public function saveStudentChooseInSession($id): Response
+    public function saveCustomerChooseInSession($id): Response
     {
         $this->session->set("customer", $id);
         return new RedirectResponse($this->urlGenerator->generate('dashboard_customer'));
