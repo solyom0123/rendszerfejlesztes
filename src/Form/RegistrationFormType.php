@@ -33,7 +33,6 @@ class RegistrationFormType extends AbstractType
                 'choices' => [
                     'owner'=> Roles::$ROLE_OWNER,
                     'customer'=> Roles::$ROLE_CUSTOMER,
-                    'admin'=> Roles::$ROLE_ADMIN,
                     'courier'=> Roles::$ROLE_COURIER,
                 ]
             ])

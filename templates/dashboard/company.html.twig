@@ -5,11 +5,12 @@
 {% block body %}
     <h1>Food index</h1>
     <table class="table">
+        <a href="{{ path('dashboard_clear',{'type': 'company'})}}">Choose other restaurant</a>
         <tbody>
             <tr>
-                <th><a href="{{ path('restaurant_new') }}">Új Étterem Létrehozása</a></th>
+                <th> <a href="{{ path('restaurant_edit',{'id':app.session.get('company')})}}">Étterem szerkesztése</a></th>
             </tr>
-            <tr>
+           <tr>
                 <th> <a href="{{ path('menu_category_new') }}">Új Menü Kategoria Létrehozása</a></th>
             </tr>
             <tr>
