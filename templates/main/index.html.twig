@@ -18,7 +18,7 @@
         <h1>OWNER</h1>
         <h2>Please choose one from your restaurant!</h2>
         {% for company in companies %}
-            <a href="{{ path('app_main_set_session_company', {'id': company.id}) }}">{{  company.id}}</a>
+            <a href="{{ path('app_main_set_session_company', {'id': company.id}) }}">{{  company.name}}</a>
             <br>
         {% else %}
             <h2>Please create your first Restaurant!</h2>

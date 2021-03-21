@@ -69,6 +69,10 @@ class Restaurant
      * @ORM\ManyToMany(targetEntity=Menu::class, mappedBy="restaurant")
      */
     private $menus;
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $name;
 
     public function __construct()
     {
@@ -93,6 +97,17 @@ class Restaurant
     public function setAddress(?string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+    public function getName(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
 
         return $this;
     }
