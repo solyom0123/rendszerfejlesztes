@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FoodImages index{% endblock %}
+
+{% block body %}
+    <h1>FoodImages index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>FilePath</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for food_image in food_images %}
+            <tr>
+                <td>{{ food_image.id }}</td>
+                <td>{{ food_image.filePath }}</td>
+                <td>
+                    <a href="{{ path('food_images_show', {'id': food_image.id}) }}">show</a>
+                    <a href="{{ path('food_images_edit', {'id': food_image.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

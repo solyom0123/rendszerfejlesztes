@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MenuCategory index{% endblock %}
+
+{% block body %}
+    <h1>MenuCategory index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for menu_category in menu_categories %}
+            <tr>
+                <td>{{ menu_category.id }}</td>
+                <td>{{ menu_category.name }}</td>
+                <td>
+                    <a href="{{ path('menu_category_show', {'id': menu_category.id}) }}">show</a>
+                    <a href="{{ path('menu_category_edit', {'id': menu_category.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

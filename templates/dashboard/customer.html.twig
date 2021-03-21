@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Customer dashboard{% endblock %}
+
+{% block body %}
+    <h1>Customer dashboard</h1>
+    <a href="{{ path('dashboard_clear',{'type': 'customer'})}}">I'm not hungry</a>
+   <table class="table">
+        <tbody>
+            <tr>
+                <th> <a href="{{ path('restaurant_index') }}">Éttermek Listázása</a></th>
+            </tr>
+        <tr>
+        </tr>
+        </tbody>
+    </table>
+
+
+{% endblock %}
