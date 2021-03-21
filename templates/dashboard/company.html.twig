@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Food index{% endblock %}
+
+{% block body %}
+    <h1>Food index</h1>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th><a href="{{ path('restaurant_new') }}">Új Étterem Létrehozása</a></th>
+            </tr>
+            <tr>
+                <th> <a href="{{ path('menu_category_new') }}">Új Menü Kategoria Létrehozása</a></th>
+            </tr>
+            <tr>
+                <th><a href="{{ path('menu_new') }}">Új Menü Létrehozása</a></th>
+            </tr>
+            <tr>
+                <th>  <a href="{{ path('food_new') }}">Új Étel Létrehozása</a></th>
+            </tr>
+            <tr>
+                <th> <a href="{{ path('food_images_new') }}">Új Étel Kép Létrehozása</a></th>
+            </tr>
+            <tr>
+                <th><a href="{{ path('food_allergens_new') }}">Új Étel Allergén Létrehozása</a></th>
+            </tr>
+            <tr>
+                <th> <a href="{{ path('food_index') }}">Ételek Listázása</a></th>
+            </tr>
+        <tr>
+        </tr>
+        </tbody>
+    </table>
+
+
+{% endblock %}

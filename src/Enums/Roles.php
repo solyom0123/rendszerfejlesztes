@@ -4,12 +4,14 @@
 namespace App\Enums;
 
 
-abstract class Roles
+use Doctrine\Common\Collections\ArrayCollection;
+
+class Roles
 {
-   public static $ROLE_OWNER = 'ROLE_OWNER';
-   public static $ROLE_CUSTOMER = 'ROLE_CUSTOMER';
-   public static $ROLE_ADMIN = 'ROLE_ADMIN';
-   public static $ROLE_COURIER = 'ROLE_COURIER';
+    public static $ROLE_OWNER = 'ROLE_OWNER';
+    public static $ROLE_CUSTOMER = 'ROLE_CUSTOMER';
+    public static $ROLE_ADMIN = 'ROLE_ADMIN';
+    public static $ROLE_COURIER = 'ROLE_COURIER';
 
     public static function match($ROLE): ?string
     {
@@ -30,7 +32,9 @@ abstract class Roles
         }
         return $role;
     }
-    public static function getAll():ArrayCollection{
+
+    public static function getAll(): ArrayCollection
+    {
         return new ArrayCollection([
             self::$ROLE_OWNER,
             self::$ROLE_CUSTOMER,
@@ -38,11 +42,12 @@ abstract class Roles
             self::$ROLE_COURIER
         ]);
     }
-    public static function getFilteredAll():ArrayCollection{
+    public static function getFilteredAll(): ArrayCollection
+    {
         return new ArrayCollection([
             self::$ROLE_OWNER,
-            self::$ROLE_CUSTOMER,
-            self::$ROLE_COURIER
+            self::$ROLE_COURIER,
+            self::$ROLE_CUSTOMER
         ]);
     }
 }
