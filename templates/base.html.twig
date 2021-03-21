@@ -1,69 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}PincérNet!{% endblock %}</title>
-        {# Run `composer require symfony/webpack-encore-bundle`
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}PincérNet!{% endblock %}</title>
+    {# Run `composer require symfony/webpack-encore-bundle`
            and uncomment the following Encore helpers to start using Symfony UX #}
-        {% block stylesheets %}
-            {#{{ encore_entry_link_tags('app') }}#}
-        {% endblock %}
+    {% block stylesheets %}
+        {# {{ encore_entry_link_tags('app') }} #}
+    {% endblock %}
 
-        {% block javascripts %}
-            {#{{ encore_entry_script_tags('app') }}#}
-        {% endblock %}
-    </head>
-    <body>
-        {% if app.user %}
-        {% block menu %}
-            <h1>Navigáció:</h1>
+    {% block javascripts %}
+        {# {{ encore_entry_script_tags('app') }} #}
+    {% endblock %}
+</head>
+<body>
+{% if app.user %}
+    {% block menu %}
+        <a href="{{ path('app_main') }}">Home</a>
+        <a href="{{ path('app_logout') }}">Logout</a>
 
-            <table class="table">
-                <tbody>
-                {% if is_granted('ROLE_OWNER') %}
-                    <tr>
-                        <th><a href="{{ path('restaurant_new') }}">Új Étterem Létrehozása</a></th>
-                    </tr>
-                    <tr>
-                       <th> <a href="{{ path('menu_category_new') }}">Új Menü Kategoria Létrehozása</a></th>
-                    </tr>
-                    <tr>
-                        <th><a href="{{ path('menu_new') }}">Új Menü Létrehozása</a></th>
-                    </tr>
-                    <tr>
-                      <th>  <a href="{{ path('food_new') }}">Új Étel Létrehozása</a></th>
-                    </tr>
-                    <tr>
-                       <th> <a href="{{ path('food_images_new') }}">Új Étel Kép Létrehozása</a></th>
-                    </tr>
-                    <tr>
-                        <th><a href="{{ path('food_allergens_new') }}">Új Étel Allergén Létrehozása</a></th>
-                    </tr>
-                    <tr>
-                       <th> <a href="{{ path('food_index') }}">Ételek Listázása</a></th>
-                    </tr>
-                {% endif %}
-                <tr>
-                    <th><a href="{{ path('app_logout') }}">Logout</a></th>
-                </tr>
-                </tbody>
-            </table>
+    {% endblock %}
+{% else %}
+    <a href="{{ path('app_login') }}">Bejelentkezés</a>
+    <a href="{{ path('app_register') }}">Regisztráció</a>
+{% endif %}
+{% block body %}{% endblock %}
 
-        {% endblock %}
-        {% else %}
-            <tr>
-                <th><a href="{{ path('app_login') }}">Bejelentkezés</a></th>
-            </tr>
-            <tr>
-                <th><a href="{{ path('app_register') }}">Regisztráció</a></th>
-            </tr>
-
-        {% endif %}
-        <tr>
-            <th><a href="{{ path('restaurant_index') }}">Éttermek Listázása</a></th>
-        </tr>
-
-        {% block body %}{% endblock %}
-
-    </body>
+</body>
 </html>
