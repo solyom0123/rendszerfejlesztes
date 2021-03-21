@@ -14,9 +14,8 @@
                 <th>Price</th>
                 <th>Description</th>
                 <th>Name</th>
-                {% if is_granted("ROLE_OWNER") %}
+                <th>kep</th>
                 <th>actions</th>
-                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -28,7 +27,13 @@
                 <td>{{ food.price }}</td>
                 <td>{{ food.description }}</td>
                 <td>{{ food.name }}</td>
-                {% if is_granted("ROLE_OWNER") %}
+                <td>
+                    {% for image in food.foodImages %}
+                    <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the picture!</a>
+                    <br>
+                    {% endfor %}
+                </td>
+                {% if app.session.get('company')  %}
                 <td>
                     <a href="{{ path('food_show', {'id': food.id}) }}">show</a>
                     <a href="{{ path('food_edit', {'id': food.id}) }}">edit</a>
@@ -42,6 +47,5 @@
         {% endfor %}
         </tbody>
     </table>
-
 
 {% endblock %}
