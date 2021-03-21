@@ -19,6 +19,16 @@ class MenuRepository extends ServiceEntityRepository
         parent::__construct($registry, Menu::class);
     }
 
+    public function findByRestaurant($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.restaurant = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
     // /**
     //  * @return Menu[] Returns an array of Menu objects
     //  */

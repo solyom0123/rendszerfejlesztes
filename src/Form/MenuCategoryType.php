@@ -13,7 +13,6 @@ class MenuCategoryType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('menus')
         ;
     }
 

@@ -35,7 +35,7 @@ class Menu
     private $foods;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Restaurant::class, inversedBy="menus")
+     * @ORM\ManyToOne(targetEntity=Restaurant::class, inversedBy="menus")
      */
     private $restaurant;
 
@@ -43,7 +43,6 @@ class Menu
     {
         $this->menuCategory = new ArrayCollection();
         $this->foods = new ArrayCollection();
-        $this->restaurant = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -111,26 +110,16 @@ class Menu
         return $this;
     }
 
-    /**
-     * @return Collection|Restaurant[]
-     */
-    public function getRestaurant(): Collection
+
+    public function getRestaurant(): Restaurant
     {
         return $this->restaurant;
     }
 
-    public function addRestaurant(Restaurant $restaurant): self
-    {
-        if (!$this->restaurant->contains($restaurant)) {
-            $this->restaurant[] = $restaurant;
-        }
 
-        return $this;
-    }
-
-    public function removeRestaurant(Restaurant $restaurant): self
+    public function setRestaurant(Restaurant $restaurant): self
     {
-        $this->restaurant->removeElement($restaurant);
+        $this->restaurant=$restaurant;
 
         return $this;
     }

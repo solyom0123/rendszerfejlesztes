@@ -66,7 +66,7 @@ class Restaurant
     private $food;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Menu::class, mappedBy="restaurant")
+     * @ORM\OneToMany(targetEntity=Menu::class, mappedBy="restaurant")
      */
     private $menus;
     /**

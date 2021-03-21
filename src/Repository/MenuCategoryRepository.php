@@ -18,7 +18,18 @@ class MenuCategoryRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, MenuCategory::class);
     }
-
+    public function findByRestaurant($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.menus','m')
+            ->andWhere('m.restaurant = :val')
+            ->orWhere('m is null')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
     // /**
     //  * @return MenuCategory[] Returns an array of MenuCategory objects
     //  */
