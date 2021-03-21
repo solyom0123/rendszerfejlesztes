@@ -60,7 +60,7 @@ class Food
     private $menus;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Restaurant::class, inversedBy="food")
+     * @ORM\ManyToOne(targetEntity=Restaurant::class, inversedBy="food")
      */
     private $restaurant;
 
@@ -227,23 +227,14 @@ class Food
     /**
      * @return Collection|Restaurant[]
      */
-    public function getRestaurant(): Collection
+    public function getRestaurant(): ?Restaurant
     {
         return $this->restaurant;
     }
 
-    public function addRestaurant(Restaurant $restaurant): self
+    public function setRestaurant(?Restaurant $restaurant): self
     {
-        if (!$this->restaurant->contains($restaurant)) {
-            $this->restaurant[] = $restaurant;
-        }
-
-        return $this;
-    }
-
-    public function removeRestaurant(Restaurant $restaurant): self
-    {
-        $this->restaurant->removeElement($restaurant);
+        $this->restaurant = $restaurant;
 
         return $this;
     }

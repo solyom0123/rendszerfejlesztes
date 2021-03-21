@@ -4,7 +4,8 @@
 
 {% block body %}
     <h1>Customer dashboard</h1>
-    <table class="table">
+    <a href="{{ path('dashboard_clear',{'type': 'customer'})}}">I'm not hungry</a>
+   <table class="table">
         <tbody>
             <tr>
                 <th> <a href="{{ path('restaurant_index') }}">Éttermek Listázása</a></th>
