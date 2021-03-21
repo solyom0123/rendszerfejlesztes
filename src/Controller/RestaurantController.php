@@ -8,6 +8,7 @@ use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -20,10 +21,11 @@ class RestaurantController extends AbstractController
      */
     public function index(RestaurantRepository $restaurantRepository): Response
     {
-        return $this->render('restaurant/index.html.twig', [
-            'restaurants' => $restaurantRepository->findAll(),
-        ]);
-    }
+
+            return $this->render('restaurant/index.html.twig', [
+                'restaurants' => $restaurantRepository->findAll(),
+            ]);
+     }
 
     /**
      * @Route("/new", name="restaurant_new", methods={"GET","POST"})
@@ -33,13 +35,13 @@ class RestaurantController extends AbstractController
         $restaurant = new Restaurant();
         $form = $this->createForm(RestaurantType::class, $restaurant);
         $form->handleRequest($request);
-
+        $restaurant->setOwner($this->getUser());
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($restaurant);
             $entityManager->flush();
 
-            return $this->redirectToRoute('restaurant_index');
+            return $this->redirectToRoute('app_main');
         }
 
         return $this->render('restaurant/new.html.twig', [
@@ -69,7 +71,7 @@ class RestaurantController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('restaurant_index');
+            return $this->redirectToRoute('app_main');
         }
 
         return $this->render('restaurant/edit.html.twig', [
@@ -89,6 +91,6 @@ class RestaurantController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('restaurant_index');
+        return $this->redirectToRoute('dashboard_clear',["type"=>"company"]);
     }
 }

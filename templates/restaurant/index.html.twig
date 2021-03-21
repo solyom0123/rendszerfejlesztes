@@ -9,9 +9,9 @@
         <thead>
             <tr>
                 <th>Id</th>
+                <th>name</th>
                 <th>Address</th>
                 <th>WaitingTime</th>
-                <th>Password</th>
                 {% if is_granted('ROLE_OWNER') %}
                 <th>actions</th>
                 {% endif %}
@@ -21,9 +21,9 @@
         {% for restaurant in restaurants %}
             <tr>
                 <td>{{ restaurant.id }}</td>
+                <td>{{ restaurant.name }}</td>
                 <td>{{ restaurant.address }}</td>
                 <td>{{ restaurant.waitingTime ? restaurant.waitingTime|date('H:i:s') : '' }}</td>
-                <td>{{ restaurant.password }}</td>
                 {% if is_granted("ROLE_OWNER") %}
                 <td>
                     <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a>

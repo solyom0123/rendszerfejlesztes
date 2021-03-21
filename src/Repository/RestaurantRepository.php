@@ -18,7 +18,19 @@ class RestaurantRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Restaurant::class);
     }
-
+    /**
+     * @return Restaurant[] Returns an array of CompanyData objects
+     */
+    public function findByOwner($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.owner = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
     // /**
     //  * @return Restaurant[] Returns an array of Restaurant objects
     //  */
