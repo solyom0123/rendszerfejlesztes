@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}CourierData index{% endblock %}
+
+{% block body %}
+    <h1>CourierData index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Location</th>
+                <th>MobileNumber</th>
+                <th>Name</th>
+                <th>VehicleType</th>
+                <th>FromWorkingDateMonday</th>
+                <th>ToWorkingDateMonday</th>
+                <th>FromWorkingDateTuesday</th>
+                <th>ToWorkingDateTuesday</th>
+                <th>FromWorkingDateWednesday</th>
+                <th>ToWorkingDateWednesday</th>
+                <th>FromWorkingDateThursday</th>
+                <th>ToWorkingDateThursday</th>
+                <th>FromWorkingDateFriday</th>
+                <th>ToWorkingDateFriday</th>
+                <th>FromWorkingDateSaturday</th>
+                <th>ToWorkingDateSaturday</th>
+                <th>FromWorkingDateSunday</th>
+                <th>ToWorkingDateSunday</th>
+                {# <th>actions</th>#}
+            </tr>
+        </thead>
+        <tbody>
+        {% for courier_datum in courier_datas %}
+            <tr>
+                <td>{{ courier_datum.id }}</td>
+                <td>{{ courier_datum.location }}</td>
+                <td>{{ courier_datum.mobileNumber }}</td>
+                <td>{{ courier_datum.name }}</td>
+                <td>{{ courier_datum.vehicleType }}</td>
+                <td>{{ courier_datum.fromWorkingDateMonday ? courier_datum.fromWorkingDateMonday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.toWorkingDateMonday ? courier_datum.toWorkingDateMonday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.fromWorkingDateTuesday ? courier_datum.fromWorkingDateTuesday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.toWorkingDateTuesday ? courier_datum.toWorkingDateTuesday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.fromWorkingDateWednesday ? courier_datum.fromWorkingDateWednesday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.toWorkingDateWednesday ? courier_datum.toWorkingDateWednesday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.fromWorkingDateThursday ? courier_datum.fromWorkingDateThursday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.toWorkingDateThursday ? courier_datum.toWorkingDateThursday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.fromWorkingDateFriday ? courier_datum.fromWorkingDateFriday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.toWorkingDateFriday ? courier_datum.toWorkingDateFriday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.fromWorkingDateSaturday ? courier_datum.fromWorkingDateSaturday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.toWorkingDateSaturday ? courier_datum.toWorkingDateSaturday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.fromWorkingDateSunday ? courier_datum.fromWorkingDateSunday|date('H:i:s') : '' }}</td>
+                <td>{{ courier_datum.toWorkingDateSunday ? courier_datum.toWorkingDateSunday|date('H:i:s') : '' }}</td>
+                {#<td>
+                     <a href="{{ path('courier_data_show', {'id': courier_datum.id}) }}">show</a>
+                    <a href="{{ path('courier_data_edit', {'id': courier_datum.id}) }}">edit</a>
+                </td>#}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="20">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
