@@ -19,6 +19,17 @@ class FoodAllergensRepository extends ServiceEntityRepository
         parent::__construct($registry, FoodAllergens::class);
     }
 
+    public function findByRestaurant($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.restaurant = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
     // /**
     //  * @return FoodAllergens[] Returns an array of FoodAllergens objects
     //  */

@@ -2,20 +2,44 @@
 
 namespace App\Form;
 
+use App\Entity\Food;
 use App\Entity\FoodAllergens;
+use App\Repository\FoodRepository;
+use App\Repository\RestaurantRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FoodAllergensType extends AbstractType
 {
+    private $session;
+    private $restaurantRepository;
+    public function __construct(SessionInterface $session,RestaurantRepository $restaurantRepository)
+    {
+        $this->session= $session;
+        $this->restaurantRepository = $restaurantRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name')
-            ->add('food')
-            ->add('restaurant')
-        ;
+            ->add('food',EntityType::class,array(
+                'class' => Food::class,
+                'multiple' => true,
+                'query_builder' => function (FoodRepository $repository) use($options){
+                    $restaurant = $this->restaurantRepository->find($this->session->get("company"));
+                    $qb = $repository->createQueryBuilder('c');
+                    // the function returns a QueryBuilder object
+                    return $qb
+                        // find all users where 'deleted' is NOT '1'
+                        ->where($qb->expr()->eq('c.restaurant', '?1'))
+                        ->setParameter('1', $restaurant)
+                        ->orderBy('c.id', 'ASC');
+                })
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
