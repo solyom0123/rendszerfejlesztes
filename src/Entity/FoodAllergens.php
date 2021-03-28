@@ -6,6 +6,7 @@ use App\Repository\FoodAllergensRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use http\Cookie;
 
 /**
  * @ORM\Entity(repositoryClass=FoodAllergensRepository::class)
@@ -25,18 +26,18 @@ class FoodAllergens
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Food::class, inversedBy="foodAllergen")
+     * @ORM\ManyToMany(targetEntity=Food::class, inversedBy="foodAllergen")
      */
     private $food;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Restaurant::class, inversedBy="foodAllergens")
+     * @ORM\ManyToOne(targetEntity=Restaurant::class, inversedBy="foodAllergens")
      */
     private $restaurant;
 
     public function __construct()
     {
-        $this->restaurant = new ArrayCollection();
+        $this->food = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,38 +57,37 @@ class FoodAllergens
         return $this;
     }
 
-    public function getFood(): ?Food
+    public function getFood(): ?Collection
     {
         return $this->food;
     }
 
-    public function setFood(?Food $food): self
+    public function addFood(?Food $food): self
     {
-        $this->food = $food;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Restaurant[]
-     */
-    public function getRestaurant(): Collection
-    {
-        return $this->restaurant;
-    }
-
-    public function addRestaurant(Restaurant $restaurant): self
-    {
-        if (!$this->restaurant->contains($restaurant)) {
-            $this->restaurant[] = $restaurant;
+        if (!$this->food->contains($food)) {
+            $this->food[] = $food;
         }
 
         return $this;
     }
 
-    public function removeRestaurant(Restaurant $restaurant): self
+    public function removeFood(Food $food): self
     {
-        $this->restaurant->removeElement($restaurant);
+        if ($this->food->removeElement($food)) {
+                $food->removeFoodAllergen($this);
+        }
+
+        return $this;
+    }
+
+    public function getRestaurant():Restaurant
+    {
+        return $this->restaurant;
+    }
+
+    public function setRestaurant(Restaurant $restaurant): self
+    {
+           $this->restaurant = $restaurant;
 
         return $this;
     }
