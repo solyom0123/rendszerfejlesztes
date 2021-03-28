@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,6 +41,16 @@ class Order
      * @ORM\Column(type="datetime")
      */
     private $date;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Suborder::class, mappedBy="parentOrder", orphanRemoval=true)
+     */
+    private $suborders;
+
+    public function __construct()
+    {
+        $this->suborders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +101,36 @@ class Order
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Suborder[]
+     */
+    public function getSuborders(): Collection
+    {
+        return $this->suborders;
+    }
+
+    public function addSuborder(Suborder $suborder): self
+    {
+        if (!$this->suborders->contains($suborder)) {
+            $this->suborders[] = $suborder;
+            $suborder->setParentOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSuborder(Suborder $suborder): self
+    {
+        if ($this->suborders->removeElement($suborder)) {
+            // set the owning side to null (unless already changed)
+            if ($suborder->getParentOrder() === $this) {
+                $suborder->setParentOrder(null);
+            }
+        }
 
         return $this;
     }
