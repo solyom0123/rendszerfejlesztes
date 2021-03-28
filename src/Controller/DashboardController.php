@@ -6,6 +6,7 @@ use App\Entity\CompanyData;
 use App\Entity\Files;
 use App\Form\FilesType;
 use App\Repository\CompanyDataRepository;
+use App\Repository\CourierDataRepository;
 use App\Repository\FilesRepository;
 use App\Repository\StudentRepository;
 use App\Repository\TeacherRepository;
@@ -53,10 +54,18 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/courier", name="dashboard_courier", methods={"GET"})
      */
-    public function courierIndex():Response
+    public function courierIndex(Security $security,CourierDataRepository $courierDataRepository):Response
     {
+
+        $courier=$courierDataRepository->findByUser($security->getUser());
+        if(sizeof($courier)>0){
+            $courier=$courier[0];
+        }else{
+            $courier=null;
+        }
         return $this->render('dashboard/courier.html.twig', [
                 'customer' => $this->session->get("courier"),
+                'courierData' => $courier
             ]
         );
     }
