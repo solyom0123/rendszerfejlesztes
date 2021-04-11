@@ -7,10 +7,35 @@
            and uncomment the following Encore helpers to start using Symfony UX #}
     {% block stylesheets %}
         {# {{ encore_entry_link_tags('app') }} #}
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
     {% endblock %}
 
     {% block javascripts %}
         {# {{ encore_entry_script_tags('app') }} #}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script>
+            function getShopList() {
+                var item_properties = document.getElementById("shopList");
+                item_properties.innerHTML = "";
+                $.get("/shoplist/", function (data, status) {
+                    console.log(data);
+                    var items = "";
+                    for (var i = 0; i < data.data.length; i++) {
+                        items += '<li><span style="padding:20px" ">' + data.data[i].name + '</span><span style="padding:20px">' + data.data[i].price + '</span><button style="padding:20px" onclick="deleteItemShoplist('+data.data[i].id+')">Eltávolítás</button></li>';
+                    }
+                    item_properties.innerHTML = items;
+
+                });
+            }
+            function deleteItemShoplist(id) {
+                $.get("/shoplist/"+id+"/remove", function (data, status) {
+                    getShopList();
+                });
+            }
+
+        </script>
     {% endblock %}
 </head>
 <body>
@@ -25,6 +50,17 @@
     <a href="{{ path('app_register') }}">Regisztráció</a>
 {% endif %}
 {% block body %}{% endblock %}
+    {% if app.session.get("customer") %}
+        <div>
+            <h3>Kosár tartalma</h3>
+            <ol id="shopList">
+            </ol>
+{#          ide tedd a gombot  #}
+        </div>
+        <script>
+            getShopList()
+        </script>
 
+    {% endif %}
 </body>
 </html>
