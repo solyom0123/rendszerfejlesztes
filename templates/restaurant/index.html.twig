@@ -27,6 +27,10 @@
                     <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a>
                     <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a>
                 </td>
+                {% else %}
+                    <td>
+                        <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a>
+                    </td>
                 {% endif %}
             </tr>
         {% else %}

@@ -9,37 +9,40 @@
         <thead>
             <tr>
                 <th>Id</th>
+                <th>kep</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
                 <th>FromDate</th>
                 <th>ToDate</th>
-                <th>Price</th>
-                <th>Description</th>
-                <th>Name</th>
-                <th>kep</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for food in food %}
+            {% if ((not app.session.get('company')) and date()<=food.toDate) or app.session.get('company') %}
             <tr>
                 <td>{{ food.id }}</td>
-                <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ food.price }}</td>
-                <td>{{ food.description }}</td>
-                <td>{{ food.name }}</td>
                 <td>
                     {% for image in food.foodImages %}
-                    <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the picture!</a>
-                    <br>
+                        <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the picture!</a>
+                        <br>
                     {% endfor %}
                 </td>
-                {% if app.session.get('company')  %}
+                <td>{{ food.name }}</td>
+                <td>{{ food.description }}</td>
+                <td>{{ food.price }}</td>
+                <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                {% if app.session.get('company') %}
                 <td>
                     <a href="{{ path('food_show', {'id': food.id}) }}">show</a>
                     <a href="{{ path('food_edit', {'id': food.id}) }}">edit</a>
                 </td>
+                {% else %}
                 {% endif %}
             </tr>
+            {% endif %}
         {% else %}
             <tr>
                 <td colspan="7">no records found</td>
