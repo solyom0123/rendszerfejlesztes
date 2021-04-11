@@ -4,6 +4,9 @@
 
 {% block body %}
     <h1>Food index</h1>
+    {% if app.session.get('customer') %}
+        <a href="{{ path('restaurant_index') }}">Más étteremből akarok rendelni!</a>
+    {% endif %}
 
     <table class="table">
         <thead>
@@ -40,7 +43,10 @@
                     <a href="{{ path('food_edit', {'id': food.id}) }}">edit</a>
                 </td>
                 {% else %}
-                {% endif %}
+                <td>
+                    <a href="{{ path('shop_list_add', {'id': food.id,'rest': food.restaurant.id}) }}">Kosárhoz adás</a>
+                </td>
+                    {% endif %}
             </tr>
             {% endif %}
         {% else %}
