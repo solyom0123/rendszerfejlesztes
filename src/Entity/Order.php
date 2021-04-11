@@ -27,12 +27,6 @@ class Order
     private $customer;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Food::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $foods;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private $total;
@@ -47,9 +41,16 @@ class Order
      */
     private $suborders;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Food::class)
+     */
+    private $foods;
+
+
     public function __construct()
     {
         $this->suborders = new ArrayCollection();
+        $this->foods = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -69,17 +70,8 @@ class Order
         return $this;
     }
 
-    public function getFoods(): ?Food
-    {
-        return $this->foods;
-    }
 
-    public function setFoods(?Food $foods): self
-    {
-        $this->foods = $foods;
-
-        return $this;
-    }
+    
 
     public function getTotal(): ?int
     {
@@ -134,4 +126,26 @@ class Order
 
         return $this;
     }
+
+    /**
+     * @return Collection|Food[]
+     */
+    public function getFoods(): Collection
+    {
+        return $this->foods;
+    }
+
+    public function addFood(Food $food): self
+    {
+            $this->foods[] = $food;
+        return $this;
+    }
+
+    public function removeFood(Food $food): self
+    {
+        $this->foods->removeElement($food);
+
+        return $this;
+    }
+
 }

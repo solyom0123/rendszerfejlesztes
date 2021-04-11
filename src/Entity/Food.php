@@ -64,6 +64,7 @@ class Food
      */
     private $restaurant;
 
+
     public function __construct()
     {
         $this->foodImages = new ArrayCollection();
@@ -239,4 +240,6 @@ class Food
     {
        return $this->getName();
     }
+
+
 }
