@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Restaurant index{% endblock %}
+
+{% block body %}
+    <h1>Restaurant index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>name</th>
+                <th>Address</th>
+                <th>WaitingTime</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for FoodList in FoodList %}
+            <tr>
+                <td>{{ Food.id }}</td>
+                <td>{{ Food.name }}</td>
+                {% if app.session.get('company') %}
+                <td>
+                    <a href="{{ path('food_list_show', {'id': Food.id}) }}">show</a>
+                    <a href="{{ path('food_list_edit', {'id': Food.id}) }}">edit</a>
+                </td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}
