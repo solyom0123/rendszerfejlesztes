@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\SuborderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,14 +20,14 @@ class Suborder
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="suborders")
+     * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="suborders",cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $parentOrder;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $courier;
 
@@ -39,6 +41,21 @@ class Suborder
      * @ORM\JoinColumn(nullable=false)
      */
     private $restaurant;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Food::class)
+     */
+    private $foods;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $totalPrice;
+
+    public function __construct()
+    {
+        $this->foods = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -91,5 +108,42 @@ class Suborder
         $this->restaurant = $restaurant;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|Food[]
+     */
+    public function getFoods(): Collection
+    {
+        return $this->foods;
+    }
+
+    public function addFood(Food $food): self
+    {
+            $this->foods[] = $food;
+        return $this;
+    }
+
+    public function removeFood(Food $food): self
+    {
+        $this->foods->removeElement($food);
+
+        return $this;
+    }
+
+    public function getTotalPrice(): ?int
+    {
+        return $this->totalPrice;
+    }
+
+    public function setTotalPrice(int $totalPrice): self
+    {
+        $this->totalPrice = $totalPrice;
+
+        return $this;
+    }
+    public function __toString()
+    {
+        return "".$this->getId();
     }
 }

@@ -55,7 +55,9 @@
             <h3>Kosár tartalma</h3>
             <ol id="shopList">
             </ol>
-{#          ide tedd a gombot  #}
+            {% if app.session.get("shopList") %}
+            <a href="{{ path('order_new') }}"><button>Rendelés leadása</button></a>
+            {% endif %}
         </div>
         <script>
             getShopList()
