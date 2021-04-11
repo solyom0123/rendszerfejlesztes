@@ -102,7 +102,7 @@ class Restaurant
     }
     public function getName(): ?string
     {
-        return $this->address;
+        return $this->name;
     }
 
     public function setName(?string $name): self
