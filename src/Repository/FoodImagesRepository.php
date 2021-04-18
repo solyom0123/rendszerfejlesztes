@@ -22,7 +22,8 @@ class FoodImagesRepository extends ServiceEntityRepository
     public function findByRestaurant($value)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.restaurant = :val')
+            ->join('c.restaurant','e')
+            ->andWhere('e = :val')
             ->setParameter('val', $value)
             ->orderBy('c.id', 'ASC')
             ->getQuery()
