@@ -36,6 +36,10 @@
     <list default="true" id="1c63c0d3-e453-4413-9819-21053b67bb6f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/OrderController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/OrderController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Repository/OrderRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Repository/OrderRepository.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/restaurant/edit.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/restaurant/edit.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/restaurant/new.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/restaurant/new.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,6 +177,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -224,12 +229,6 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="916" y="237" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1616831903068">
-      <screen x="0" y="0" width="1536" height="864" />
-    </state>
-    <state x="916" y="237" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.864@0.0.1536.864" timestamp="1616831903068" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

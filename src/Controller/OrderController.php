@@ -28,9 +28,20 @@ class OrderController extends AbstractController
     public function index(OrderRepository $orderRepository,RestaurantRepository $restaurantRepository,SessionInterface $session): Response
     {
         $restaurant = $restaurantRepository->find($session->get('company'));
+        $suborder = $orderRepository->findByRestaurant($restaurant);
+        foreach ($suborder as $sub)
+            foreach ($sub->getFoods() as $food) {
+                $count =$orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
+                if ($count>1){
+                    for ($i =0;$i <$count-1;$i++){
+                        $sub->addFood($food);
+                    }
+                }
+            }
         return $this->render('suborder/index.html.twig', [
-            'suborder' => $orderRepository->findByRestaurant($restaurant),
+            'suborder' => $suborder,
         ]);
+
     }
 
     /**
