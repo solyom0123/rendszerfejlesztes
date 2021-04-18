@@ -5,30 +5,54 @@
 {% block body %}
     <h1>Company Dashboard</h1>
     <table class="table">
-        <a href="{{ path('dashboard_clear',{'type': 'company'})}}">Choose other restaurant</a>
+        <a href="{{ path('dashboard_clear',{'type': 'company'}) }}">Choose other restaurant</a>
 
         <tbody>
-            <tr>
-                <th> <a href="{{ path('restaurant_edit',{'id':app.session.get('company')})}}">Étterem szerkesztése</a></th>
-            </tr>
-           <tr>
-                <th> <a href="{{ path('menu_category_new') }}">Új Menü Kategoria Létrehozása</a></th>
-            </tr>
-            <tr>
-                <th><a href="{{ path('menu_new') }}">Új Menü Létrehozása</a></th>
-            </tr>
-            <tr>
-                <th>  <a href="{{ path('food_new') }}">Új Étel Létrehozása</a></th>
-            </tr>
-            <tr>
-                <th> <a href="{{ path('food_images_new') }}">Új Étel Kép Létrehozása</a></th>
-            </tr>
-            <tr>
-                <th><a href="{{ path('food_allergens_index') }}">Új Étel Allergén kezelés</a></th>
-            </tr>
-            <tr>
-                <th><a href="{{ path('food_index') }}">Ételek Listázása</a></th>
-            </tr>
+        <tr>
+
+            <th><h4>Listing options</h4></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('restaurant_edit',{'id':app.session.get('company')}) }}">Étterem szerkesztése</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('menu_index') }}">Menük Listázása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('menu_category_index') }}">Menü Kategóriák Listázása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('food_index') }}">Ételek Listázása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('food_allergens_index') }}">Étel Allergén Listázása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('food_images_index') }}">Étel kép Listázása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('order_index') }}">Rendelések Listázása</a></th>
+        </tr>
+        <tr>
+
+           <th> <h4>Creating options</h4></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('menu_new') }}">Új Menü Létrehozása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('menu_category_new') }}">Új Menü Kategoria Létrehozása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('food_new') }}">Új Étel Létrehozása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('food_images_new') }}">Új Étel Kép Létrehozása</a></th>
+        </tr>
+        <tr>
+            <th><a href="{{ path('food_allergens_index') }}">Új Étel Allergén kezelés</a></th>
+        </tr>
+
         <tr>
         </tr>
         </tbody>
