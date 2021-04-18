@@ -19,6 +19,16 @@ class FoodImagesRepository extends ServiceEntityRepository
         parent::__construct($registry, FoodImages::class);
     }
 
+    public function findByRestaurant($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.restaurant = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+    }
     // /**
     //  * @return FoodImages[] Returns an array of FoodImages objects
     //  */

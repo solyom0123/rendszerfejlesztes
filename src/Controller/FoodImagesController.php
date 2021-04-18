@@ -22,10 +22,10 @@ class FoodImagesController extends AbstractController
     /**
      * @Route("/", name="food_images_index", methods={"GET"})
      */
-    public function index(FoodImagesRepository $foodImagesRepository): Response
-    {
+    public function index(FoodImagesRepository $foodImagesRepository,RestaurantRepository $restaurantRepository,SessionInterface $session): Response
+    {$restaurantData = $restaurantRepository->find($session->get("company"));
         return $this->render('food_images/index.html.twig', [
-            'food_images' => $foodImagesRepository->findAll(),
+            'food_images' => $foodImagesRepository->findByRestaurant($restaurantData),
         ]);
     }
 
