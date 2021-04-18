@@ -247,7 +247,7 @@ class Restaurant
     {
         if (!$this->foodImages->contains($foodImage)) {
             $this->foodImages[] = $foodImage;
-            $foodImage->addRestaurant($this);
+            $foodImage->setRestaurant($this);
         }
 
         return $this;
@@ -256,7 +256,7 @@ class Restaurant
     public function removeFoodImage(FoodImages $foodImage): self
     {
         if ($this->foodImages->removeElement($foodImage)) {
-            $foodImage->removeRestaurant($this);
+            $foodImage->setRestaurant(null);
         }
 
         return $this;
