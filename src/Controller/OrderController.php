@@ -8,6 +8,7 @@ use App\Entity\Restaurant;
 use App\Entity\Suborder;
 use App\Form\RestaurantType;
 use App\Repository\FoodRepository;
+use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +25,11 @@ class OrderController extends AbstractController
     /**
      * @Route("/", name="order_index", methods={"GET"})
      */
-    public function index(RestaurantRepository $restaurantRepository): Response
+    public function index(OrderRepository $orderRepository,RestaurantRepository $restaurantRepository,SessionInterface $session): Response
     {
-
-        return $this->render('restaurant/index.html.twig', [
-            'restaurants' => $restaurantRepository->findAll(),
+        $restaurant = $restaurantRepository->find($session->get('company'));
+        return $this->render('suborder/index.html.twig', [
+            'suborder' => $orderRepository->findByRestaurant($restaurant),
         ]);
     }
 
@@ -96,7 +97,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="restaurant_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="order_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Restaurant $restaurant): Response
     {
@@ -116,7 +117,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="restaurant_delete", methods={"DELETE"})
+     * @Route("/{id}", name="order_delete", methods={"DELETE"})
      */
     public function delete(Request $request, Restaurant $restaurant): Response
     {

@@ -11,11 +11,29 @@
             <tr>
                 <th> <a href="{{ path('restaurant_edit',{'id':app.session.get('company')})}}">Étterem szerkesztése</a></th>
             </tr>
-           <tr>
-                <th> <a href="{{ path('menu_category_new') }}">Új Menü Kategoria Létrehozása</a></th>
+            <tr>
+                <th><a href="{{ path('menu_index') }}">Menük Listázása</a></th>
+            </tr>
+            <tr>
+                <th><a href="{{ path('menu_category_index') }}">Menü Kategóriák Listázása</a></th>
+            </tr>
+            <tr>
+                <th><a href="{{ path('food_index') }}">Ételek Listázása</a></th>
+            </tr>
+            <tr>
+                <th><a href="{{ path('food_allergens_index') }}">Étel Allergén Listázása</a></th>
+            </tr>
+            <tr>
+                <th><a href="{{ path('food_images_index') }}">Étel kép Listázása</a></th>
             </tr>
             <tr>
                 <th><a href="{{ path('menu_new') }}">Új Menü Létrehozása</a></th>
+            </tr>
+            <tr>
+                <th><a href="{{ path('order_index') }}">Rendelések Listázása</a></th>
+            </tr>
+            <tr>
+                <th> <a href="{{ path('menu_category_new') }}">Új Menü Kategoria Létrehozása</a></th>
             </tr>
             <tr>
                 <th>  <a href="{{ path('food_new') }}">Új Étel Létrehozása</a></th>
@@ -26,9 +44,7 @@
             <tr>
                 <th><a href="{{ path('food_allergens_index') }}">Új Étel Allergén kezelés</a></th>
             </tr>
-            <tr>
-                <th><a href="{{ path('food_index') }}">Ételek Listázása</a></th>
-            </tr>
+
         <tr>
         </tr>
         </tbody>
