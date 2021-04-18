@@ -45,7 +45,7 @@ class Food
     private $foodImages;
 
     /**
-     * @ORM\OneToMany(targetEntity=FoodAllergens::class, mappedBy="food")
+     * @ORM\ManyToMany(targetEntity=FoodAllergens::class, mappedBy="food")
      */
     private $foodAllergens;
 
@@ -63,6 +63,7 @@ class Food
      * @ORM\ManyToOne(targetEntity=Restaurant::class, inversedBy="food")
      */
     private $restaurant;
+
 
     public function __construct()
     {
@@ -164,9 +165,9 @@ class Food
 
     public function addFoodAllergen(FoodAllergens $foodAllergen): self
     {
-        if (!$this->foodAllergen->contains($foodAllergen)) {
-            $this->foodAllergen[] = $foodAllergen;
-            $foodAllergen->setFood($this);
+        if (!$this->foodAllergens->contains($foodAllergen)) {
+            $this->foodAllergens[] = $foodAllergen;
+            $foodAllergen->addFood($this);
         }
 
         return $this;
@@ -174,10 +175,10 @@ class Food
 
     public function removeFoodAllergen(FoodAllergens $foodAllergen): self
     {
-        if ($this->foodAllergen->removeElement($foodAllergen)) {
+        if ($this->foodAllergens->removeElement($foodAllergen)) {
             // set the owning side to null (unless already changed)
             if ($foodAllergen->getFood() === $this) {
-                $foodAllergen->setFood(null);
+                $foodAllergen->removeFood($this);
             }
         }
 
@@ -239,4 +240,6 @@ class Food
     {
        return $this->getName();
     }
+
+
 }

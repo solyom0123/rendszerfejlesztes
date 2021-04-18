@@ -2,23 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\FoodAllergens;
+use App\Entity\Order;
+use App\Entity\Suborder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use phpDocumentor\Reflection\Types\Collection;
 
 /**
- * @method FoodAllergens|null find($id, $lockMode = null, $lockVersion = null)
- * @method FoodAllergens|null findOneBy(array $criteria, array $orderBy = null)
- * @method FoodAllergens[]    findAll()
- * @method FoodAllergens[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Suborder|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Suborder|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Suborder[]    findAll()
+ * @method Suborder[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FoodAllergensRepository extends ServiceEntityRepository
+class OrderRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, FoodAllergens::class);
+        parent::__construct($registry, Suborder::class);
     }
-
+    /** @return Collection|Suborder[] */
     public function findByRestaurant($value)
     {
         return $this->createQueryBuilder('c')
@@ -29,17 +31,16 @@ class FoodAllergensRepository extends ServiceEntityRepository
             ->getResult()
             ;
     }
-
     // /**
-    //  * @return FoodAllergens[] Returns an array of FoodAllergens objects
+    //  * @return Order[] Returns an array of Order objects
     //  */
     /*
     public function findByExampleField($value)
     {
-        return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.exampleField = :val')
             ->setParameter('val', $value)
-            ->orderBy('f.id', 'ASC')
+            ->orderBy('o.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
@@ -48,10 +49,10 @@ class FoodAllergensRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?FoodAllergens
+    public function findOneBySomeField($value): ?Order
     {
-        return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.exampleField = :val')
             ->setParameter('val', $value)
             ->getQuery()
             ->getOneOrNullResult()
