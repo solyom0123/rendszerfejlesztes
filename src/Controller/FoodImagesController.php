@@ -38,6 +38,8 @@ class FoodImagesController extends AbstractController
         $foodImage = new FoodImages();
         $form = $this->createForm(FoodImagesType::class, $foodImage, ['company' => $restaurant]);
         $form->handleRequest($request);
+        $restaurantData = $restaurantRepository->find($session->get("company"));
+        $foodImage->setRestaurant($restaurantData);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $brochureFile */

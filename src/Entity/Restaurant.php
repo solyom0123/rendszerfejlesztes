@@ -220,7 +220,7 @@ class Restaurant
     {
         if (!$this->foodAllergens->contains($foodAllergen)) {
             $this->foodAllergens[] = $foodAllergen;
-            $foodAllergen->addRestaurant($this);
+            $foodAllergen->setRestaurant($this);
         }
 
         return $this;
@@ -229,7 +229,7 @@ class Restaurant
     public function removeFoodAllergen(FoodAllergens $foodAllergen): self
     {
         if ($this->foodAllergens->removeElement($foodAllergen)) {
-            $foodAllergen->removeRestaurant($this);
+            $foodAllergen->setRestaurant(null);
         }
 
         return $this;
