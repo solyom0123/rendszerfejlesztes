@@ -56,7 +56,7 @@ class Restaurant
     private $foodAllergens;
 
     /**
-     * @ORM\ManyToMany(targetEntity=FoodImages::class, mappedBy="restaurant")
+     * @ORM\OneToMany(targetEntity=FoodImages::class, mappedBy="restaurant")
      */
     private $foodImages;
 
