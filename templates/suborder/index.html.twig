@@ -22,43 +22,62 @@
         <tbody>
         {% for sub in suborder %}
             <tr>
-            <td>{{ sub.id }}</td>
-            <td>{{ sub.parentOrder.customer.username }}</td>
-            <td>{{ sub.parentOrder.customer.email }}</td>
-            <td>{{ sub.status }}</td>
-            <td>{{ sub.courier?sub.courier.email:''}}</td>
-            <td>
-            {% for food in sub.foods %}
-                <tr>
-                    <td>{{ food.id }}</td>
-                    <td>
-                        {% for image in food.foodImages %}
-                            <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the picture!</a>
-                            <br>
-                        {% endfor %}
-                    </td>
-                    <td>{{ food.name }}</td>
-                    <td>{{ food.description }}</td>
-                    <td>{{ food.price }}</td>
-                    <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
-                    <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
-                </tr>
-            {% else %}
+                <td>{{ sub.id }}</td>
+                <td>{{ sub.parentOrder.customer.username }}</td>
+                <td>{{ sub.parentOrder.customer.email }}</td>
+                <td>{{ sub.status }}</td>
+                <td>{{ sub.courier?sub.courier.email:'' }}</td>
+                <td>
+                    <table class="table">
 
-            {% endfor %}
-            </td>
-            <td>{{ sub.parentOrder.date? sub.parentOrder.date.fromDate|date('Y-m-d H:i:s') : ''  }}</td>
-            <td>{{ sub.totalPrice }}</td>
-{#            {% if app.session.get('company') %}#}
-{#                <td>#}
-{#                    <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a>#}
-{#                    <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a>#}
-{#                </td>#}
-{#            {% else %}#}
-{#                <td>#}
-{#                    <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a>#}
-{#                </td>#}
-{#            {% endif %}#}
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>kep</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>FromDate</th>
+                            <th>ToDate</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for food in sub.foods %}
+                            <tr>
+                                <td>{{ food.id }}</td>
+                                <td>
+                                    {% for image in food.foodImages %}
+                                        <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the
+                                            picture!</a>
+                                        <br>
+                                    {% endfor %}
+                                </td>
+                                <td>{{ food.name }}</td>
+                                <td>{{ food.description }}</td>
+                                <td>{{ food.price }}</td>
+                                <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                            </tr>
+                        {% else %}
+
+                        {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </td>
+                <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ sub.totalPrice }}</td>
+                {# {% if app.session.get('company') %} #}
+                {# <td> #}
+                {# <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a> #}
+                {# <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a> #}
+                {# </td> #}
+                {# {% else %} #}
+                {# <td> #}
+                {# <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a> #}
+                {# </td> #}
+                {# {% endif %} #}
             </tr>
         {% else %}
             <tr>
