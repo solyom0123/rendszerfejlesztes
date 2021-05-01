@@ -10,6 +10,7 @@
             <tr>
                 <th>Id</th>
                 <th>FilePath</th>
+                <th>Food name</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -18,6 +19,7 @@
             <tr>
                 <td>{{ food_image.id }}</td>
                 <td>{{ food_image.filePath }}</td>
+                <td>{{ food_image.food.name }}</td>
                 <td>
                     <a href="{{ path('food_images_show', {'id': food_image.id}) }}">show</a>
                     <a href="{{ path('food_images_edit', {'id': food_image.id}) }}">edit</a>

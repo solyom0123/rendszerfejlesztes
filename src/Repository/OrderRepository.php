@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Order;
 use App\Entity\Suborder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 use phpDocumentor\Reflection\Types\Collection;
 
@@ -22,14 +23,20 @@ class OrderRepository extends ServiceEntityRepository
     }
     /** @return Collection|Suborder[] */
     public function findByRestaurant($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.restaurant = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-            ;
+    { $alma =$this->createQueryBuilder('c')
+        ->andWhere('c.restaurant = :val')
+        ->setParameter('val', $value)
+        ->orderBy('c.id', 'ASC')
+        ->getQuery();
+        return $alma->getResult();
+    }
+    public function countByFoodAndSuborder($value,$value2)
+    {   $sql =      'select count(*) from suborder_food where food_id = '.$value.' and suborder_id = '.$value2;
+        $statement = $this->getEntityManager()->getConnection()->prepare($sql);
+
+        $statement->execute();
+        $results = $statement->fetchColumn();
+        return $results;
     }
     // /**
     //  * @return Order[] Returns an array of Order objects

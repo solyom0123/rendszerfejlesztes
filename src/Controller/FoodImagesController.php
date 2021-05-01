@@ -22,10 +22,10 @@ class FoodImagesController extends AbstractController
     /**
      * @Route("/", name="food_images_index", methods={"GET"})
      */
-    public function index(FoodImagesRepository $foodImagesRepository): Response
-    {
+    public function index(FoodImagesRepository $foodImagesRepository,RestaurantRepository $restaurantRepository,SessionInterface $session): Response
+    {$restaurantData = $restaurantRepository->find($session->get("company"));
         return $this->render('food_images/index.html.twig', [
-            'food_images' => $foodImagesRepository->findAll(),
+            'food_images' => $foodImagesRepository->findByRestaurant($restaurantData),
         ]);
     }
 
@@ -38,6 +38,8 @@ class FoodImagesController extends AbstractController
         $foodImage = new FoodImages();
         $form = $this->createForm(FoodImagesType::class, $foodImage, ['company' => $restaurant]);
         $form->handleRequest($request);
+        $restaurantData = $restaurantRepository->find($session->get("company"));
+        $foodImage->setRestaurant($restaurantData);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $brochureFile */

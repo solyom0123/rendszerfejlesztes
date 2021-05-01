@@ -23,7 +23,7 @@
         </thead>
         <tbody>
         {% for food in food %}
-            {% if ((not app.session.get('company')) and date()<=food.toDate) or app.session.get('company') %}
+            {% if ((not app.session.get('company')) and (date()<=food.toDate or not date)) or app.session.get('company') %}
             <tr>
                 <td>{{ food.id }}</td>
                 <td>

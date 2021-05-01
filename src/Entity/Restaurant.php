@@ -56,7 +56,7 @@ class Restaurant
     private $foodAllergens;
 
     /**
-     * @ORM\ManyToMany(targetEntity=FoodImages::class, mappedBy="restaurant")
+     * @ORM\OneToMany(targetEntity=FoodImages::class, mappedBy="restaurant")
      */
     private $foodImages;
 
@@ -220,7 +220,7 @@ class Restaurant
     {
         if (!$this->foodAllergens->contains($foodAllergen)) {
             $this->foodAllergens[] = $foodAllergen;
-            $foodAllergen->addRestaurant($this);
+            $foodAllergen->setRestaurant($this);
         }
 
         return $this;
@@ -229,7 +229,7 @@ class Restaurant
     public function removeFoodAllergen(FoodAllergens $foodAllergen): self
     {
         if ($this->foodAllergens->removeElement($foodAllergen)) {
-            $foodAllergen->removeRestaurant($this);
+            $foodAllergen->setRestaurant(null);
         }
 
         return $this;
@@ -247,7 +247,7 @@ class Restaurant
     {
         if (!$this->foodImages->contains($foodImage)) {
             $this->foodImages[] = $foodImage;
-            $foodImage->addRestaurant($this);
+            $foodImage->setRestaurant($this);
         }
 
         return $this;
@@ -256,7 +256,7 @@ class Restaurant
     public function removeFoodImage(FoodImages $foodImage): self
     {
         if ($this->foodImages->removeElement($foodImage)) {
-            $foodImage->removeRestaurant($this);
+            $foodImage->setRestaurant(null);
         }
 
         return $this;
