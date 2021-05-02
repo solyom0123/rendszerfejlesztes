@@ -53,6 +53,8 @@ class OrderController extends AbstractController
     {
         $order = new Order();
         $shopList = $session->get("shopList");
+
+
         if ($shopList) {
             if(count($shopList)>0) {
                 $order->setCustomer($security->getUser());
