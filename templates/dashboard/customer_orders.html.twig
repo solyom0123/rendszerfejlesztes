@@ -1,20 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Order index{% endblock %}
+{% block title %}My orders{% endblock %}
 
 {% block body %}
-    <h1>Order index</h1>
+    <h1>Rendeléseim</h1>
 
     <table class="table">
         <thead>
         <tr>
             <th>Id</th>
-            <th>Customer name</th>
-            <th>Customer email</th>
             <th>Status</th>
             <th>Courier email</th>
+            <th>Courier name</th>
             <th>Foods</th>
-            <th>WaitingTime</th>
             <th>Order date</th>
             <th>Total income</th>
             <th>actions</th>
@@ -24,13 +22,11 @@
         {% for sub in suborder %}
             <tr>
                 <td>{{ sub.id }}</td>
-                <td>{{ sub.parentOrder.customer.username }}</td>
-                <td>{{ sub.parentOrder.customer.email }}</td>
                 <td>{{ sub.status }}</td>
                 <td>{{ sub.courier?sub.courier.email:'' }}</td>
+                <td>{{ sub.courier?sub.courier.name:'' }}</td>
                 <td>
                     <table class="table">
-
                         <thead>
                         <tr>
                             <th>Id</th>
@@ -67,10 +63,18 @@
                     </table>
 
                 </td>
-                <td>{{ sub.waitingTime ? sub.waitingTime|date('H:i:s') : sub.restaurant.waitingTime|date('H:i:s') }}</td>
                 <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ sub.totalPrice }}</td>
-                <td><a href="{{ path('order_edit', {'id': sub.id}) }}">edit</a></td>
+                {# {% if app.session.get('company') %} #}
+                {# <td> #}
+                {# <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a> #}
+                {# <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a> #}
+                {# </td> #}
+                {# {% else %} #}
+                {# <td> #}
+                {# <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a> #}
+                {# </td> #}
+                {# {% endif %} #}
             </tr>
         {% else %}
             <tr>
