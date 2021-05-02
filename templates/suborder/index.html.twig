@@ -71,7 +71,7 @@
                 <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ sub.totalPrice }}</td>
                 <td>
-                    {{food.food}}</td>
+                    {{sub.status}}</td>
                 <td><a href="{{ path('order_edit', {'id': sub.id}) }}">edit</a></td>
             </tr>
         {% else %}
