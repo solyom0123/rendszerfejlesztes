@@ -70,6 +70,8 @@
                 <td>{{ sub.waitingTime ? sub.waitingTime|date('H:i:s') : sub.restaurant.waitingTime|date('H:i:s') }}</td>
                 <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ sub.totalPrice }}</td>
+                <td>
+                    {{food.food}}</td>
                 <td><a href="{{ path('order_edit', {'id': sub.id}) }}">edit</a></td>
             </tr>
         {% else %}
