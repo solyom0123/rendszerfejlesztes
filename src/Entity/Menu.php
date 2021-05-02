@@ -41,7 +41,7 @@ class Menu
 
     /**
      * @ORM\ManyToOne(targetEntity=Sale::class, inversedBy="menus")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $sale;
 
