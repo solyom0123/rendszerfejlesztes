@@ -2,6 +2,10 @@
     height: 100%;
     background-color: #5eb5e0 !important;
     opacity: 0.5;
+    background-image: url('../../design/img/bg.png') !important;
+    background-position: center;
+    background-repeat: repeat;
+    background-size: cover
 }
 .top-nav{
     display: block;
