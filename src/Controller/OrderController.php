@@ -158,7 +158,7 @@ class OrderController extends AbstractController
         $orderRepository = $em->getRepository(Order::class);
 
         $suborder = $orderRepository->findByUser($user);
-        
+
         foreach ($suborder as $sub)
             foreach ($sub->getFoods() as $food) {
                 $count =$orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
