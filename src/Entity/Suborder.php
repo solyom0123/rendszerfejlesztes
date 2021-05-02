@@ -52,6 +52,11 @@ class Suborder
      */
     private $totalPrice;
 
+    /**
+     * @ORM\Column(type="time", nullable=true)
+     */
+    private $waitingTime;
+
     public function __construct()
     {
         $this->foods = new ArrayCollection();
@@ -145,5 +150,17 @@ class Suborder
     public function __toString()
     {
         return "".$this->getId();
+    }
+
+    public function getWaitingTime(): ?\DateTimeInterface
+    {
+        return $this->waitingTime;
+    }
+
+    public function setWaitingTime(?\DateTimeInterface $waitingTime): self
+    {
+        $this->waitingTime = $waitingTime;
+
+        return $this;
     }
 }

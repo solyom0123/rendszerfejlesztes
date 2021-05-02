@@ -7,6 +7,7 @@ use App\Entity\Order;
 use App\Entity\Restaurant;
 use App\Entity\Suborder;
 use App\Form\RestaurantType;
+use App\Form\SuborderType;
 use App\Repository\FoodRepository;
 use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
@@ -110,19 +111,18 @@ class OrderController extends AbstractController
     /**
      * @Route("/{id}/edit", name="order_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Restaurant $restaurant): Response
+    public function edit(Request $request, Suborder $suborder): Response
     {
-        $form = $this->createForm(RestaurantType::class, $restaurant);
+        $form = $this->createForm(SuborderType::class, $suborder);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('app_main');
+            return $this->redirectToRoute('order_index');
         }
 
-        return $this->render('restaurant/edit.html.twig', [
-            'restaurant' => $restaurant,
+        return $this->render('suborder/edit.html.twig', [
+            'suborder' => $suborder,
             'form' => $form->createView(),
         ]);
     }

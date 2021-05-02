@@ -14,6 +14,7 @@
             <th>Status</th>
             <th>Courier email</th>
             <th>Foods</th>
+            <th>WaitingTime</th>
             <th>Order date</th>
             <th>Total income</th>
             <th>actions</th>
@@ -66,18 +67,10 @@
                     </table>
 
                 </td>
+                <td>{{ sub.waitingTime ? sub.waitingTime|date('H:i:s') : sub.restaurant.waitingTime|date('H:i:s') }}</td>
                 <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ sub.totalPrice }}</td>
-                {# {% if app.session.get('company') %} #}
-                {# <td> #}
-                {# <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a> #}
-                {# <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a> #}
-                {# </td> #}
-                {# {% else %} #}
-                {# <td> #}
-                {# <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a> #}
-                {# </td> #}
-                {# {% endif %} #}
+                <td><a href="{{ path('order_edit', {'id': sub.id}) }}">edit</a></td>
             </tr>
         {% else %}
             <tr>
