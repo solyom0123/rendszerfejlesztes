@@ -7,6 +7,7 @@ use App\Entity\Order;
 use App\Entity\Restaurant;
 use App\Entity\Suborder;
 use App\Entity\User;
+use App\Enums\OrderStatus;
 use App\Form\RestaurantType;
 use App\Form\SuborderType;
 use App\Repository\FoodRepository;
@@ -88,52 +89,53 @@ class OrderController extends AbstractController
 
         $order = new Order();
 
-                    if(count($shopList)>0) {
-                 /**set main order**/
-                $order->setCustomer($this->getUser());
-                $order->setDate(new \DateTime());
+        if (count($shopList) > 0) {
+            /**set main order**/
+            $order->setCustomer($this->getUser());
+            $order->setDate(new \DateTime());
 
-                foreach ($shopList as $item) {
-                    $food = $foodRepository->find($item);
-                    $order->addFood($food);
-                }
-                $sum = 0;
-                /* @var $item Food */
-                foreach ($order->getFoods() as $item) {
-                     $sum += $item->getPrice();
-                }
-                $order->setTotal($sum);
-                /**end main order**/
-
-                        /**start suborders**/
-
-                foreach ($orderArr as $item) {
-                    $suborder = new Suborder();
-
-                    $suborder_data = $item['data'];
-
-                    $sum = 0;
-                    /* @var $food Food */
-                    foreach ($item["foods"] as $food) {
-                        $suborder->addFood($food);
-                        $suborder->setRestaurant($food->getRestaurant());
-                        $sum += $food->getPrice();
-                    }
-                    $suborder->setParentOrder($order);
-                    $order->addSuborder($suborder);
-                    $suborder->setTotalPrice($sum);
-                    $suborder->setName($suborder_data['name']);
-                    $suborder->setAddress($suborder_data['address']);
-                    $suborder->setDeliveryMethod($suborder_data['delivery_mode']);
-                    $suborder->setPaymentMethod($suborder_data['payment_mode']);
-                    $suborder->setStatus("Összekészités");
-                    $entityManager->persist($suborder);
-                    $entityManager->flush();
-                }
-                $entityManager->persist($order);
-                $entityManager->flush();
-                $session->set("shopList", []);
+            foreach ($shopList as $item) {
+                $food = $foodRepository->find($item);
+                $order->addFood($food);
             }
+            $sum = 0;
+            /* @var $item Food */
+            foreach ($order->getFoods() as $item) {
+                $sum += $item->getPrice();
+            }
+            $order->setTotal($sum);
+            /**end main order**/
+
+            /**start suborders**/
+
+            foreach ($orderArr as $item) {
+                $suborder = new Suborder();
+
+                $suborder_data = $item['data'];
+
+                $sum = 0;
+                /* @var $food Food */
+                foreach ($item["foods"] as $food) {
+                    $suborder->addFood($food);
+                    $suborder->setRestaurant($food->getRestaurant());
+                    $sum += $food->getPrice();
+                }
+                $suborder->setParentOrder($order);
+                $order->addSuborder($suborder);
+                $suborder->setTotalPrice($sum);
+                $suborder->setName($suborder_data['name']);
+                $suborder->setAddress($suborder_data['address']);
+                $suborder->setDeliveryMethod($suborder_data['delivery_mode']);
+                $suborder->setPaymentMethod($suborder_data['payment_mode']);
+                $suborder->setStatus(OrderStatus::$ORDERED);
+                $entityManager->persist($suborder);
+                $entityManager->flush();
+            }
+            /** end suborder */
+            $entityManager->persist($order);
+            $entityManager->flush();
+            $session->set("shopList", []);
+        }
         return new JsonResponse(['url' => $this->generateUrl('app_main')]);
     }
 
@@ -173,9 +175,6 @@ class OrderController extends AbstractController
                 $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $food->getPrice();
 
             }
-
-            //dd($formDataArr);
-
 
             return $this->render('dashboard/checkout.html.twig', [
                 'data' => $formDataArr
@@ -234,11 +233,12 @@ class OrderController extends AbstractController
     /**
      * @Route("/customer/customer-order", name="customer_order_show")
      */
-    public function listOrdersCustomer(Request $request, SessionInterface $session){
+    public function listOrdersCustomer(Request $request, SessionInterface $session)
+    {
         $user = $this->getUser();
         $customer = $session->get('customer');
 
-        if(!$user || !$customer){
+        if (!$user || !$customer) {
             throw new \Exception("Nincs felhasználó vagy vendég megadva!");
         }
 
@@ -250,16 +250,16 @@ class OrderController extends AbstractController
 
         foreach ($suborder as $sub)
             foreach ($sub->getFoods() as $food) {
-                $count =$orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
-                if ($count>1){
-                    for ($i =0;$i <$count-1;$i++){
+                $count = $orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
+                if ($count > 1) {
+                    for ($i = 0; $i < $count - 1; $i++) {
                         $sub->addFood($food);
                     }
                 }
             }
 
-        return $this->render('dashboard/customer_orders.html.twig',[
-            'suborder'=>$suborder
+        return $this->render('dashboard/customer_orders.html.twig', [
+            'suborder' => $suborder
         ]);
     }
 }
