@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\CourierData;
+use App\Entity\Restaurant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @method CourierData|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,6 +20,8 @@ class CourierDataRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, CourierData::class);
     }
+    public function test(SessionInterface $session,RestaurantRepository $rrepository){
+        }
     /**
      * @return CourierData[] Returns an array of CompanyData objects
      */
