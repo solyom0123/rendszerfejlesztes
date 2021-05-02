@@ -6,6 +6,7 @@ use App\Entity\Food;
 use App\Entity\Order;
 use App\Entity\Restaurant;
 use App\Entity\Suborder;
+use App\Entity\User;
 use App\Form\RestaurantType;
 use App\Repository\FoodRepository;
 use App\Repository\OrderRepository;
@@ -139,5 +140,37 @@ class OrderController extends AbstractController
         }
 
         return $this->redirectToRoute('dashboard_clear', ["type" => "company"]);
+    }
+
+    /**
+     * @Route("/customer/customer-order", name="customer_order_show")
+     */
+    public function listOrdersCustomer(Request $request, SessionInterface $session){
+        $user = $this->getUser();
+        $customer = $session->get('customer');
+
+        if(!$user || !$customer){
+            throw new \Exception("Nincs felhasználó vagy vendég megadva!");
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $orderRepository = $em->getRepository(Order::class);
+
+        $suborder = $orderRepository->findByUser($user);
+        
+        foreach ($suborder as $sub)
+            foreach ($sub->getFoods() as $food) {
+                $count =$orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
+                if ($count>1){
+                    for ($i =0;$i <$count-1;$i++){
+                        $sub->addFood($food);
+                    }
+                }
+            }
+
+        return $this->render('dashboard/customer_orders.html.twig',[
+            'suborder'=>$suborder
+        ]);
     }
 }
