@@ -9,13 +9,24 @@
     <h1 class="h3 mb-3 font-weight-normal title-text">Register</h1>
         <div class="form-group">
     {{ form_start(registrationForm) }}
+            <div class="email-row">
         {{ form_row(registrationForm.email) }}
+        </div>
+        <div class="pass-row">
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'
         }) }}
+        <div class="agreement-row">
         {{ form_row(registrationForm.agreeTerms) }}
-            <button type="submit" class="btn-primary">Register</button>
-    {{ form_end(registrationForm) }}
+        <button type="submit" class="btn-primary" id="reg-btn">Register</button>
+        <div class="roles-row">
+        {{ form_end(registrationForm) }}
+    </div>
+    </div>
+
+    </div>
+
+
         </div>
     </div>
 {% endblock %}
