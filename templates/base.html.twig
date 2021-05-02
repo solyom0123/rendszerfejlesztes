@@ -42,16 +42,17 @@
     <img src="{{ asset('uploads/design/img/logo.png')}}">
 {% if app.user %}
     {% block menu %}
-           <a href="{{ path('app_main') }}">Home</a>
-            <a href="{{ path('app_logout') }}">Logout</a>
+           <a class="nav-btn" href="{{ path('app_main') }}">Home</a>
+            <a class="nav-btn" href="{{ path('app_logout') }}">Logout</a>
     {% endblock %}
 {% else %}
-        <a href="{{ path('app_login') }}">Bejelentkezés</a>
-        <a href="{{ path('app_register') }}">Regisztráció</a>
+        <a class="nav-btn" href="{{ path('app_login') }}">Bejelentkezés</a>
+        <a class="nav-btn" href="{{ path('app_register') }}">Regisztráció</a>
 </div>
 {% endif %}
 {% block body %}{% endblock %}
     {% if app.session.get("customer") %}
+        <div class="container-2" id="kosar-container">
         <div>
             <h3>Kosár tartalma</h3>
             <ol id="shopList">
@@ -59,6 +60,7 @@
             {% if app.session.get("shopList") %}
             <a href="{{ path('order_new') }}"><button>Rendelés leadása</button></a>
             {% endif %}
+        </div>
         </div>
         <script>
             getShopList()
