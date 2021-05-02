@@ -35,6 +35,31 @@
                 });
             }
 
+            function finalizeOrder(){
+
+                let submit_btn = $("#submit-order");
+
+                submit_btn.click(function(e){
+                    e.preventDefault();
+                    let form = $('#checkout-form');
+
+                    $.ajax({
+                        'method':'POST',
+                        'data':form.serialize(),
+                        'url': '{{ path('order_finalize') }}',
+                        'success':function(data){
+                            if(data.url){
+                                location.href = data.url;
+                            }
+                        }
+                    })
+
+
+                })
+
+
+            }
+
         </script>
     {% endblock %}
 </head>
@@ -51,17 +76,20 @@
 {% endif %}
 {% block body %}{% endblock %}
     {% if app.session.get("customer") %}
+    {% if app.request.attributes.get('_route') != 'order_new' %}
         <div>
             <h3>Kosár tartalma</h3>
             <ol id="shopList">
             </ol>
             {% if app.session.get("shopList") %}
-            <a href="{{ path('order_new') }}"><button>Rendelés leadása</button></a>
+            <a href="{{ path('order_new') }}"><button>Kasszához &gt;&gt;</button></a>
             {% endif %}
         </div>
+
         <script>
             getShopList()
         </script>
+    {% endif %}
 
     {% endif %}
 </body>

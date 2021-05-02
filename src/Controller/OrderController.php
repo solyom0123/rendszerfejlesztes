@@ -11,6 +11,7 @@ use App\Repository\FoodRepository;
 use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -25,15 +26,15 @@ class OrderController extends AbstractController
     /**
      * @Route("/", name="order_index", methods={"GET"})
      */
-    public function index(OrderRepository $orderRepository,RestaurantRepository $restaurantRepository,SessionInterface $session): Response
+    public function index(OrderRepository $orderRepository, RestaurantRepository $restaurantRepository, SessionInterface $session): Response
     {
         $restaurant = $restaurantRepository->find($session->get('company'));
         $suborder = $orderRepository->findByRestaurant($restaurant);
         foreach ($suborder as $sub)
             foreach ($sub->getFoods() as $food) {
-                $count =$orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
-                if ($count>1){
-                    for ($i =0;$i <$count-1;$i++){
+                $count = $orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
+                if ($count > 1) {
+                    for ($i = 0; $i < $count - 1; $i++) {
                         $sub->addFood($food);
                     }
                 }
@@ -45,38 +46,73 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="order_new", methods={"GET","POST"})
+     * @Route("/finalize", name="order_finalize", methods={"GET","POST"})
      */
-    public function new(SessionInterface $session, FoodRepository $foodRepository,Security $security): Response
+    public function finalizeOrder(Request $request, SessionInterface $session, FoodRepository $foodRepository)
     {
+        $data = $request->request;
+
+        $shopList = $session->get('shopList');
+
+        $ordersNum = count($data) / 5;
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $orderArr = [];
+
+        for ($i = 0; $i < $ordersNum; $i++) {
+
+            $restaurant_id = $data->get('restaurant_id_' . ($i + 1));
+            $name = $data->get('name_' . ($i + 1));
+            $delivery_mode = $data->get('delivery_mode_' . ($i + 1));
+            $payment_mode = $data->get('payment_mode_' . ($i + 1));
+            $address = $data->get('address_' . ($i + 1));
+
+            foreach ($shopList as $item) {
+                $food = $foodRepository->findOneBy(['id' => $item]);
+                if ($food->getRestaurant()->getId() == $restaurant_id) {
+                    $orderArr[$restaurant_id]['foods'][] = $food;
+                }
+            }
+
+            $orderArr[$restaurant_id]['data'] = [
+                'name' => $name,
+                'delivery_mode' => $delivery_mode,
+                'payment_mode' => $payment_mode,
+                'address' => $address
+            ];
+
+        }
+
         $order = new Order();
-        $shopList = $session->get("shopList");
-        if ($shopList) {
-            if(count($shopList)>0) {
-                $order->setCustomer($security->getUser());
+
+                    if(count($shopList)>0) {
+                 /**set main order**/
+                $order->setCustomer($this->getUser());
                 $order->setDate(new \DateTime());
-                $entityManager = $this->getDoctrine()->getManager();
+
                 foreach ($shopList as $item) {
                     $food = $foodRepository->find($item);
                     $order->addFood($food);
                 }
-                $array = array();
                 $sum = 0;
                 /* @var $item Food */
                 foreach ($order->getFoods() as $item) {
-                    $array[$item->getRestaurant()->getId()] = array();
-                    $sum += $item->getPrice();
+                     $sum += $item->getPrice();
                 }
                 $order->setTotal($sum);
-                /* @var $item Food */
-                foreach ($order->getFoods() as $item) {
-                    $array[$item->getRestaurant()->getId()][] = $item;
-                }
-                foreach ($array as $item) {
+                /**end main order**/
+
+                        /**start suborders**/
+
+                foreach ($orderArr as $item) {
                     $suborder = new Suborder();
+
+                    $suborder_data = $item['data'];
+
                     $sum = 0;
                     /* @var $food Food */
-                    foreach ($item as $food) {
+                    foreach ($item["foods"] as $food) {
                         $suborder->addFood($food);
                         $suborder->setRestaurant($food->getRestaurant());
                         $sum += $food->getPrice();
@@ -84,6 +120,10 @@ class OrderController extends AbstractController
                     $suborder->setParentOrder($order);
                     $order->addSuborder($suborder);
                     $suborder->setTotalPrice($sum);
+                    $suborder->setName($suborder_data['name']);
+                    $suborder->setAddress($suborder_data['address']);
+                    $suborder->setDeliveryMethod($suborder_data['delivery_mode']);
+                    $suborder->setPaymentMethod($suborder_data['payment_mode']);
                     $suborder->setStatus("Összekészités");
                     $entityManager->persist($suborder);
                     $entityManager->flush();
@@ -92,6 +132,54 @@ class OrderController extends AbstractController
                 $entityManager->flush();
                 $session->set("shopList", []);
             }
+        return new JsonResponse(['url' => $this->generateUrl('app_main')]);
+    }
+
+    /**
+     * @Route("/new", name="order_new", methods={"GET","POST"})
+     */
+    public function new(SessionInterface $session, FoodRepository $foodRepository, Security $security): Response
+    {
+        $shopList = $session->get("shopList");
+
+        $formDataArr = [];
+
+        if ($shopList) {
+
+            foreach ($shopList as $sl) {
+
+                $food = $foodRepository->findOneBy(['id' => $sl]);
+                if (!$food) {
+                    continue;
+                }
+
+                $restaurant = $food->getRestaurant();
+
+                $elem = [
+                    'food' => $food,
+                    'amount' => array_count_values($shopList)[$sl],
+                ];
+
+                if (!isset($formDataArr[$restaurant->getName() . '_' . $restaurant->getId()])) {
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()] = [];
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] = 0;
+                }
+                if (!in_array($elem, $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()])) {
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()][] = $elem;
+                }
+
+                $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $food->getPrice();
+
+            }
+
+            //dd($formDataArr);
+
+
+            return $this->render('dashboard/checkout.html.twig', [
+                'data' => $formDataArr
+            ]);
+
+
         }
         return $this->redirectToRoute('app_main');
 
