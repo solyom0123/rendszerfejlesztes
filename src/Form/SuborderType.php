@@ -40,6 +40,15 @@ class SuborderType extends AbstractType
                         ->orderBy('c.id', 'ASC');
                 }))
             ->add('waitingTime')
+            ->add('food', ChoiceType::class, [
+                'multiple' => false,
+                'choices' => [
+                    'ordered'=> OrderStatus::$ORDERED,
+                    'accepted'=> OrderStatus::$ACCEPTED,
+                    'in_progress'=> OrderStatus::$IN_PROGRESS,
+                    'done'=> OrderStatus::$DONE
+                ]
+            ])
         ;
     }
 
