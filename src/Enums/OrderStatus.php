@@ -6,7 +6,7 @@ namespace App\Enums;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-class Roles
+class OrderStatus
 {
     public static $ORDERED = 'ORDERED';
     public static $ACCEPTED = 'ACCEPTED';
