@@ -53,6 +53,11 @@ class Suborder
     private $totalPrice;
 
     /**
+     * @ORM\Column(type="time", nullable=true)
+     */
+    private $waitingTime;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $name;
@@ -165,6 +170,18 @@ class Suborder
     public function __toString()
     {
         return "".$this->getId();
+    }
+
+    public function getWaitingTime(): ?\DateTimeInterface
+    {
+        return $this->waitingTime;
+    }
+
+    public function setWaitingTime(?\DateTimeInterface $waitingTime): self
+    {
+        $this->waitingTime = $waitingTime;
+
+        return $this;
     }
 
     public function getName(): ?string
