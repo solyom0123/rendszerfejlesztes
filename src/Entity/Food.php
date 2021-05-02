@@ -64,6 +64,12 @@ class Food
      */
     private $restaurant;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Sale::class, inversedBy="foods")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $sale;
+
 
     public function __construct()
     {
@@ -239,6 +245,18 @@ class Food
     public function __toString()
     {
        return $this->getName();
+    }
+
+    public function getSale(): ?Sale
+    {
+        return $this->sale;
+    }
+
+    public function setSale(?Sale $sale): self
+    {
+        $this->sale = $sale;
+
+        return $this;
     }
 
 
