@@ -2,12 +2,15 @@
 
 namespace App\Form;
 
+use App\Entity\CourierData;
 use App\Entity\Restaurant;
 use App\Entity\Suborder;
+use App\Enums\OrderStatus;
 use App\Repository\CourierDataRepository;
 use App\Repository\RestaurantRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,21 +29,53 @@ class SuborderType extends AbstractType
     {
         $builder
             ->add('courier',EntityType::class,array(
-                'class' => Food::class,
-                'multiple' => true,
+                'class' => CourierData::class,
+                'multiple' => false,
                 'query_builder' => function (CourierDataRepository $repository) use($options){
-                    $restaurant = $this->$repository->find($this->session->get("company"));
-                    $dateTime = new \DateTime();
                     $qb = $repository->createQueryBuilder('c');
+                    /* @var $restaurant Restaurant*/
+                    $restaurant = $this->restaurantRepository->find($this->session->get("company"));
+                    $date = new \DateTime();
+                    $day =$date->format('w');
+                    $qb->where($qb->expr()->upper('?1').' like \'%'.$qb->expr()->upper('c.location').'%\'' );
+                    switch ($day){
+                        case "0":{
+                            $qb->andWhere(' c.fromWorkingDateSunday >= ?2 and ?2 <= c.toWorkingDateSunday');
+                            break;
+                        }
+                        case "1":{
+                            $qb->andWhere(' c.fromWorkingDateMonday >= ?2 and ?2 <= c.toWorkingDateMonday');
+                            break;
+                        }
+                        case "2":{
+                            $qb->andWhere(' c.fromWorkingDateTuesday >= ?2 and ?2 <= c.toWorkingDateTuesday');
+                            break;
+                        }
+                        case "3":{
+                            $qb->andWhere(' c.fromWorkingDateWednesday >= ?2 and ?2 <= c.toWorkingDateWednesday');
+                            break;
+                        }
+                        case "4":{
+                            $qb->andWhere(' c.fromWorkingDateThursday >= ?2 and ?2 <= c.toWorkingDateThursday');
+                            break;
+                        }
+                        case "5":{
+                            $qb->andWhere('  c.fromWorkingDateFriday >= ?2 and ?2 <= c.toWorkingDateFriday');
+                            break;
+                        }
+                        case "6":{
+                            $qb->andWhere(' c.fromWorkingDateSaturday >= ?2 and ?2 <= c.toWorkingDateSaturday');
+                            break;
+                        }
+                    };
                     // the function returns a QueryBuilder object
-                    return $qb
-                        // find all users where 'deleted' is NOT '1'
-                        ->where($qb->expr()->eq('c.', '?1'))
-                        ->setParameter('1', $restaurant)
+                    $qb->setParameter('1', $restaurant->getAddress())
+                        ->setParameter('2', $date->format('H:i:s'))
                         ->orderBy('c.id', 'ASC');
+                    return $qb;
                 }))
             ->add('waitingTime')
-            ->add('food', ChoiceType::class, [
+            ->add('status', ChoiceType::class, [
                 'multiple' => false,
                 'choices' => [
                     'ordered'=> OrderStatus::$ORDERED,
