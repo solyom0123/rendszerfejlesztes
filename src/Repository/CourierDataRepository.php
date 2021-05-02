@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\CourierData;
+use App\Entity\Restaurant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @method CourierData|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,6 +19,18 @@ class CourierDataRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, CourierData::class);
+    }
+    public function test(SessionInterface $session,RestaurantRepository $rrepository){
+        $qb = $this->createQueryBuilder('c');
+        /* @var $restaurant Restaurant*/
+        $restaurant = $this->$rrepository->find($this->session->get("company"));
+        $date = new \DateTime();
+        $qb->where($qb->expr()->substring('c.location', '?1'));
+       // if()
+
+        // the function returns a QueryBuilder object
+        return $qb->setParameter('1', $restaurant->getAddress())
+            ->orderBy('c.id', 'ASC');
     }
     /**
      * @return CourierData[] Returns an array of CompanyData objects

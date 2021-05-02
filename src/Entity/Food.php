@@ -66,7 +66,7 @@ class Food
 
     /**
      * @ORM\ManyToOne(targetEntity=Sale::class, inversedBy="foods")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $sale;
 
