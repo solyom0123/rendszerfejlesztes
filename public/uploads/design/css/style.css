@@ -1,17 +1,18 @@
-.body{
+body{
+    padding: 0;
+    margin: 0;
     height: 100%;
     background-color: #5eb5e0 !important;
-    opacity: 0.5;
     background-image: url('../../design/img/bg.png') !important;
     background-position: center;
     background-repeat: repeat;
-    background-size: cover
+    background-size: cover;
+    font-family: Heebo
 }
 .top-nav{
     display: block;
-    width: 100vw;
     height: 100px;
-    padding: 6px;
+    padding: 10px;
     background-color: #fc0303;
 }
 .top-nav a{
@@ -20,13 +21,65 @@
     color: #DDDDDD;
     padding: 0 30px;
     font-size: 30px;
-    line-height: 88px;
+    line-height: 100px;
     text-decoration: none;
 }
 .top-nav a:hover{
-    background-color: #B0413E;
+    background-color: #ff7b78;
 }
 .top-nav img{
     max-width: 100%;
     max-height: 100%;
+}
+.container{
+    margin: auto;
+    max-width: 500px;
+    min-width: 480px;
+    background-color: #ffffff;
+    max-height: 500px;
+    border-radius: 0 0 45px 45px;
+    padding: 70px 30px 70px;
+}
+
+.btn-primary{
+    margin:0 auto;
+    background-color: #fc0303;
+    display: block;
+    height: auto;
+    font-size: 30px;
+    font-family: Heebo;
+    color: #FFFFFF;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 20px;
+    text-align: center;
+
+}
+.btn-primary:hover{
+    background-color: #ff7b78;
+    cursor: pointer;
+}
+
+.title-text{
+    text-align: center;
+}
+
+.email-row{
+    margin: auto;
+    width: 60%;
+}
+.pass-row{
+    margin: auto;
+    width: 60%;
+}
+.email-input{
+    display: inline-flex;
+    float: right;
+}
+.pass-input{
+    display: inline-flex;
+    float: right;
+}
+.form-group label{
+    margin-right: 20px;
 }

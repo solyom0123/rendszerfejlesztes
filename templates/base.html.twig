@@ -7,8 +7,8 @@
            and uncomment the following Encore helpers to start using Symfony UX #}
     {% block stylesheets %}
         {# {{ encore_entry_link_tags('app') }} #}
-        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-        <link href="{{ asset('uploads/design/css/style.css') }}" rel="stylesheet">
+
+        <link href="{{ asset("/uploads/design/css/style.css") }}" rel="stylesheet">
     {% endblock %}
 
     {% block javascripts %}
@@ -38,9 +38,8 @@
         </script>
     {% endblock %}
 </head>
-<body>
 <div class="top-nav">
-    <img src="">
+    <img src="{{ asset('uploads/design/img/logo.png')}}">
 {% if app.user %}
     {% block menu %}
            <a href="{{ path('app_main') }}">Home</a>
