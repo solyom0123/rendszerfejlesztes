@@ -66,6 +66,7 @@ class OrderRepository extends ServiceEntityRepository
             return $this->createQueryBuilder('q')
                 ->where('q.courier = :courier')
                 ->setParameter('courier',$courier)
+                ->orderBy('q.displayorder','ASC')
                 ->getQuery()
                 ->getResult();
     }

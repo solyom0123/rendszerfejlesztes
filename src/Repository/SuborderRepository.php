@@ -18,7 +18,6 @@ class SuborderRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Suborder::class);
     }
-
     // /**
     //  * @return Suborder[] Returns an array of Suborder objects
     //  */
