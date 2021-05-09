@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\CourierData;
 use App\Entity\Suborder;
 use App\Entity\Notification;
-use App\Entity\Suborder;
 use App\Enums\OrderStatus;
 use App\Form\CourierDataType;
 use App\Repository\CourierDataRepository;
