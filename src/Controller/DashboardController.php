@@ -91,8 +91,10 @@ class DashboardController extends AbstractController
     {
         if ($type != "all") {
             $this->session->remove($type);
-        } else {
-            $this->session->clear();
+        }else{
+            $this->session->remove('customer');
+            $this->session->remove('company');
+            $this->session->remove('courier');
         }
         return new RedirectResponse($this->urlGenerator->generate('app_main'));
     }

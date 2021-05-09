@@ -24,13 +24,15 @@ body{
     line-height: 100px;
     text-decoration: none;
 }
-.top-nav a:hover{
+.nav-btn:hover{
     background-color: #ff7b78;
+    transition: background-color 0.5s ease;
 }
-.top-nav img{
-    max-width: 100%;
-    max-height: 100%;
+#pincer_logo{
+    max-width: 70%;
+    max-height: 70%;
 }
+
 .container{
     margin: auto;
     max-width: 500px;
@@ -42,9 +44,10 @@ body{
 }
 
 .btn-primary{
+    text-decoration: none !important;
     margin:0 auto;
     background-color: #fc0303;
-    display: block;
+    display: inline-block;
     height: auto;
     font-size: 30px;
     font-family: Heebo;
@@ -53,6 +56,7 @@ body{
     border: none;
     border-radius: 20px;
     text-align: center;
+
 
 }
 .btn-primary:hover{
@@ -103,8 +107,8 @@ body{
 
 .container-2{
     margin: auto;
-    max-width: 800px;
-    min-width: 480px;
+    max-width: 1660px;
+    min-width: 500px;
     background-color: #ffffff;
     border-radius: 0 0 45px 45px;
     padding: 70px 30px 70px;
@@ -123,6 +127,11 @@ body{
     text-decoration: none;
     padding: 3px 30px;
 }
+.inner-btn:hover{
+    background-color: #ff7b78;
+    transition: background-color 0.3s ease;
+}
+
 #kosar-container{
     margin-top: -40px;
 }
@@ -133,68 +142,6 @@ body{
 #restaurant_name, #restaurant_address, #restaurant_password, #restaurant_waitingTime{
     display: inline-flex;
     float: right;
-}
-
-table {
-    border-collapse: collapse;
-    text-indent: initial;
-    border-spacing: 2px;
-}
-
-thead {
-    display: table-header-group;
-    vertical-align: middle;
-    border-color: inherit;
-    text-align: center;
-}
-
-th {
-    font-family: Lato-Bold;
-    font-size: 18px;
-    color: #fa4251;
-    line-height: 1.4;
-    background-color: transparent;
-    text-indent: initial;
-    border-spacing: 2px;
-}
-
-th {
-    width: 33%;
-    padding: 18px 10px;
-    text-align: center;
-    display: table-cell;
-    vertical-align: inherit;
-}
-
-th, td {
-    font-weight: unset;
-    padding-right: 5%;
-}
-
-
-td {
-    font-family: Lato-Regular;
-    font-size: 15px;
-    color: gray;
-    line-height: 1.4;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    display: table-cell;
-    vertical-align: inherit;
-    text-align: center;
-}
-
-tr {
-    border-color: inherit;
-    border-bottom: 1px solid #f2f2f2;
-    display: table-row;
-    vertical-align: inherit;
-    text-align: center;
-}
-
-td a{
-    text-decoration: none;
-    color: #000000;
 }
 
  .btn{
@@ -210,7 +157,38 @@ td a{
      border-radius: 20px;
      text-align: center;
  }
+.btn:hover{
+    background-color: #ff7b78;
+    cursor: pointer;
+}
 
+table {
+    width:100%;
 
+}
 
+td{
+    border: 1px solid #000000;
+}
 
+td, th{
+    text-align: center;
+    padding: 8px;
+
+}
+
+td a{
+    text-decoration: none;
+    color: #fc0303;
+}
+
+td a:hover{
+    background: none;
+}
+.inline_prim{
+    display: inline-block;
+    margin: 1px;
+    padding: 5px !important;
+    border-radius: 10px;
+    font-size: 18px;
+}
