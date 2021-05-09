@@ -8,6 +8,7 @@ use App\Form\FilesType;
 use App\Repository\CompanyDataRepository;
 use App\Repository\CourierDataRepository;
 use App\Repository\FilesRepository;
+use App\Repository\RestaurantRepository;
 use App\Repository\StudentRepository;
 use App\Repository\TeacherRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,26 +25,39 @@ class DashboardController extends AbstractController
     private $session;
     private $urlGenerator;
 
-    public function __construct(SessionInterface $session,UrlGeneratorInterface $urlGenerator)
+    public function __construct(SessionInterface $session, UrlGeneratorInterface $urlGenerator)
     {
         $this->session = $session;
-        $this->urlGenerator =$urlGenerator;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
      * @Route("/dashboard/company", name="dashboard_company", methods={"GET"})
      */
-    public function companyIndex():Response
+    public function companyIndex(SessionInterface $session, RestaurantRepository $rr): Response
     {
+        $companyId = $session->get('company');
+
+        $restaurant = $rr->findOneBy(['id' => $companyId]);
+
+        $notifs = $restaurant->getNotifications();
+
+        $unreadNotifs = count($notifs->filter(function ($a){
+            return $a->getSeen() == false;
+        }));
+
         return $this->render('dashboard/company.html.twig', [
-            'company' => $this->session->get("company"),
+                'company' => $this->session->get("company"),
+                'notifs' => $notifs,
+                'unreadNotifs'=>$unreadNotifs
             ]
         );
     }
+
     /**
      * @Route("/dashboard/customer", name="dashboard_customer", methods={"GET"})
      */
-    public function customerIndex():Response
+    public function customerIndex(): Response
     {
         return $this->render('dashboard/customer.html.twig', [
                 'customer' => $this->session->get("customer"),
@@ -54,14 +68,14 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/courier", name="dashboard_courier", methods={"GET"})
      */
-    public function courierIndex(Security $security,CourierDataRepository $courierDataRepository):Response
+    public function courierIndex(Security $security, CourierDataRepository $courierDataRepository): Response
     {
 
-        $courier=$courierDataRepository->findByUser($security->getUser());
-        if(sizeof($courier)>0){
-            $courier=$courier[0];
-        }else{
-            $courier=null;
+        $courier = $courierDataRepository->findByUser($security->getUser());
+        if (sizeof($courier) > 0) {
+            $courier = $courier[0];
+        } else {
+            $courier = null;
         }
         return $this->render('dashboard/courier.html.twig', [
                 'customer' => $this->session->get("courier"),
@@ -73,11 +87,11 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/clear/session/{type}", name="dashboard_clear", methods={"GET"})
      */
-    public function clearSession($type):Response
+    public function clearSession($type): Response
     {
-        if($type != "all") {
+        if ($type != "all") {
             $this->session->remove($type);
-        }else{
+        } else {
             $this->session->clear();
         }
         return new RedirectResponse($this->urlGenerator->generate('app_main'));
