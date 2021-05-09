@@ -32,7 +32,7 @@
                         }
                         items += '<li><span style="padding:20px" >' + data.data[i].name + '</span><span style="padding:20px">' + data.data[i].price + '</span>';
                         if(data.data[i].price != ''){
-                            items += '<button style="padding:20px" onclick="deleteItemShoplist('+data.data[i].id+',\''+data.data[i].type+'\')">Eltávolítás</button>';
+                            items += '<button class="btn-primary inline_prim" style="padding:20px" onclick="deleteItemShoplist('+data.data[i].id+',\''+data.data[i].type+'\')">Eltávolítás</button>';
                         }
                         items += '</li>';
                         if(data.data[i].price != '' && data.data[i].type == 'm') {
@@ -84,7 +84,7 @@
                     var value = $("#user_rating_" + id).val();
                         $.ajax({
                             type: "GET",
-                            url: "/customer/customer-order/rating/" + id +"/" + value,
+                            url: "/order/customer/customer-order/rating/" + id +"/" + value,
                             success: function () {
                             }
                         });
@@ -93,7 +93,9 @@
     {% endblock %}
 </head>
 <div class="top-nav">
-    <img src="{{ asset('uploads/design/img/logo.png')}}">
+    <a id="logo_link" href="{{path('dashboard_clear',{'type': 'all'}) }}">
+        <img id="pincer_logo" src="{{ asset('uploads/design/img/logo.png')}}">
+    </a>
 {% if app.user %}
     {% block menu %}
            <a class="nav-btn" href="{{ path('app_main') }}">Home</a>
@@ -102,8 +104,9 @@
 {% else %}
         <a class="nav-btn" href="{{ path('app_login') }}">Bejelentkezés</a>
         <a class="nav-btn" href="{{ path('app_register') }}">Regisztráció</a>
-</div>
+
 {% endif %}
+</div>
 {% block body %}{% endblock %}
     {% if app.session.get("customer") %}
     {% if app.request.attributes.get('_route') != 'order_new' %}
@@ -113,7 +116,7 @@
             <ol id="shopList">
             </ol>
             {% if app.session.get("shopList") %}
-            <a href="{{ path('order_new') }}"><button>Kasszához &gt;&gt;</button></a>
+            <a href="{{ path('order_new') }}"><button  class="btn-primary">Kasszához &gt;&gt;</button></a>
             {% endif %}
         </div>
         </div>

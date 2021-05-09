@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\CourierData;
+use App\Entity\Notification;
 use App\Entity\Suborder;
 use App\Enums\OrderStatus;
 use App\Form\CourierDataType;
@@ -141,8 +142,10 @@ class CourierDataController extends AbstractController
     /**
      * @Route("/order/set-delivery-status/{so}/{type}", name="courier_set_delivery_status", methods={"GET", "POST"})
      */
-    public function setDeliveryStatus(?Suborder $so = null, ?string $type = null)
+    public function setDeliveryStatus(SessionInterface $session,?Suborder $so = null, ?string $type = null)
     {
+        $em = $this->getDoctrine()->getManager();
+
         if (!$so) {
             return $this->redirectToRoute('app_main');
         }
@@ -150,6 +153,23 @@ class CourierDataController extends AbstractController
         switch ($type) {
             case 'cancel':
                 $so->setStatus(OrderStatus::$DELIVERY_STATUS_CANCELLED);
+
+                $notification = new Notification();
+
+                $notification->setRestaurant($so->getRestaurant());
+
+                $courier = $session->get('courier');
+
+                $link = "<a href='".$this->generateUrl('order_edit',['id'=>$so->getId()])."'>".$so->getId()."</a>";
+
+                $message = $link." számú rendelését ".$courier." azonosítójú futár visszautasította.";
+
+                $notification->setMessage($message);
+
+                $notification->setSeen(false);
+
+                $em->persist($notification);
+                $em->flush();
                 break;
             case 'start':
                 $so->setStatus(OrderStatus::$DELIVERY_STATUS_IN_PROGRESS);
@@ -164,9 +184,9 @@ class CourierDataController extends AbstractController
                 return $this->redirectToRoute('app_main');
         }
 
-        $this->getDoctrine()->getManager()->persist($so);
+        $em->persist($so);
 
-        $this->getDoctrine()->getManager()->flush();
+        $em->flush();
 
         return $this->redirectToRoute('courier_assigned_jobs');
     }
