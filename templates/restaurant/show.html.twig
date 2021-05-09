@@ -3,6 +3,7 @@
 {% block title %}Restaurant{% endblock %}
 
 {% block body %}
+<div class="container-2">
     <h1>Restaurant</h1>
 
     <table class="table">
@@ -31,4 +32,5 @@
     <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a>
 
     {{ include('restaurant/_delete_form.html.twig') }}
+</div>
 {% endblock %}

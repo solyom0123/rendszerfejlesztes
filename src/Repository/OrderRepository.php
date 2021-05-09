@@ -2,9 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\CourierData;
 use App\Entity\Order;
 use App\Entity\Suborder;
 use App\Entity\User;
+use App\Enums\OrderStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
@@ -48,6 +50,26 @@ class OrderRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAvailableOrders(CourierData $cd){
+        return $this->createQueryBuilder('q')
+            ->where('q.status = :status')
+            ->andWhere('q.courier IS NULL')
+            ->andWhere('LOWER(q.address) LIKE LOWER(:courierAddress)')
+            ->setParameter('status',OrderStatus::$DONE)
+            ->setParameter('courierAddress',"%".$cd->getLocation()."%")
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAssignedOrders(User $courier){
+            return $this->createQueryBuilder('q')
+                ->where('q.courier = :courier')
+                ->setParameter('courier',$courier)
+                ->getQuery()
+                ->getResult();
+    }
+
     // /**
     //  * @return Order[] Returns an array of Order objects
     //  */

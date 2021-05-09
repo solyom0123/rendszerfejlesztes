@@ -3,16 +3,29 @@
 {% block title %}Restaurant index{% endblock %}
 
 {% block body %}
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.0.3/js/dataTables.dateTime.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.0.3/css/dataTables.dateTime.min.css">
+
+
+    <style>
+        label{
+            display:block;
+        }
+    </style>
     <div class="container-2">
     <h1>Restaurant index</h1>
-
-    <table class="table">
+    <table class="table" id="example" class="display nowrap" style="width:100%">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>name</th>
                 <th>Address</th>
                 <th>WaitingTime</th>
+                <th>Kategoriák</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -29,6 +42,29 @@
                     <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a>
                 </td>
                 {% else %}
+                    <td id="kat">
+                    {% for menu in restaurant.menus %}
+                    {% for cat in menu.menuCategory %}
+                        <label class="kateg">{{ cat.name }}</label>
+                    {% endfor %}
+                    {% endfor %}
+                        <script>
+                                $(".kateg").each(function() {
+                                    var current_element = $(this);
+                                    var i=0;
+                                    $(".kateg").each(function() {
+                                        var current_element2 = $(this);
+                                        if(current_element.text()==current_element2.text()){
+                                            i++;
+                                        }
+                                        if(i==2){
+                                           current_element2.remove();
+                                            i=1;
+                                        }
+                                    });
+                                });
+                        </script>
+                    </td>
                     <td>
                         <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a>
                     </td>
@@ -42,5 +78,44 @@
         </tbody>
     </table>
     </div>
+    <script>
+        var minDate, maxDate;
 
+        $.fn.dataTable.ext.search.push(
+            function( settings, data, dataIndex ) {
+                var min = minDate.val();
+                var max = maxDate.val();
+                var date = new Date( data[7] );
+
+
+                if (
+                    ( min === null && max === null ) ||
+                    ( min === null && date <= max ) ||
+                    ( min <= date   && max === null ) ||
+                    ( min <= date   && date <= max )
+                ) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+        $("#example").ready(function() {
+            // Create date inputs
+            minDate = new DateTime($('#min'), {
+                format: 'YYYY Do MMMM'
+            });
+            console.log(minDate);
+            maxDate = new DateTime($('#max'), {
+                format: 'YYYY Do MMMM'
+            });
+            // DataTables initialisation
+            var table = $('#example').DataTable();
+
+            // Refilter the table
+            $('#min, #max').on('change', function () {
+                table.draw();
+            });
+        });
+    </script>
 {% endblock %}

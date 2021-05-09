@@ -3,9 +3,11 @@
 {% block title %}New RestaurantOpeningTime{% endblock %}
 
 {% block body %}
+<div class="container-2">
     <h1>Create new RestaurantOpeningTime</h1>
 
     {{ include('restaurant_opening_time/_form.html.twig') }}
 
     <a href="{{ path('restaurant_opening_time_index') }}">back to list</a>
+</div>
 {% endblock %}

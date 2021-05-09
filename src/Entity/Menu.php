@@ -41,7 +41,7 @@ class Menu
 
     /**
      * @ORM\ManyToOne(targetEntity=Sale::class, inversedBy="menus")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $sale;
 
@@ -140,5 +140,9 @@ class Menu
         $this->sale = $sale;
 
         return $this;
+    }
+    public function __toString()
+    {
+        return $this->name;
     }
 }
