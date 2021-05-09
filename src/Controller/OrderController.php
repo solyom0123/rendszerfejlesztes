@@ -262,4 +262,16 @@ class OrderController extends AbstractController
             'suborder' => $suborder
         ]);
     }
+
+    /**
+     * @Route("/customer/customer-order/rating/{id}/{rating}", name="customer_rating")
+     */
+    public function userOrderRating(Suborder $suborder, $rating){
+        $suborder->setUserOrderRating($rating);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->flush();
+        return $this->render('dashboard/customer_orders.html.twig'
+        );
+    }
+
 }

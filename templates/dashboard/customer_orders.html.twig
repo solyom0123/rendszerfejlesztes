@@ -76,6 +76,9 @@
                 {# <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a> #}
                 {# </td> #}
                 {# {% endif %} #}
+                <td>
+                    <input id="user_rating_{{ sub.id }}" type="number" min="1" max="5" onchange="userOrderRating({{ sub.id }})">
+                </td>
             </tr>
         {% else %}
             <tr>

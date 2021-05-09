@@ -61,6 +61,17 @@
             }
 
         </script>
+        <script>
+            function userOrderRating(id){
+                    var value = $("#user_rating_" + id).val();
+                        $.ajax({
+                            type: "GET",
+                            url: "/customer/customer-order/rating/" + id +"/" + value,
+                            success: function () {
+                            }
+                        });
+            }
+        </script>
     {% endblock %}
 </head>
 <div class="top-nav">
