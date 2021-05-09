@@ -75,7 +75,7 @@
     {% endblock %}
 </head>
 <div class="top-nav">
-    <img src="{{ asset('uploads/design/img/logo.png')}}">
+    <a href="{{path('dashboard_clear',{'type': 'all'}) }}"><img src="{{ asset('uploads/design/img/logo.png')}}"></a>
 {% if app.user %}
     {% block menu %}
            <a class="nav-btn" href="{{ path('app_main') }}">Home</a>
