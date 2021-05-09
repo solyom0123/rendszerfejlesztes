@@ -3,6 +3,7 @@
 {% block title %}Rendelés - kassza{% endblock %}
 
 {% block body %}
+    <div class="container-2">
     <h1>Kassza</h1>
 
 {% set total = 0 %}
@@ -78,10 +79,10 @@
 
     <h3>Teljes fizetendő összeg: {{ total }}</h3>
 
-    <button id="submit-order">Rendelés leadása</button>
+    <button class="btn-primary" id="submit-order">Rendelés leadása</button>
 
     <script>
         finalizeOrder();
     </script>
-
+    </div>
 {% endblock %}
