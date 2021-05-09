@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\CourierData;
 use App\Entity\Suborder;
+use App\Entity\Notification;
+use App\Entity\Suborder;
+use App\Enums\OrderStatus;
 use App\Form\CourierDataType;
 use App\Repository\CourierDataRepository;
 use App\Repository\OrderRepository;
-use App\Repository\SuborderRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,7 +97,7 @@ class CourierDataController extends AbstractController
     /**
      * @Route("/jobs/assigned", name="courier_assigned_jobs", methods={"GET", "POST"})
      */
-    public function showAssignedJobs(SessionInterface $session, OrderRepository $or ,CourierDataRepository $cdr, UserRepository $ur)
+    public function showAssignedJobs(SessionInterface $session, OrderRepository $or, CourierDataRepository $cdr, UserRepository $ur)
     {
         $courierId = null;
 
@@ -117,7 +119,7 @@ class CourierDataController extends AbstractController
             return $this->redirectToRoute('app_main');
         }
 
-        if(!$courier->getUser()){
+        if (!$courier->getUser()) {
             return $this->redirectToRoute('app_main');
         }
 
@@ -167,9 +169,110 @@ class CourierDataController extends AbstractController
 
 
     /**
+     * @Route("/order/set-delivery-status/{so}/{type}", name="courier_set_delivery_status", methods={"GET", "POST"})
+     */
+    public function setDeliveryStatus(SessionInterface $session,?Suborder $so = null, ?string $type = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        if (!$so) {
+            return $this->redirectToRoute('app_main');
+        }
+
+        switch ($type) {
+            case 'cancel':
+                $so->setStatus(OrderStatus::$DELIVERY_STATUS_CANCELLED);
+
+                $notification = new Notification();
+
+                $notification->setRestaurant($so->getRestaurant());
+
+                $courier = $session->get('courier');
+
+                $link = "<a href='".$this->generateUrl('order_edit',['id'=>$so->getId()])."'>".$so->getId()."</a>";
+
+                $message = $link." számú rendelését ".$courier." azonosítójú futár visszautasította.";
+
+                $notification->setMessage($message);
+
+                $notification->setSeen(false);
+
+                $em->persist($notification);
+                $em->flush();
+                break;
+            case 'start':
+                $so->setStatus(OrderStatus::$DELIVERY_STATUS_IN_PROGRESS);
+                break;
+            case 'finish':
+                $so->setStatus(OrderStatus::$DELIVERY_STATUS_FINISHED);
+                break;
+            case 'failed':
+                $so->setStatus(OrderStatus::$DELIVERY_STATUS_FAILED);
+                break;
+            default:
+                return $this->redirectToRoute('app_main');
+        }
+
+        $em->persist($so);
+
+        $em->flush();
+
+        return $this->redirectToRoute('courier_assigned_jobs');
+    }
+
+    /**
+     * @Route("/order/take-job/{so}", name="courier_take_job", methods={"GET", "POST"})
+     */
+    public function takeJob(SessionInterface $session, CourierDataRepository $cdr, UserRepository $ur, ?Suborder $so = null)
+    {
+        if (!$so) {
+            return $this->redirectToRoute('app_main');
+        }
+
+        $courierId = null;
+
+        if (!$session->has('courier')) {
+            return $this->redirectToRoute('app_main');
+        }
+
+        $courierId = $session->get('courier');
+
+        if (!$courierId) {
+            return $this->redirectToRoute('app_main');
+        }
+
+        $user = $ur->findOneBy(['id' => $courierId]);
+
+        if (!$user) {
+            return $this->redirectToRoute('app_main');
+        }
+
+        $courier = $cdr->findOneBy(['user' => $user]);
+
+        if (!$courier) {
+            return $this->redirectToRoute('app_main');
+        }
+
+        $courierUser = $courier->getUser();
+
+        if (!$courierUser) {
+            return $this->redirectToRoute('app_main');
+        }
+
+        $so->setCourier($courierUser);
+        $so->setStatus(OrderStatus::$DELIVERY_STATUS_ASSIGNED);
+
+        $this->getDoctrine()->getManager()->persist($so);
+
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('courier_available_jobs');
+    }
+
+    /**
      * @Route("/jobs/available", name="courier_available_jobs", methods={"GET", "POST"})
      */
-    public function showAvailableJobs(SessionInterface $session, OrderRepository $or ,CourierDataRepository $cdr, UserRepository $ur)
+    public function showAvailableJobs(SessionInterface $session, OrderRepository $or, CourierDataRepository $cdr, UserRepository $ur)
     {
         $courierId = null;
 
@@ -203,8 +306,8 @@ class CourierDataController extends AbstractController
                 }
             }
 
-        return $this->render('dashboard/courier_available_jobs.html.twig',[
-           'suborder'=>$suborder
+        return $this->render('dashboard/courier_available_jobs.html.twig', [
+            'suborder' => $suborder
         ]);
 
     }

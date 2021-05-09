@@ -32,7 +32,7 @@ class Suborder
     private $courier;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=50)
      */
     private $status;
 
@@ -87,9 +87,15 @@ class Suborder
      */
     private $displayorder;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Menu::class)
+     */
+    private $menus;
+
     public function __construct()
     {
         $this->foods = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -268,6 +274,28 @@ class Suborder
     public function getSubOrderByCourier(?int $displayorder): self
     {
         $this->displayorder = $displayorder;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Menu[]
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+            $this->menus[] = $menu;
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        $this->menus->removeElement($menu);
 
         return $this;
     }

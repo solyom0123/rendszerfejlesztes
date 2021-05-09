@@ -69,6 +69,7 @@
             <tr>
                 <th>Customer name</th>
                 <th>Address</th>
+                <th>Status</th>
                 <th>Foods</th>
                 <th>Order date</th>
                 <th>Total income</th>
@@ -77,8 +78,9 @@
 
             {% for sub in suborder %}
                 <tr>
-                    <td>{{ sub.id}}</td>
+                    <td>{{ sub.name?sub.name:'-' }}</td>
                     <td>{{ sub.address?sub.address:'-' }}</td>
+                    <td>{{ sub.status?sub.status:'-' }}</td>
                     <td>
                         <table >
                             <thead>
@@ -103,7 +105,25 @@
                     </td>
                     <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
                     <td>{{ sub.totalPrice }}</td>
-                    <td><span class="displayorderc">{{ sub.displayorder}}</span></td>
+                    <td>
+                        {% if not(sub.status == 'ORDERED' or sub.status == 'ACCEPTED' or sub.status == 'IN_PROGRESS' or sub.status == 'DELIVERY_STATUS_FINISHED' or sub.status == 'DELIVERY_STATUS_FAILED' or sub.status == 'DELIVERY_STATUS_CANCELLED') %}
+                            <a class="inner-btn" href="{{ path('courier_set_delivery_status',{'type':'cancel','so':sub.id}) }}">Visszautasítom</a>
+                            &nbsp;
+                        {% endif %}
+                        {% if not(sub.status == 'DELIVERY_STATUS_IN_PROGRESS' or sub.status == 'ORDERED' or sub.status == 'ACCEPTED' or sub.status == 'IN_PROGRESS' or sub.status == 'DELIVERY_STATUS_CANCELLED' or sub.status == 'DELIVERY_STATUS_FINISHED' or sub.status == 'DELIVERY_STATUS_FAILED') %}
+                            <a class="inner-btn" href="{{ path('courier_set_delivery_status',{'type':'start','so':sub.id}) }}">Elkezdem</a>
+                            &nbsp;
+                        {% endif %}
+                        {% if  not(sub.status == 'DELIVERY_STATUS_ASSIGNED' or sub.status == 'DONE' or sub.status == 'ORDERED' or sub.status == 'ACCEPTED' or sub.status == 'IN_PROGRESS' or sub.status == 'DELIVERY_STATUS_FINISHED' or sub.status == 'DELIVERY_STATUS_FAILED' or sub.status == 'DELIVERY_STATUS_CANCELLED') %}
+                            <a class="inner-btn" href="{{ path('courier_set_delivery_status',{'type':'finish', 'so':sub.id}) }}">Leszállítottam</a>
+                            &nbsp;
+                        {% endif %}
+                        {% if not(sub.status == 'DELIVERY_STATUS_ASSIGNED' or sub.status == 'DELIVERY_STATUS_FAILED' or sub.status == 'DONE' or sub.status == 'ORDERED' or sub.status == 'ACCEPTED' or sub.status == 'IN_PROGRESS' or sub.status == 'DELIVERY_STATUS_FINISHED' or sub.status == 'DELIVERY_STATUS_CANCELLED') %}
+                            <a class="inner-btn" href="{{ path('courier_set_delivery_status',{'type':'failed', 'so':sub.id}) }}">Meghíúsult</a>
+                            &nbsp;
+                        {% endif %}
+                        <span hidden class="displayorderc">{{ sub.displayorder}}</span>
+                    </td>                
                 </tr>
             {% else %}
                 <tr>
@@ -114,5 +134,6 @@
         </table>
         <button onclick="feltolt()">Update Preference</button>
 
+        <a class="inner-btn" href="{{ path('dashboard_courier') }}">&lt;&lt; Vissza</a>
     </div>
 {% endblock %}

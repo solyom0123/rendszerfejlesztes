@@ -5,6 +5,25 @@
 {% block body %}
 <div class="container-2">
     <h1>Company Dashboard</h1>
+
+    <i class="fas fa-bell {% if unreadNotifs > 0%} hasNotif{% else %}noNotif{% endif %}" id="bell" onclick="show_notif()"></i>{% if unreadNotifs > 0 %}<span id="unreads">{{ unreadNotifs }}</span>{% endif %}
+
+    <div id="notifs">
+
+        {% if notifs|length>0 %}
+            <span id="delete_notifs" onclick="delete_notifs()">Értesítések törlése</span>
+        {% for notif in notifs %}
+            <div class="notif_msg">
+            {{ notif.message|raw }}
+            </div>
+        {% endfor %}
+        {% else %}
+            <div id="notice_text"> Nincs értesítése</div>
+        {% endif %}
+    </div>
+
+
+
     <table class="table">
         <a class="inner-btn" href="{{ path('dashboard_clear',{'type': 'company'}) }}">Choose other restaurant</a>
 
@@ -63,4 +82,26 @@
     </table>
 </div>
 
+
+    <script>
+        function show_notif() {
+            var x = document.getElementById("notifs");
+            if (x.classList.contains("hide")) {
+                x.classList.remove("hide");
+            } else {
+                x.classList.add("hide");
+            }
+        }
+    </script>
+    <script>
+
+        function delete_notifs() {
+                $.ajax({url: "{{ path('dashboard_company_read_messages') }}",
+                    success: function(result){
+                        if(result.success){
+                            location.reload();
+                        }
+                }});
+        }
+    </script>
 {% endblock %}

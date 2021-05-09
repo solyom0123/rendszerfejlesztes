@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Food;
 use App\Entity\FoodAllergens;
+use App\Entity\Menu;
 use App\Form\FoodAllergensType;
 use App\Repository\FoodAllergensRepository;
 use App\Repository\FoodRepository;
+use App\Repository\MenuRepository;
 use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +25,7 @@ class ShopListController extends AbstractController
     /**
      * @Route("/", name="shop_list_index", methods={"GET"})
      */
-    public function index(FoodRepository $foodRepository,SessionInterface $session): Response
+    public function index(FoodRepository $foodRepository,SessionInterface $session,MenuRepository $menuRepository): Response
     {
         $shopList = $session->get("shopList");
         $response = new JsonResponse();
@@ -30,11 +33,23 @@ class ShopListController extends AbstractController
 
         if($shopList) {
             foreach ($shopList as $item){
-                $food = $foodRepository->find($item);
-                array_push($array,[
-                    'id'=>$item,'name'=>$food->getName(),'price'=>$food->getPrice()
-                ]);
-
+                if($item[1]=='f') {
+                    $food = $foodRepository->find($item[0]);
+                    array_push($array, [
+                        'id' => $item[0], 'name' => $food->getName(), 'price' => $food->getPrice(), 'type'=>$item[1]
+                    ]);
+                }else{
+                    $menu = $menuRepository->find($item[0]);
+                    array_push($array, [
+                        'id' => $item[0], 'name' => $menu->getName(), 'price' => $this->calcSum($menu), 'type'=>$item[1]
+                    ]);
+                    /* @var $food Food */
+                    foreach ($menu->getFoods() as $food){
+                        array_push($array, [
+                            'id' => $item[0], 'name' => $food->getName(), 'price' => '', 'type' => ''
+                        ]);
+                    }
+                }
             }
         } else{
             $session->set("shopList",[]);
@@ -42,28 +57,35 @@ class ShopListController extends AbstractController
         $response->setData(['data' => $array]);
         return $response;
     }
-
+    private function calcSum($menu){
+        $sum = 0;
+        /* @var $food Food */
+        foreach ($menu->getFoods() as $food){
+            $sum = $sum+$food->getPrice();
+        }
+        return $sum;
+    }
     /**
-     * @Route("/{id}/add/{rest}", name="shop_list_add", methods={"GET","POST"})
+     * @Route("/{id}/add/{rest}/{type}", name="shop_list_add", methods={"GET","POST"})
      */
-    public function new(int $id,SessionInterface $session,$rest): Response
+    public function new(int $id,SessionInterface $session,$rest,$type): Response
     {
        $shopList= $session-> get("shopList");
-       $shopList[] = $id;
+       $shopList[] = [$id,$type];
          $session->set("shopList",$shopList);
         return $this->redirectToRoute('food_list_index',array('id'=>$rest));
       }
 
     /**
-     * @Route("/{id}/remove/", name="shop_list_remove", methods={"GET","POST"})
+     * @Route("/{id}/remove/{type}", name="shop_list_remove", methods={"GET","POST"})
      */
-    public function remove(int $id,SessionInterface $session): Response
+    public function remove(int $id,$type,SessionInterface $session): Response
     {
         $shopList= $session-> get("shopList");
         $shopList1 = array();
         $deleted= false;
         foreach ($shopList as $item) {
-            if ($item != $id || ($item == $id && $deleted)) {
+            if (($item[0] != $id || $item[1] != $type) || (($item[0] == $id && $item[1] == $type) && $deleted)) {
                 $shopList1[] = $item;
             } else {
                 if (!$deleted)

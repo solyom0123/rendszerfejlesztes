@@ -9,6 +9,7 @@
         {# {{ encore_entry_link_tags('app') }} #}
 
         <link href="{{ asset("/uploads/design/css/style.css") }}" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
     {% endblock %}
 
     {% block javascripts %}
@@ -22,15 +23,33 @@
                 $.get("/shoplist/", function (data, status) {
                     console.log(data);
                     var items = "";
+                    var open = false;
+
                     for (var i = 0; i < data.data.length; i++) {
-                        items += '<li><span style="padding:20px" ">' + data.data[i].name + '</span><span style="padding:20px">' + data.data[i].price + '</span><button style="padding:20px" onclick="deleteItemShoplist('+data.data[i].id+')">Eltávolítás</button></li>';
+
+                        if(data.data[i].price != '' && open) {
+                            open = false;
+                            items  += '</ul></div>';
+                        }
+                        items += '<li><span style="padding:20px" >' + data.data[i].name + '</span><span style="padding:20px">' + data.data[i].price + '</span>';
+                        if(data.data[i].price != ''){
+                            items += '<button class="btn-primary inline_prim" style="padding:20px" onclick="deleteItemShoplist('+data.data[i].id+',\''+data.data[i].type+'\')">Eltávolítás</button>';
+                        }
+                        items += '</li>';
+                        if(data.data[i].price != '' && data.data[i].type == 'm') {
+                            open = true;
+                            items  += '<div><ul>';
+                        }
+
+
                     }
+
                     item_properties.innerHTML = items;
 
                 });
             }
-            function deleteItemShoplist(id) {
-                $.get("/shoplist/"+id+"/remove", function (data, status) {
+            function deleteItemShoplist(id,type) {
+                $.get("/shoplist/"+id+"/remove/"+type, function (data, status) {
                     getShopList();
                 });
             }
@@ -66,7 +85,7 @@
                     var value = $("#user_rating_" + id).val();
                         $.ajax({
                             type: "GET",
-                            url: "/customer/customer-order/rating/" + id +"/" + value,
+                            url: "/order/customer/customer-order/rating/" + id +"/" + value,
                             success: function () {
                             }
                         });
@@ -75,7 +94,9 @@
     {% endblock %}
 </head>
 <div class="top-nav">
-    <img src="{{ asset('uploads/design/img/logo.png')}}">
+    <a id="logo_link" href="{{path('dashboard_clear',{'type': 'all'}) }}">
+        <img id="pincer_logo" src="{{ asset('uploads/design/img/logo.png')}}">
+    </a>
 {% if app.user %}
     {% block menu %}
            <a class="nav-btn" href="{{ path('app_main') }}">Home</a>
@@ -84,8 +105,9 @@
 {% else %}
         <a class="nav-btn" href="{{ path('app_login') }}">Bejelentkezés</a>
         <a class="nav-btn" href="{{ path('app_register') }}">Regisztráció</a>
-</div>
+
 {% endif %}
+</div>
 {% block body %}{% endblock %}
     {% if app.session.get("customer") %}
     {% if app.request.attributes.get('_route') != 'order_new' %}
@@ -95,7 +117,7 @@
             <ol id="shopList">
             </ol>
             {% if app.session.get("shopList") %}
-            <a href="{{ path('order_new') }}"><button>Kasszához &gt;&gt;</button></a>
+            <a href="{{ path('order_new') }}"><button  class="btn-primary">Kasszához &gt;&gt;</button></a>
             {% endif %}
         </div>
         </div>
