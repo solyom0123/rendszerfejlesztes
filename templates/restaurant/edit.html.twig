@@ -3,10 +3,12 @@
 {% block title %}Edit Restaurant{% endblock %}
 
 {% block body %}
+<div class="container-2">
     <h1>Edit Restaurant</h1>
 
     {{ include('restaurant/_form.html.twig', {'button_label': 'Update'}) }}
 
 
     {{ include('restaurant/_delete_form.html.twig') }}
+    </div>
 {% endblock %}
