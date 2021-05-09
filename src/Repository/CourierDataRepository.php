@@ -31,9 +31,7 @@ class CourierDataRepository extends ServiceEntityRepository
             ->where('c.user = :val')
             ->setParameter('val', $value)
             ->orderBy('c.id', 'ASC')
-            ->getQuery()
-
-            ;
+            ->getQuery();
 
             return $builder->getResult();
     }
