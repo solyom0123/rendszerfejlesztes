@@ -39,12 +39,6 @@ class Menu
      */
     private $restaurant;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Sale::class, inversedBy="menus")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $sale;
-
     public function __construct()
     {
         $this->menuCategory = new ArrayCollection();
@@ -126,18 +120,6 @@ class Menu
     public function setRestaurant(Restaurant $restaurant): self
     {
         $this->restaurant=$restaurant;
-
-        return $this;
-    }
-
-    public function getSale(): ?Sale
-    {
-        return $this->sale;
-    }
-
-    public function setSale(?Sale $sale): self
-    {
-        $this->sale = $sale;
 
         return $this;
     }

@@ -74,11 +74,6 @@ class Restaurant
      */
     private $name;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Sale::class, mappedBy="restaurant")
-     */
-    private $sales;
-
     public function __construct()
     {
         $this->openingTimes = new ArrayCollection();
@@ -87,7 +82,6 @@ class Restaurant
         $this->foodImages = new ArrayCollection();
         $this->food = new ArrayCollection();
         $this->menus = new ArrayCollection();
-        $this->sales = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -324,35 +318,5 @@ class Restaurant
     public function __toString()
     {
         return $this->getName();
-    }
-
-    /**
-     * @return Collection|Sale[]
-     */
-    public function getSales(): Collection
-    {
-        return $this->sales;
-    }
-
-    public function addSale(Sale $sale): self
-    {
-        if (!$this->sales->contains($sale)) {
-            $this->sales[] = $sale;
-            $sale->setRestaurant($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSale(Sale $sale): self
-    {
-        if ($this->sales->removeElement($sale)) {
-            // set the owning side to null (unless already changed)
-            if ($sale->getRestaurant() === $this) {
-                $sale->setRestaurant(null);
-            }
-        }
-
-        return $this;
     }
 }

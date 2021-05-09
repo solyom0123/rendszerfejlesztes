@@ -3,29 +3,28 @@
 {% block title %}Main index{% endblock %}
 
 {% block body %}
-    <div class="container-2">
     <h1>Main</h1>
     {% if is_granted("ROLE_OWNER") %}
         <h1>Customer</h1>
-            <a class="inner-btn" href="{{ path('app_main_set_session_customer', {'id': app.user.id}) }}">Do you wanna eat something? :D</a>
+            <a href="{{ path('app_main_set_session_customer', {'id': app.user.id}) }}">Do you wanna eat something? :D</a>
     {% endif %}
 
     {% if is_granted("ROLE_COURIER") %}
         <h1>COURIER</h1>
-            <a class="inner-btn" href="{{ path('app_main_set_session_courier', {'id': app.user.id}) }}">GET JOBS</a>
+            <a href="{{ path('app_main_set_session_courier', {'id': app.user.id}) }}">GET JOBS</a>
      {% endif %}
 
     {% if is_granted("ROLE_OWNER") %}
         <h1>OWNER</h1>
         <h2>Please choose one from your restaurant!</h2>
         {% for company in companies %}
-            <a class="inner-btn" href="{{ path('app_main_set_session_company', {'id': company.id}) }}">{{  company.name}}</a>
+            <a href="{{ path('app_main_set_session_company', {'id': company.id}) }}">{{  company.name}}</a>
             <br>
         {% else %}
             <h2>Please create your first Restaurant!</h2>
         {% endfor %}
         <br>
-        <a class="inner-btn" href="{{ path('restaurant_new') }}">Create new restaurant</a>
+        <a href="{{ path('restaurant_new') }}">Create new restaurant</a>
     {% endif %}
-    </div>
+
 {% endblock %}

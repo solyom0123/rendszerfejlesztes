@@ -3,19 +3,17 @@
 {% block title %}Customer dashboard{% endblock %}
 
 {% block body %}
-<div class='container-2'>
     <h1>Customer dashboard</h1>
-    <a class="inner-btn" href="{{ path('dashboard_clear',{'type': 'customer'})}}">I'm not hungry</a>
+    <a href="{{ path('dashboard_clear',{'type': 'customer'})}}">I'm not hungry</a>
    <table class="table">
         <tbody>
             <tr>
-                <th> <a class="inner-btn" href="{{ path('restaurant_index') }}">Éttermek Listázása</a></th>
-                <th> <a class="inner-btn" href="{{ path('customer_order_show') }}">Rendeléseim</a></th>
+                <th> <a href="{{ path('restaurant_index') }}">Éttermek Listázása</a></th>
             </tr>
         <tr>
         </tr>
         </tbody>
     </table>
-</div>
+
 
 {% endblock %}

@@ -7,8 +7,8 @@
            and uncomment the following Encore helpers to start using Symfony UX #}
     {% block stylesheets %}
         {# {{ encore_entry_link_tags('app') }} #}
+        <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
-        <link href="{{ asset("/uploads/design/css/style.css") }}" rel="stylesheet">
     {% endblock %}
 
     {% block javascripts %}
@@ -35,64 +35,33 @@
                 });
             }
 
-            function finalizeOrder(){
-
-                let submit_btn = $("#submit-order");
-
-                submit_btn.click(function(e){
-                    e.preventDefault();
-                    let form = $('#checkout-form');
-
-                    $.ajax({
-                        'method':'POST',
-                        'data':form.serialize(),
-                        'url': '{{ path('order_finalize') }}',
-                        'success':function(data){
-                            if(data.url){
-                                location.href = data.url;
-                            }
-                        }
-                    })
-
-
-                })
-
-
-            }
-
         </script>
     {% endblock %}
 </head>
-<div class="top-nav">
-    <img src="{{ asset('uploads/design/img/logo.png')}}">
+<body>
 {% if app.user %}
     {% block menu %}
-           <a class="nav-btn" href="{{ path('app_main') }}">Home</a>
-            <a class="nav-btn" href="{{ path('app_logout') }}">Logout</a>
+        <a href="{{ path('app_main') }}">Home</a>
+        <a href="{{ path('app_logout') }}">Logout</a>
+
     {% endblock %}
 {% else %}
-        <a class="nav-btn" href="{{ path('app_login') }}">Bejelentkezés</a>
-        <a class="nav-btn" href="{{ path('app_register') }}">Regisztráció</a>
-</div>
+    <a href="{{ path('app_login') }}">Bejelentkezés</a>
+    <a href="{{ path('app_register') }}">Regisztráció</a>
 {% endif %}
 {% block body %}{% endblock %}
     {% if app.session.get("customer") %}
-    {% if app.request.attributes.get('_route') != 'order_new' %}
-        <div class="container-2" id="kosar-container">
         <div>
             <h3>Kosár tartalma</h3>
             <ol id="shopList">
             </ol>
             {% if app.session.get("shopList") %}
-            <a href="{{ path('order_new') }}"><button>Kasszához &gt;&gt;</button></a>
+            <a href="{{ path('order_new') }}"><button>Rendelés leadása</button></a>
             {% endif %}
         </div>
-        </div>
-
         <script>
             getShopList()
         </script>
-    {% endif %}
 
     {% endif %}
 </body>

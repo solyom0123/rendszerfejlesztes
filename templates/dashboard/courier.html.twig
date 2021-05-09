@@ -3,14 +3,12 @@
 {% block title %}Courier dashboard{% endblock %}
 
 {% block body %}
-    <div class="container-2">
     <h1>Courier dashboard</h1>
-    <a class="inner-btn" href="{{ path('dashboard_clear',{'type': 'courier'})}}"> I don't wanna work.</a>
+    <a href="{{ path('dashboard_clear',{'type': 'courier'})}}"> I don't wanna work.</a>
     <br>
     {% if courierData %}
-        <a class="inner-btn" href="{{ path('courier_data_edit', {'id': app.user.id}) }}">edit</a>
+        <a href="{{ path('courier_data_edit', {'id': app.user.id}) }}">edit</a>
     {% else %}
-        <a class="inner-btn" href="{{ path('courier_data_new') }}">Új Futár</a>
+        <a href="{{ path('courier_data_new') }}">Új Futár</a>
     {% endif %}
-    </div>
 {% endblock %}

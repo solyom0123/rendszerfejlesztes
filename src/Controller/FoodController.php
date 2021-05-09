@@ -43,10 +43,10 @@ class FoodController extends AbstractController
         $food->setRestaurant($restaurantData);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($food);
             $entityManager->flush();
+
             return $this->redirectToRoute('food_index');
         }
 

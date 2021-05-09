@@ -52,31 +52,6 @@ class Suborder
      */
     private $totalPrice;
 
-    /**
-     * @ORM\Column(type="time", nullable=true)
-     */
-    private $waitingTime;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $name;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $deliveryMethod;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $paymentMethod;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $address;
-
     public function __construct()
     {
         $this->foods = new ArrayCollection();
@@ -170,65 +145,5 @@ class Suborder
     public function __toString()
     {
         return "".$this->getId();
-    }
-
-    public function getWaitingTime(): ?\DateTimeInterface
-    {
-        return $this->waitingTime;
-    }
-
-    public function setWaitingTime(?\DateTimeInterface $waitingTime): self
-    {
-        $this->waitingTime = $waitingTime;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(?string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDeliveryMethod(): ?string
-    {
-        return $this->deliveryMethod;
-    }
-
-    public function setDeliveryMethod(?string $deliveryMethod): self
-    {
-        $this->deliveryMethod = $deliveryMethod;
-
-        return $this;
-    }
-
-    public function getPaymentMethod(): ?string
-    {
-        return $this->paymentMethod;
-    }
-
-    public function setPaymentMethod(?string $paymentMethod): self
-    {
-        $this->paymentMethod = $paymentMethod;
-
-        return $this;
-    }
-
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function setAddress(?string $address): self
-    {
-        $this->address = $address;
-
-        return $this;
     }
 }
