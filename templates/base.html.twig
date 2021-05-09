@@ -85,8 +85,11 @@
                     var value = $("#user_rating_" + id).val();
                         $.ajax({
                             type: "GET",
-                            url: "/order/customer/customer-order/rating/" + id +"/" + value,
-                            success: function () {
+                            url: "/order/customer/customer-order/rating/" +id + "/" + value,
+                            success: function (data) {
+                                if(data.success) {
+                                    location.reload();
+                                }
                             }
                         });
             }

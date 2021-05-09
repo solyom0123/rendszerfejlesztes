@@ -12,7 +12,6 @@
             <th>Id</th>
             <th>Status</th>
             <th>Courier email</th>
-            <th>Courier name</th>
             <th>Foods</th>
             <th>Order date</th>
             <th>Total income</th>
@@ -25,7 +24,6 @@
                 <td>{{ sub.id }}</td>
                 <td>{{ sub.status }}</td>
                 <td>{{ sub.courier?sub.courier.email:'' }}</td>
-                <td>{{ sub.courier?sub.courier.name:'' }}</td>
                 <td>
                     <table class="table">
                         <thead>
@@ -77,7 +75,7 @@
                 {# </td> #}
                 {# {% endif %} #}
                 <td>
-                    <input id="user_rating_{{ sub.id }}" type="number" min="1" max="5" onchange="userOrderRating({{ sub.id }})">
+                    <input id="user_rating_{{ sub.id }}" type="number" min="1" max="5" {% if sub.userOrderRating is not null%}disabled{% endif%} onchange="userOrderRating({{ sub.id }})" value="{{ sub.userOrderRating }}">
                 </td>
             </tr>
         {% else %}

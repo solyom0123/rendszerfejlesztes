@@ -339,8 +339,8 @@ class OrderController extends AbstractController
         $suborder->setUserOrderRating($rating);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
-        return $this->render('dashboard/customer_orders.html.twig'
-        );
+
+        return new JsonResponse(['success'=>true]);
     }
 
 }
