@@ -82,9 +82,15 @@ class Suborder
      */
     private $userOrderRating;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Menu::class)
+     */
+    private $menus;
+
     public function __construct()
     {
         $this->foods = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -245,6 +251,28 @@ class Suborder
     public function setUserOrderRating(?int $userOrderRating): self
     {
         $this->userOrderRating = $userOrderRating;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Menu[]
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+            $this->menus[] = $menu;
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        $this->menus->removeElement($menu);
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Food;
+use App\Entity\Menu;
 use App\Entity\Order;
 use App\Entity\Restaurant;
 use App\Entity\Suborder;
@@ -11,6 +12,7 @@ use App\Enums\OrderStatus;
 use App\Form\RestaurantType;
 use App\Form\SuborderType;
 use App\Repository\FoodRepository;
+use App\Repository\MenuRepository;
 use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,7 +53,7 @@ class OrderController extends AbstractController
     /**
      * @Route("/finalize", name="order_finalize", methods={"GET","POST"})
      */
-    public function finalizeOrder(Request $request, SessionInterface $session, FoodRepository $foodRepository)
+    public function finalizeOrder(Request $request, SessionInterface $session, FoodRepository $foodRepository, MenuRepository $menuRepository)
     {
         $data = $request->request;
 
@@ -70,11 +72,19 @@ class OrderController extends AbstractController
             $delivery_mode = $data->get('delivery_mode_' . ($i + 1));
             $payment_mode = $data->get('payment_mode_' . ($i + 1));
             $address = $data->get('address_' . ($i + 1));
-
+            $menu = null;
+            $food = null;
             foreach ($shopList as $item) {
-                $food = $foodRepository->findOneBy(['id' => $item]);
-                if ($food->getRestaurant()->getId() == $restaurant_id) {
-                    $orderArr[$restaurant_id]['foods'][] = $food;
+                if ($item[1] == 'f') {
+                    $food = $foodRepository->findOneBy(['id' => $item[0]]);
+                    if ($food->getRestaurant()->getId() == $restaurant_id) {
+                        $orderArr[$restaurant_id]['foods'][] = $food;
+                    }
+                } else {
+                    $menu = $menuRepository->findOneBy(['id' => $item[0]]);
+                    if ($menu->getRestaurant()->getId() == $restaurant_id) {
+                        $orderArr[$restaurant_id]['menus'][] = $menu;
+                    }
                 }
             }
 
@@ -95,30 +105,52 @@ class OrderController extends AbstractController
             $order->setDate(new \DateTime());
 
             foreach ($shopList as $item) {
-                $food = $foodRepository->find($item);
-                $order->addFood($food);
+                if ($item[1] == 'f') {
+                    $food = $foodRepository->find($item[0]);
+                    $order->addFood($food);
+                } else {
+                    $menu = $menuRepository->find($item[0]);
+                    $order->addMenu($menu);
+                }
             }
             $sum = 0;
             /* @var $item Food */
             foreach ($order->getFoods() as $item) {
                 $sum += $item->getPrice();
             }
+            foreach ($order->getMenus() as $item) {
+                foreach ($item->getFoods() as $f) {
+                    $sum += $f->getPrice();
+                }
+            }
             $order->setTotal($sum);
             /**end main order**/
 
             /**start suborders**/
-
+            $suborders = array();
             foreach ($orderArr as $item) {
                 $suborder = new Suborder();
 
                 $suborder_data = $item['data'];
 
                 $sum = 0;
-                /* @var $food Food */
-                foreach ($item["foods"] as $food) {
-                    $suborder->addFood($food);
-                    $suborder->setRestaurant($food->getRestaurant());
-                    $sum += $food->getPrice();
+                if (isset($item["foods"])) {
+                    /* @var $food Food */
+                    foreach ($item["foods"] as $food) {
+                        $suborder->addFood($food);
+                        $suborder->setRestaurant($food->getRestaurant());
+                        $sum += $food->getPrice();
+                    }
+                }
+                if (isset($item["menus"])) {
+                    /* @var $menu Menu */
+                    foreach ($item["menus"] as $menu) {
+                        $suborder->addMenu($menu);
+                        $suborder->setRestaurant($menu->getRestaurant());
+                        foreach ($menu->getFoods() as $f) {
+                            $sum += $f->getPrice();
+                        }
+                    }
                 }
                 $suborder->setParentOrder($order);
                 $order->addSuborder($suborder);
@@ -128,6 +160,7 @@ class OrderController extends AbstractController
                 $suborder->setDeliveryMethod($suborder_data['delivery_mode']);
                 $suborder->setPaymentMethod($suborder_data['payment_mode']);
                 $suborder->setStatus(OrderStatus::$ORDERED);
+                $suborders[] = $suborder;
                 $entityManager->persist($suborder);
                 $entityManager->flush();
             }
@@ -142,26 +175,37 @@ class OrderController extends AbstractController
     /**
      * @Route("/new", name="order_new", methods={"GET","POST"})
      */
-    public function new(SessionInterface $session, FoodRepository $foodRepository, Security $security): Response
+    public function new(SessionInterface $session, FoodRepository $foodRepository, MenuRepository $menuRepository, Security $security): Response
     {
         $shopList = $session->get("shopList");
 
         $formDataArr = [];
 
         if ($shopList) {
-
             foreach ($shopList as $sl) {
+                 if ($sl[1] == 'f') {
+                    $food = $foodRepository->findOneBy(['id' => $sl[0]]);
+                } else {
+                    $food = $menuRepository->find($sl[0]);
 
-                $food = $foodRepository->findOneBy(['id' => $sl]);
+                }
                 if (!$food) {
                     continue;
                 }
 
                 $restaurant = $food->getRestaurant();
+                $subfoods = [];
 
+                if ($sl[1] == 'm') {
+                    /* @var $food Menu */
+                    $subfoods = $food->getFoods();
+
+                }
                 $elem = [
                     'food' => $food,
-                    'amount' => array_count_values($shopList)[$sl],
+                    'amount' => $this->arrayCount($shopList, $sl),
+                    'type' => $sl[1],
+                    'subfoods' => $subfoods
                 ];
 
                 if (!isset($formDataArr[$restaurant->getName() . '_' . $restaurant->getId()])) {
@@ -171,11 +215,15 @@ class OrderController extends AbstractController
                 if (!in_array($elem, $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()])) {
                     $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()][] = $elem;
                 }
+                if ($sl[1] == 'f') {
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $food->getPrice();
+                } else {
 
-                $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $food->getPrice();
+                    /* @var $food Menu */
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $this->sum($food);
+                }
 
             }
-
             return $this->render('dashboard/checkout.html.twig', [
                 'data' => $formDataArr
             ]);
@@ -184,6 +232,26 @@ class OrderController extends AbstractController
         }
         return $this->redirectToRoute('app_main');
 
+    }
+
+    private function arrayCount($shoplist, $sl)
+    {
+        $count = 0;
+        foreach ($shoplist as $item) {
+            if ($item[0] == $sl[0] && $item[1] == $sl[1]) {
+                $count = $count + 1;
+            }
+        }
+        return $count;
+    }
+
+    private function sum(Menu $menu)
+    {
+        $count = 0;
+        foreach ($menu->getFoods() as $item) {
+            $count += $item->getPrice();
+        }
+        return $count;
     }
 
     /**
@@ -266,7 +334,8 @@ class OrderController extends AbstractController
     /**
      * @Route("/customer/customer-order/rating/{id}/{rating}", name="customer_rating")
      */
-    public function userOrderRating(Suborder $suborder, $rating){
+    public function userOrderRating(Suborder $suborder, $rating)
+    {
         $suborder->setUserOrderRating($rating);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();

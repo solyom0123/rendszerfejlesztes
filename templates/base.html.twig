@@ -23,15 +23,33 @@
                 $.get("/shoplist/", function (data, status) {
                     console.log(data);
                     var items = "";
+                    var open = false;
+
                     for (var i = 0; i < data.data.length; i++) {
-                        items += '<li><span style="padding:20px" ">' + data.data[i].name + '</span><span style="padding:20px">' + data.data[i].price + '</span><button class="btn-primary inline_prim" style="padding:20px" onclick="deleteItemShoplist('+data.data[i].id+')">Eltávolítás</button></li>';
+
+                        if(data.data[i].price != '' && open) {
+                            open = false;
+                            items  += '</ul></div>';
+                        }
+                        items += '<li><span style="padding:20px" >' + data.data[i].name + '</span><span style="padding:20px">' + data.data[i].price + '</span>';
+                        if(data.data[i].price != ''){
+                            items += '<button class="btn-primary inline_prim" style="padding:20px" onclick="deleteItemShoplist('+data.data[i].id+',\''+data.data[i].type+'\')">Eltávolítás</button>';
+                        }
+                        items += '</li>';
+                        if(data.data[i].price != '' && data.data[i].type == 'm') {
+                            open = true;
+                            items  += '<div><ul>';
+                        }
+
+
                     }
+
                     item_properties.innerHTML = items;
 
                 });
             }
-            function deleteItemShoplist(id) {
-                $.get("/shoplist/"+id+"/remove", function (data, status) {
+            function deleteItemShoplist(id,type) {
+                $.get("/shoplist/"+id+"/remove/"+type, function (data, status) {
                     getShopList();
                 });
             }
