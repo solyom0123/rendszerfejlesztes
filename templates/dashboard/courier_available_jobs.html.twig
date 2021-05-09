@@ -46,6 +46,7 @@
                     </td>
                     <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
                     <td>{{ sub.totalPrice }}</td>
+                    <td><a class="inner-btn" href="{{ path('courier_take_job',{so:sub.id}) }}">Felveszem</a></td>
                 </tr>
             {% else %}
                 <tr>
@@ -54,5 +55,7 @@
             {% endfor %}
             </tbody>
         </table>
+
+        <a class="inner-btn" href="{{ path('dashboard_courier') }}">&lt;&lt; Vissza</a>
     </div>
 {% endblock %}

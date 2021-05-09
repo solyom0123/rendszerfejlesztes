@@ -32,7 +32,7 @@ class Suborder
     private $courier;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=50)
      */
     private $status;
 
