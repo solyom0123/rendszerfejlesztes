@@ -23,8 +23,8 @@
         </tr>
         </thead>
         <tbody>
-        {% for men in menu %}
-            {% if (not app.session.get('company')) %}
+        {% if (not app.session.get('company')) %}
+            {% for men in menu %}
                 <tr style="background-color: #ededed">
                     <td colspan="4">{{ men.name }}</td>
                     <td colspan="2">
@@ -73,10 +73,11 @@
                 {% else %}
 
                 {% endfor %}
-            {% endif %}
         {% else %}
 
         {% endfor %}
+
+        {% endif %}
 
         {% for food in food %}
             {% if ((not app.session.get('company')) and (date()<=food.toDate or not food.toDate)) or app.session.get('company') %}
