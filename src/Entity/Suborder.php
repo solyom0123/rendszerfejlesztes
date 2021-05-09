@@ -77,6 +77,11 @@ class Suborder
      */
     private $address;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $userOrderRating;
+
     public function __construct()
     {
         $this->foods = new ArrayCollection();
@@ -228,6 +233,18 @@ class Suborder
     public function setAddress(?string $address): self
     {
         $this->address = $address;
+
+        return $this;
+    }
+
+    public function getUserOrderRating(): ?int
+    {
+        return $this->userOrderRating;
+    }
+
+    public function setUserOrderRating(?int $userOrderRating): self
+    {
+        $this->userOrderRating = $userOrderRating;
 
         return $this;
     }
