@@ -3,9 +3,41 @@
 {% block title %}Order index{% endblock %}
 
 {% block body %}
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.0.3/js/dataTables.dateTime.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/datetime/1.0.3/css/dataTables.dateTime.min.css">
+
+
+    <style>
+        .sort-column {
+            cursor: pointer;
+        }
+        #torles{
+            padding-left: 15px;
+            cursor: pointer;
+        }
+    </style>
+
     <h1>Order index</h1>
 
-    <table class="table">
+    <table border="0" cellspacing="5" cellpadding="5">
+        <thead></thead>
+        <tbody><tr>
+            <td>Minimum date:</td>
+            <td><input type="text" id="min" name="min"></td>
+        </tr>
+        <tr>
+            <td>Maximum date:</td>
+            <td><input type="text" id="max" name="max"></td>
+        </tr>
+        </tbody></table>
+
+    <table class="table" id="example" class="display nowrap" style="width:100%">
         <thead>
         <tr>
             <th>Id</th>
@@ -14,14 +46,16 @@
             <th>Status</th>
             <th>Courier email</th>
             <th>Foods</th>
-            <th>Order date</th>
+            <th>WaitingTime</th>
+            <th class="sort-column" data-sort-order="null">Order date</th>
             <th>Total income</th>
             <th>actions</th>
+            <th></th>
         </tr>
         </thead>
-        <tbody>
+        <tbody >
         {% for sub in suborder %}
-            <tr>
+            <tr id="ez">
                 <td>{{ sub.id }}</td>
                 <td>{{ sub.parentOrder.customer.username }}</td>
                 <td>{{ sub.parentOrder.customer.email }}</td>
@@ -66,18 +100,12 @@
                     </table>
 
                 </td>
-                <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td >{{ sub.waitingTime ? sub.waitingTime|date('H:i:s') : sub.restaurant.waitingTime|date('H:i:s') }}</td>
+                <td >{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>{{ sub.totalPrice }}</td>
-                {# {% if app.session.get('company') %} #}
-                {# <td> #}
-                {# <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a> #}
-                {# <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a> #}
-                {# </td> #}
-                {# {% else %} #}
-                {# <td> #}
-                {# <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a> #}
-                {# </td> #}
-                {# {% endif %} #}
+                <td>
+                    {{sub.status}}</td>
+                <td><a href="{{ path('order_edit', {'id': sub.id}) }}">edit</a></td>
             </tr>
         {% else %}
             <tr>
@@ -86,6 +114,45 @@
         {% endfor %}
         </tbody>
     </table>
+<script>
+        var minDate, maxDate;
 
+        $.fn.dataTable.ext.search.push(
+        function( settings, data, dataIndex ) {
+        var min = minDate.val();
+        var max = maxDate.val();
+        var date = new Date( data[7] );
+
+
+        if (
+        ( min === null && max === null ) ||
+        ( min === null && date <= max ) ||
+        ( min <= date   && max === null ) ||
+        ( min <= date   && date <= max )
+        ) {
+        return true;
+    }
+        return false;
+    }
+        );
+
+        $("#example").ready(function() {
+        // Create date inputs
+        minDate = new DateTime($('#min'), {
+            format: 'YYYY Do MMMM'
+        });
+            console.log(minDate);
+        maxDate = new DateTime($('#max'), {
+        format: 'YYYY Do MMMM'
+    });
+        // DataTables initialisation
+        var table = $('#example').DataTable();
+
+        // Refilter the table
+        $('#min, #max').on('change', function () {
+        table.draw();
+    });
+    });
+</script>
 
 {% endblock %}

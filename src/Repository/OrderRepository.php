@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use App\Entity\Suborder;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
@@ -37,6 +38,15 @@ class OrderRepository extends ServiceEntityRepository
         $statement->execute();
         $results = $statement->fetchColumn();
         return $results;
+    }
+    public function findByUser(User $user){
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.parentOrder','o')
+            ->where('o.customer = :customer')
+            ->orderBy('c.id')
+            ->setParameter('customer',$user)
+            ->getQuery()
+            ->getResult();
     }
     // /**
     //  * @return Order[] Returns an array of Order objects

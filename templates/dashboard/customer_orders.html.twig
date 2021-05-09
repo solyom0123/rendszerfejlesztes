@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My orders{% endblock %}
+
+{% block body %}
+    <div class="container-2">
+    <h1>Rendeléseim</h1>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Status</th>
+            <th>Courier email</th>
+            <th>Courier name</th>
+            <th>Foods</th>
+            <th>Order date</th>
+            <th>Total income</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sub in suborder %}
+            <tr>
+                <td>{{ sub.id }}</td>
+                <td>{{ sub.status }}</td>
+                <td>{{ sub.courier?sub.courier.email:'' }}</td>
+                <td>{{ sub.courier?sub.courier.name:'' }}</td>
+                <td>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>kep</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>FromDate</th>
+                            <th>ToDate</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for food in sub.foods %}
+                            <tr>
+                                <td>{{ food.id }}</td>
+                                <td>
+                                    {% for image in food.foodImages %}
+                                        <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the
+                                            picture!</a>
+                                        <br>
+                                    {% endfor %}
+                                </td>
+                                <td>{{ food.name }}</td>
+                                <td>{{ food.description }}</td>
+                                <td>{{ food.price }}</td>
+                                <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                            </tr>
+                        {% else %}
+
+                        {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </td>
+                <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ sub.totalPrice }}</td>
+                {# {% if app.session.get('company') %} #}
+                {# <td> #}
+                {# <a href="{{ path('restaurant_show', {'id': restaurant.id}) }}">show</a> #}
+                {# <a href="{{ path('restaurant_edit', {'id': restaurant.id}) }}">edit</a> #}
+                {# </td> #}
+                {# {% else %} #}
+                {# <td> #}
+                {# <a href="{{ path('food_list_index', {'id': restaurant.id}) }}">Ételek Listázása</a> #}
+                {# </td> #}
+                {# {% endif %} #}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+{% endblock %}
