@@ -12,6 +12,7 @@ use App\Repository\RestaurantRepository;
 use App\Repository\StudentRepository;
 use App\Repository\TeacherRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,11 +41,11 @@ class DashboardController extends AbstractController
 
         $restaurant = $rr->findOneBy(['id' => $companyId]);
 
-        $notifs = $restaurant->getNotifications();
-
-        $unreadNotifs = count($notifs->filter(function ($a){
+        $notifs = $restaurant->getNotifications()->filter(function ($a){
             return $a->getSeen() == false;
-        }));
+        });
+
+        $unreadNotifs = count($notifs);
 
         return $this->render('dashboard/company.html.twig', [
                 'company' => $this->session->get("company"),
@@ -52,6 +53,31 @@ class DashboardController extends AbstractController
                 'unreadNotifs'=>$unreadNotifs
             ]
         );
+    }
+
+    /**
+     * @Route("/dashboard/company/read-messages", name="dashboard_company_read_messages", methods={"GET"})
+     */
+    public function readMessages(SessionInterface $session, RestaurantRepository $rr){
+        $companyId = $session->get('company');
+
+        $restaurant = $rr->findOneBy(['id' => $companyId]);
+
+        $notifs = $restaurant->getNotifications()->filter(function ($a){
+            return $a->getSeen() == false;
+        });
+
+        $em = $this->getDoctrine()->getManager();
+
+        foreach($notifs as $notif){
+            $notif->setSeen(true);
+
+            $em->persist($notif);
+
+            $em->flush();
+        }
+
+        return new JsonResponse(['success'=>true]);
     }
 
     /**
