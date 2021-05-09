@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\CourierData;
+use App\Entity\Suborder;
 use App\Form\CourierDataType;
 use App\Repository\CourierDataRepository;
 use App\Repository\OrderRepository;
@@ -121,7 +122,6 @@ class CourierDataController extends AbstractController
         }
 
         $suborder = $or->findAssignedOrders($courier->getUser());
-
         foreach ($suborder as $sub)
             foreach ($sub->getFoods() as $food) {
                 $count = $or->countByFoodAndSuborder($food->getId(), $sub->getId());
@@ -131,11 +131,40 @@ class CourierDataController extends AbstractController
                     }
                 }
             }
+        $isempty=false;
+
+        $i=0;
+        /* @var  $sub Suborder */
+        foreach ($suborder as $sub){
+            if($sub->getDisplayorder()) {
+                $isempty=true;
+                $i++;
+            }
+            if(!$isempty){
+                $isempty=false;
+            }
+        }
+        $isempty=false;
+        foreach ($suborder as $sub){
+            if($sub->getDisplayorder()) {
+                $isempty=true;
+            }
+            if(!$isempty){
+                //$sub->setDisplayorder($i);
+                $i++;
+                $isempty=false;
+            }
+        }
+        /* @var  $suborder Suborder */
+        //usort($suborder, function($b, $a) { return $b->getDisplayorder() - $a->getDisplayorder(); });
+
+
 
         return $this->render('dashboard/courier_assigned_jobs.html.twig',[
             'suborder'=>$suborder
         ]);
     }
+
 
     /**
      * @Route("/jobs/available", name="courier_available_jobs", methods={"GET", "POST"})
@@ -193,4 +222,6 @@ class CourierDataController extends AbstractController
 
         return $this->redirectToRoute('courier_data_index');
     }
+
+
 }

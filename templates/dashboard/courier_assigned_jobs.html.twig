@@ -3,11 +3,69 @@
 {% block title %}Szabad rendelések{% endblock %}
 
 {% block body %}
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/themes/smoothness/jquery-ui.css"/>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+        $array=[];
+        $(function () {
+            $("#tblLocations").sortable({
+                items: 'tr:not(tr:first-child)',
+                cursor: 'pointer',
+                axis: 'y',
+                dropOnEmpty: false,
+                start: function (e, ui) {
+                    ui.item.addClass("selected");
+                },
+                stop: function (e, ui) {
+                    ui.item.removeClass("selected");
+                },
+                receive: function (e, ui) {
+                    $(this).find("tbody").append(ui.item);
+                }
+            });
+        });
+        $(document).ready(function (){
+            $(".displayorderc").each(function() {
+               $array.push(this.innerText)
+            });
+            console.log($array);
+        });
+
+        function feltolt(){
+            $array2=[];
+            $(".displayorderc").each(function() {
+                $array2.push(this.innerText)
+            });
+            console.log($array2);
+
+            $.ajax({
+                url:        "{{ path('courier_setorderjobs') }}",
+                type:       'POST',
+                data:{
+                    id: 1,
+                    array1: $array,
+                    array2: $array2,
+                },
+                async:      true,
+
+                success: function(data, status) {
+                    location.href=data.url;
+                },
+                error : function(xhr, textStatus, errorThrown) {
+                    alert('Ajax request failed.');
+                }
+            });
+
+        }
+    </script>
+
+
+
     <div class="container-2">
         <h1>Felvett/hozzárendelt rendelések</h1>
 
-        <table class="table">
-            <thead>
+        <table id="tblLocations" cellpadding="0" cellspacing="0" border="1">
             <tr>
                 <th>Customer name</th>
                 <th>Address</th>
@@ -16,21 +74,20 @@
                 <th>Total income</th>
                 <th>Actions</th>
             </tr>
-            </thead>
-            <tbody>
+
             {% for sub in suborder %}
                 <tr>
-                    <td>{{ sub.name?sub.name:'-'}}</td>
+                    <td>{{ sub.id}}</td>
                     <td>{{ sub.address?sub.address:'-' }}</td>
                     <td>
-                        <table class="table">
+                        <table >
                             <thead>
                             <tr>
                                 <th>Name</th>
                                 <th>Price</th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="row_position">
                             {% for food in sub.foods %}
                                 <tr>
                                     <td>{{ food.name }}</td>
@@ -46,13 +103,16 @@
                     </td>
                     <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
                     <td>{{ sub.totalPrice }}</td>
+                    <td><span class="displayorderc">{{ sub.displayorder}}</span></td>
                 </tr>
             {% else %}
                 <tr>
                     <td colspan="5">no records found</td>
                 </tr>
             {% endfor %}
-            </tbody>
+
         </table>
+        <button onclick="feltolt()">Update Preference</button>
+
     </div>
 {% endblock %}

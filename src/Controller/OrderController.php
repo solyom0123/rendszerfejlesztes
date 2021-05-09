@@ -13,6 +13,7 @@ use App\Form\SuborderType;
 use App\Repository\FoodRepository;
 use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
+use App\Repository\SuborderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -263,15 +264,62 @@ class OrderController extends AbstractController
         ]);
     }
 
+
     /**
      * @Route("/customer/customer-order/rating/{id}/{rating}", name="customer_rating")
      */
-    public function userOrderRating(Suborder $suborder, $rating){
+    public function userOrderRating(Suborder $suborder, $rating)
+    {
         $suborder->setUserOrderRating($rating);
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->flush();
         return $this->render('dashboard/customer_orders.html.twig'
         );
+    }
+
+    /**
+     * @Route("/courier/set-order-jobs", name="courier_setorderjobs")
+     */
+    public function courierSetOrderJobs(Request $request, SuborderRepository $suborder): Response
+    {
+        $id = $request->request->get('id');
+        $adat = $request->request->get('array1');
+        $adat2 = $request->request->get('array2');
+        $em = $this->getDoctrine()->getManager();
+        /* for($i=0;$i<sizeof($adat);$i++) {
+             $order=$suborder->findOneBy(['courier'=>$id,'displayorder'=>$adat[$i]]);
+             if($order){
+                 $order->setDisplayorder($adat2[$i]);
+
+             }
+         $em->persist($order);
+         $em->flush();
+         }*/
+        $array = array();
+
+        foreach ($adat2 as $k => $ad) {
+            $order = $suborder->findOneBy(['courier' => $id, 'displayorder' => $ad]);
+
+            if ($order) {
+                $order->setDisplayorder($adat[$k]);
+
+                $array[] = $order;
+            }
+        }
+
+        foreach ($array as $a) {
+            //$em->persist($a);
+
+            $em->flush();
+        }
+
+        /*dump($array);
+        dump($adat);
+        dump($adat2);
+        dump($adat[$k]);
+        dd($adat2[$k]);*/
+
+        return new JsonResponse(['url' => $this->generateUrl("courier_assigned_jobs")]);
     }
 
 }
