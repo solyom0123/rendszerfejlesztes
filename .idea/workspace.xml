@@ -35,7 +35,10 @@
   <component name="ChangeListManager">
     <list default="true" id="1c63c0d3-e453-4413-9819-21053b67bb6f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/templates/restaurant/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/restaurant/index.html.twig" afterDir="false" />
+=======
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,7 +220,11 @@
       <workItem from="1616831661387" duration="455000" />
       <workItem from="1619902206500" duration="214000" />
       <workItem from="1619902540405" duration="385000" />
+<<<<<<< Updated upstream
       <workItem from="1620545686479" duration="8078000" />
+=======
+      <workItem from="1620545221094" duration="6535000" />
+>>>>>>> Stashed changes
     </task>
     <servers />
   </component>
