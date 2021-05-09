@@ -50,7 +50,7 @@
                         </table>
                     </td>
                     <td>
-                        <a href="{{ path('shop_list_add', {'id': men.id,'rest': men.restaurant.id}) }}">Kosárhoz
+                        <a href="{{ path('shop_list_add', {'id': men.id,'rest': men.restaurant.id,'type':'m'}) }}">Kosárhoz
                         adás</a>
                      </td>
                 </tr>
@@ -101,7 +101,7 @@
                         </td>
                     {% else %}
                         <td>
-                            <a href="{{ path('shop_list_add', {'id': food.id,'rest': food.restaurant.id}) }}">Kosárhoz
+                            <a href="{{ path('shop_list_add', {'id': food.id,'rest': food.restaurant.id,'type':'f'}) }}">Kosárhoz
                                 adás</a>
                         </td>
                     {% endif %}

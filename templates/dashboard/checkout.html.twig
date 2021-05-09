@@ -39,7 +39,8 @@
             {% for d2 in d %}
                 {% if d2 is iterable %}
                 {% for i in range(0,d2['amount']-1) %}
-                        <tr>
+                    {% if d2['type'] == 'f' %}
+                    <tr style="background-color: #ededed">
                             <td>
                                 {{ d2['food'].name }}
                             </td>
@@ -47,6 +48,31 @@
                                 {{ d2['food'].price }}
                             </td>
                         </tr>
+                    {% else %}
+                        <tr style="background-color: #ededed">
+                            <td>
+                                {{ d2['food'].name }}
+                            </td>
+                            <td>
+                                {% set sum = 0 %}
+                                {% for foo in  d2['subfoods'] %}
+                                    {% set sum = sum + foo.price %}
+                                {% else %}
+
+                                {% endfor %}
+                                {{ sum }}
+                            </td>
+                        </tr>
+                        {% for food in d2['subfoods'] %}
+                            <tr >
+                                <td>{{ food.name }}</td>
+                                <td></td>
+
+                            </tr>
+                        {% else %}
+
+                        {% endfor %}
+                    {% endif %}
                     {% endfor %}
                 {% endif %}
             {% endfor %}

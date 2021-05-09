@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Food;
+use App\Entity\Menu;
 use App\Entity\Order;
 use App\Entity\Restaurant;
 use App\Entity\Suborder;
@@ -11,6 +12,7 @@ use App\Enums\OrderStatus;
 use App\Form\RestaurantType;
 use App\Form\SuborderType;
 use App\Repository\FoodRepository;
+use App\Repository\MenuRepository;
 use App\Repository\OrderRepository;
 use App\Repository\RestaurantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -142,7 +144,7 @@ class OrderController extends AbstractController
     /**
      * @Route("/new", name="order_new", methods={"GET","POST"})
      */
-    public function new(SessionInterface $session, FoodRepository $foodRepository, Security $security): Response
+    public function new(SessionInterface $session, FoodRepository $foodRepository,MenuRepository $menuRepository,Security $security): Response
     {
         $shopList = $session->get("shopList");
 
@@ -152,16 +154,29 @@ class OrderController extends AbstractController
 
             foreach ($shopList as $sl) {
 
-                $food = $foodRepository->findOneBy(['id' => $sl]);
+                if($sl[1]=='f'){
+                    $food = $foodRepository->findOneBy(['id' => $sl[0]]);
+                }else{
+                    $food = $menuRepository->find($sl[0]);
+
+                }
                 if (!$food) {
                     continue;
                 }
 
                 $restaurant = $food->getRestaurant();
+                $subfoods = [];
 
+                if($sl[1]== 'm'){
+                   /* @var $food Menu*/
+                   $subfoods = $food->getFoods();
+
+                }
                 $elem = [
                     'food' => $food,
-                    'amount' => array_count_values($shopList)[$sl],
+                    'amount' => $this->arrayCount($shopList,$sl),
+                    'type' => $sl[1],
+                    'subfoods' => $subfoods
                 ];
 
                 if (!isset($formDataArr[$restaurant->getName() . '_' . $restaurant->getId()])) {
@@ -171,8 +186,13 @@ class OrderController extends AbstractController
                 if (!in_array($elem, $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()])) {
                     $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()][] = $elem;
                 }
+                if($sl[1]== 'f'){
+                    /* @var $food Menu*/
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $food->getPrice();
+                }else{
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $this->sum($food);
+                }
 
-                $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $food->getPrice();
 
             }
 
@@ -186,6 +206,22 @@ class OrderController extends AbstractController
 
     }
 
+    private function arrayCount($shoplist,$sl){
+        $count = 0;
+        foreach ($shoplist as $item){
+            if($item[0] =$sl[0]&& $item[1] =$sl[1]){
+                $count = $count +1;
+            }
+        }
+        return $count;
+    }
+    private function sum(Menu $menu){
+        $count = 0;
+        foreach ($menu->getFoods() as $item){
+                $count = $item->getPrice();
+        }
+        return $count;
+    }
     /**
      * @Route("/{id}", name="order_show", methods={"GET"})
      */
