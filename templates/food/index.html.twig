@@ -34,7 +34,20 @@
                             {% else %}
 
                             {% endfor %}
-                        price:{{ sum }}
+                        {% set saleSum = sum %}
+                        {% for sale in men.yes %}
+                            {% if (date()<=sale.end) %}
+                                {%  set saleSum = saleSum -(sum * (sale.percent/100)) %}<br>
+                                - {{ sale.percent }} % <br>
+                            {% endif %}
+                        {% else %}
+                            price:{{ sum }}
+                        {% endfor %}
+                        {% if saleSum != sum %}
+                            <p style="text-decoration: black line-through">{{ sum }}</p><br>
+                            price:{{ saleSum }}
+                        {% endif %}
+
                     </td>
                     <td>
                         <table class="table">
@@ -65,7 +78,9 @@
                     </td>
                     <td>{{ food.name }}</td>
                     <td>{{ food.description }}</td>
-                    <td>{{ food.price }}</td>
+                    <td>
+                        {{ food.price }}
+                    </td>
                     <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
                     <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
                     <td></td>
@@ -91,7 +106,22 @@
                     </td>
                     <td>{{ food.name }}</td>
                     <td>{{ food.description }}</td>
-                    <td>{{ food.price }}</td>
+                    <td>
+                        {%  set sum = food.price %}
+
+                        {% for sale in food.yes %}
+                            {% if (date() <= sale.end) %}
+                                {%  set sum = sum -(food.price * (sale.percent/100)) %}
+                                <p>- {{ sale.percent }} %</p> <br>
+                            {% endif %}
+                        {% else %}
+                            {{ food.price }}
+                        {% endfor %}
+                        {% if sum != food.price %}
+                            <p style="text-decoration: black line-through">{{ food.price }}</p><br>
+                            {{ sum }}
+                        {% endif %}
+                    </td>
                     <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
                     <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
                     {% if app.session.get('company') %}

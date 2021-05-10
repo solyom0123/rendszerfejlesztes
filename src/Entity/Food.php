@@ -65,10 +65,9 @@ class Food
     private $restaurant;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Sale::class, inversedBy="foods")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\ManyToMany(targetEntity=Sale::class, mappedBy="foods")
      */
-    private $sale;
+    private $yes;
 
 
     public function __construct()
@@ -76,6 +75,8 @@ class Food
         $this->foodImages = new ArrayCollection();
         $this->foodAllergens = new ArrayCollection();
         $this->menus = new ArrayCollection();
+        $this->sales = new ArrayCollection();
+        $this->yes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -247,17 +248,31 @@ class Food
        return $this->getName();
     }
 
-    public function getSale(): ?Sale
+    /**
+     * @return Collection|Sale[]
+     */
+    public function getYes(): Collection
     {
-        return $this->sale;
+        return $this->yes;
     }
 
-    public function setSale(?Sale $sale): self
+    public function addYe(Sale $ye): self
     {
-        $this->sale = $sale;
+        if (!$this->yes->contains($ye)) {
+            $this->yes[] = $ye;
+            $ye->addFood($this);
+        }
 
         return $this;
     }
 
+    public function removeYe(Sale $ye): self
+    {
+        if ($this->yes->removeElement($ye)) {
+            $ye->removeFood($this);
+        }
+
+        return $this;
+    }
 
 }

@@ -30,16 +30,6 @@ class Sale
     private $end;
 
     /**
-     * @ORM\OneToMany(targetEntity=Food::class, mappedBy="sale")
-     */
-    private $foods;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Menu::class, mappedBy="sale")
-     */
-    private $menus;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Restaurant::class, inversedBy="sales")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -49,6 +39,16 @@ class Sale
      * @ORM\Column(type="integer")
      */
     private $percent;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Menu::class, inversedBy="yes")
+     */
+    private $menus;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Food::class, inversedBy="yes")
+     */
+    private $foods;
 
     public function __construct()
     {
@@ -85,66 +85,6 @@ class Sale
         return $this;
     }
 
-    /**
-     * @return Collection|Food[]
-     */
-    public function getFoods(): Collection
-    {
-        return $this->foods;
-    }
-
-    public function addFood(Food $food): self
-    {
-        if (!$this->foods->contains($food)) {
-            $this->foods[] = $food;
-            $food->setSale($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFood(Food $food): self
-    {
-        if ($this->foods->removeElement($food)) {
-            // set the owning side to null (unless already changed)
-            if ($food->getSale() === $this) {
-                $food->setSale(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Menu[]
-     */
-    public function getMenus(): Collection
-    {
-        return $this->menus;
-    }
-
-    public function addMenu(Menu $menu): self
-    {
-        if (!$this->menus->contains($menu)) {
-            $this->menus[] = $menu;
-            $menu->setSale($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMenu(Menu $menu): self
-    {
-        if ($this->menus->removeElement($menu)) {
-            // set the owning side to null (unless already changed)
-            if ($menu->getSale() === $this) {
-                $menu->setSale(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getRestaurant(): ?Restaurant
     {
         return $this->restaurant;
@@ -165,6 +105,54 @@ class Sale
     public function setPercent(int $percent): self
     {
         $this->percent = $percent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Menu[]
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        $this->menus->removeElement($menu);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Food[]
+     */
+    public function getFoods(): Collection
+    {
+        return $this->foods;
+    }
+
+    public function addFood(Food $food): self
+    {
+        if (!$this->foods->contains($food)) {
+            $this->foods[] = $food;
+        }
+
+        return $this;
+    }
+
+    public function removeFood(Food $food): self
+    {
+        $this->foods->removeElement($food);
 
         return $this;
     }
