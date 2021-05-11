@@ -77,7 +77,6 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for food in sub.foods %}
                                 {% for men in sub.menus %}
                                     <tr style="background-color: #ededed">
                                         <td colspan="4">{{ men.name }}</td>
@@ -140,6 +139,7 @@
                                 {% else %}
 
                                 {% endfor %}
+                                {% for food in sub.foods %}
                                 <tr>
                                     <td>{{ food.id }}</td>
                                     <td>
@@ -196,7 +196,7 @@
             function( settings, data, dataIndex ) {
                 var min = minDate.val();
                 var max = maxDate.val();
-                var date = new Date( data[7] );
+                var date = new Date( data[8] );
 
 
                 if (
@@ -216,7 +216,6 @@
             minDate = new DateTime($('#min'), {
                 format: 'YYYY Do MMMM'
             });
-            console.log(minDate);
             maxDate = new DateTime($('#max'), {
                 format: 'YYYY Do MMMM'
             });

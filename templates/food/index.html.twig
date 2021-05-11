@@ -110,7 +110,7 @@
                         {%  set sum = food.price %}
 
                         {% for sale in food.yes %}
-                            {% if (date() <= sale.end) %} //sub.order.date
+                            {% if (date() <= sale.end) %}
                                 {%  set sum = sum -(food.price * (sale.percent/100)) %}
                                 <p>- {{ sale.percent }} %</p> <br>
                             {% endif %}

@@ -23,9 +23,9 @@ class SuborderType extends AbstractType
     private $restaurantRepository;
     private CourierDataRepository $cdr;
 
-    public function __construct(SessionInterface $session,RestaurantRepository $restaurantRepository, CourierDataRepository $cdr)
+    public function __construct(SessionInterface $session, RestaurantRepository $restaurantRepository, CourierDataRepository $cdr)
     {
-        $this->session= $session;
+        $this->session = $session;
         $this->restaurantRepository = $restaurantRepository;
         $this->cdr = $cdr;
     }
@@ -33,23 +33,23 @@ class SuborderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('courier',EntityType::class,array(
+            ->add('courier', EntityType::class, array(
                 'class' => User::class,
                 'multiple' => false,
-                'required'=>false,
-                'empty_data'=>"",
-                'choice_label'=>function(User $user){
-                    $courier = $this->cdr->findOneBy(['user'=>$user]);
+                'required' => false,
+                'empty_data' => "",
+                'choice_label' => function (User $user) {
+                    $courier = $this->cdr->findOneBy(['user' => $user]);
 
-                    return $courier->getName()." (azonosító: ".$courier->getId()."; jármű: ".$courier->getVehicleType().")";
+                    return $courier->getName() . " (azonosító: " . $courier->getId() . "; jármű: " . $courier->getVehicleType() . ")";
                 },
-                'query_builder' => function (UserRepository $repository) use($builder){
+                'query_builder' => function (UserRepository $repository) use ($builder) {
                     $qb = $repository->createQueryBuilder('u');
-                    /* @var $restaurant Restaurant*/
+                    /* @var $restaurant Restaurant */
                     $entity = $builder->getData();
                     $restaurant = $this->restaurantRepository->find($this->session->get("company"));
                     $date = $entity->getParentOrder()->getDate();
-                    $day =$date->format('w');
+                    $day = $date->format('w');
                     $qb->leftJoin(
                         'App\Entity\CourierData',
                         'c',
@@ -57,67 +57,49 @@ class SuborderType extends AbstractType
                         'u = c.user'
                     );
 
-                    switch ($day+1){
-                        case "1":{
+                    switch ($day + 1) {
+                        case "1":
+                        {
                             $qb->andWhere('c.fromWorkingDateMonday <= ?1 and ?2 >= c.toWorkingDateMonday');
                             break;
                         }
-                        case "2":{
+                        case "2":
+                        {
                             $qb->andWhere('c.fromWorkingDateTuesday <= ?1 and ?2 >= c.toWorkingDateTuesday');
                             break;
                         }
-                        case "3":{
+                        case "3":
+                        {
                             $qb->andWhere('c.fromWorkingDateWednesday <= ?1 and ?2 >= c.toWorkingDateWednesday');
                             break;
                         }
-                        case "4":{
+                        case "4":
+                        {
                             $qb->andWhere('c.fromWorkingDateThursday <= ?1 and ?2 >= c.toWorkingDateThursday');
                             break;
                         }
-                        case "5":{
+                        case "5":
+                        {
                             $qb->andWhere('c.fromWorkingDateFriday <= ?1 and ?2 >= c.toWorkingDateFriday');
                             break;
                         }
-                        case "6":{
+                        case "6":
+                        {
                             $qb->andWhere('c.fromWorkingDateSaturday <= ?1 and ?2 >= c.toWorkingDateSaturday');
                             break;
                         }
-                        case "7":{
+                        case "7":
+                        {
                             $qb->andWhere(' c.fromWorkingDateSunday <= ?1 and ?2 >= c.toWorkingDateSunday');
                             break;
                         }
                     };
 
-                    $splitAddress = explode(' ',$restaurant->getAddress());
+                    $qb->andWhere('LOWER(c.location) LIKE LOWER(?3)');
 
-                    $filter = '';
-
-                    foreach ($splitAddress as $sa){
-                        $filter.='%'.$sa.'%'.' ';
-                    }
-
-                    $lastKey = 2;
-
-                    $filter = trim($filter);
-
-                    $filterSplit = explode(' ',$filter);
-
-                    $ors = '';
-
-                    foreach($filterSplit as $k=>$f){
-                        $ors.='LOWER(c.location) LIKE LOWER(?'.($lastKey+($k+1)).') OR ';
-                    }
-
-                    $ors = substr($ors,0,strlen($ors)-4);
-
-                    $qb->andWhere($ors);
-
-                    foreach($filterSplit as $k=>$f){
-                        $qb->setParameter(($lastKey+($k+1)),$f);
-                    }
-
-                        $qb->setParameter('1', $date->format('H:i:s'))
-                        ->setParameter('2','23:59:59')
+                    $qb->setParameter('1', $date->format('H:i:s'))
+                        ->setParameter('2', '23:59:59')
+                        ->setParameter('3', '%' . $restaurant->getAddress() . '%')
                         ->orderBy('c.id', 'ASC');
 
                     return $qb;
@@ -126,10 +108,10 @@ class SuborderType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'multiple' => false,
                 'choices' => [
-                    'ordered'=> OrderStatus::$ORDERED,
-                    'accepted'=> OrderStatus::$ACCEPTED,
-                    'in_progress'=> OrderStatus::$IN_PROGRESS,
-                    'done'=> OrderStatus::$DONE
+                    'ordered' => OrderStatus::$ORDERED,
+                    'accepted' => OrderStatus::$ACCEPTED,
+                    'in_progress' => OrderStatus::$IN_PROGRESS,
+                    'done' => OrderStatus::$DONE
                 ]
             ]);
     }

@@ -46,6 +46,16 @@ class OrderRepository extends ServiceEntityRepository
         return $results;
     }
 
+    public function countByMenuAndSuborder($value, $value2)
+    {
+        $sql = 'select count(*) from suborder_menu where menu_id = ' . $value . ' and suborder_id = ' . $value2;
+        $statement = $this->getEntityManager()->getConnection()->prepare($sql);
+
+        $statement->execute();
+        $results = $statement->fetchColumn();
+        return $results;
+    }
+
     public function findByUser(User $user)
     {
         return $this->createQueryBuilder('c')
@@ -60,40 +70,17 @@ class OrderRepository extends ServiceEntityRepository
     public function findAvailableOrders(CourierData $cd)
     {
         $q = $this->createQueryBuilder('q')
+            ->leftJoin("q.restaurant", "r")
             ->where('q.status = :status')
             ->andWhere('q.courier IS NULL')
-            ->setParameter('status', OrderStatus::$DONE);
+            ->andWhere('LOWER(r.address) LIKE  LOWER(:location)')
+            ->setParameter('status', OrderStatus::$DONE)
+            ->setParameter('location', '%' . $cd->getLocation() . '%');
 
-
-        $splitAddress = explode(' ', $cd->getLocation());
-
-        $filter = '';
-
-        foreach ($splitAddress as $sa) {
-            $filter .= '%' . $sa . '%' . ' ';
-        }
-
-        $filter = trim($filter);
-
-        $filterSplit = explode(' ',$filter);
-
-        $ors = '';
-
-        foreach($filterSplit as $k=>$f){
-            $ors.='LOWER(q.address) LIKE LOWER(?'.($k+1).') OR ';
-        }
-
-        $ors = substr($ors,0,strlen($ors)-4);
-
-        $q->andWhere($ors);
-
-        foreach($filterSplit as $k=>$f){
-            $q->setParameter(($k+1),$f);
-        }
-
-        return $q
-            ->getQuery()
+        return $q->getQuery()
             ->getResult();
+
+
     }
 
     public function findAssignedOrders(User $courier)

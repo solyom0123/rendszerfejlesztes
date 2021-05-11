@@ -36,7 +36,7 @@ class OrderController extends AbstractController
     {
         $restaurant = $restaurantRepository->find($session->get('company'));
         $suborder = $orderRepository->findByRestaurant($restaurant);
-        foreach ($suborder as $sub)
+        foreach ($suborder as $sub) {
             foreach ($sub->getFoods() as $food) {
                 $count = $orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
                 if ($count > 1) {
@@ -45,6 +45,15 @@ class OrderController extends AbstractController
                     }
                 }
             }
+            foreach ($sub->getMenus() as $food) {
+                $count = $orderRepository->countByMenuAndSuborder($food->getId(), $sub->getId());
+                if ($count > 1) {
+                    for ($i = 0; $i < $count - 1; $i++) {
+                        $sub->addMenu($food);
+                    }
+                }
+            }
+        }
         return $this->render('suborder/index.html.twig', [
             'suborder' => $suborder,
         ]);
@@ -356,7 +365,7 @@ class OrderController extends AbstractController
 
         $suborder = $orderRepository->findByUser($user);
 
-        foreach ($suborder as $sub)
+        foreach ($suborder as $sub) {
             foreach ($sub->getFoods() as $food) {
                 $count = $orderRepository->countByFoodAndSuborder($food->getId(), $sub->getId());
                 if ($count > 1) {
@@ -365,7 +374,15 @@ class OrderController extends AbstractController
                     }
                 }
             }
-
+            foreach ($sub->getMenus() as $food) {
+                $count = $orderRepository->countByMenuAndSuborder($food->getId(), $sub->getId());
+                if ($count > 1) {
+                    for ($i = 0; $i < $count - 1; $i++) {
+                        $sub->addMenu($food);
+                    }
+                }
+            }
+        }
         return $this->render('dashboard/customer_orders.html.twig', [
             'suborder' => $suborder
         ]);

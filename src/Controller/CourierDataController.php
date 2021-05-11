@@ -137,30 +137,38 @@ class CourierDataController extends AbstractController
         $i=100;
         /* @var  $sub Suborder */
         foreach ($suborder as $sub){
-            if($sub->getDisplayorder()) {
+            if(!$sub->getDisplayorder()) {
                 $isempty=true;
-                $i++;
-            }
-            if(!$isempty){
-                $isempty=false;
             }
         }
-        $isempty=false;
         foreach ($suborder as $sub){
-            if($sub->getDisplayorder()) {
-                $isempty=true;
-            }
-            if(!$isempty){
-                //$sub->setDisplayorder($i);
+                foreach ($sub->getFoods() as $food) {
+                    $count = $or->countByFoodAndSuborder($food->getId(), $sub->getId());
+                    if ($count > 1) {
+                        for ($i = 0; $i < $count - 1; $i++) {
+                            $sub->addFood($food);
+                        }
+                    }
+                }
+                foreach ($sub->getMenus() as $food) {
+                    $count = $or->countByMenuAndSuborder($food->getId(), $sub->getId());
+                    if ($count > 1) {
+                        for ($i = 0; $i < $count - 1; $i++) {
+                            $sub->addMenu($food);
+                        }
+                    }
+                }
+
+            if($isempty){
+                $sub->setDisplayorder($i);
                 $i++;
-                $isempty=false;
             }
         }
         /* @var  $suborder Suborder */
         //usort($suborder, function($b, $a) { return $b->getDisplayorder() - $a->getDisplayorder(); });
 
 
-
+        $this->getDoctrine()->getManager()->flush();
         return $this->render('dashboard/courier_assigned_jobs.html.twig',[
             'suborder'=>$suborder
         ]);
