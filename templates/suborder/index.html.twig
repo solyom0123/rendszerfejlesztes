@@ -22,136 +22,212 @@
             cursor: pointer;
         }
     </style>
-<div class="container-2">
-    <h1>Order index</h1>
+    <div class="container-2">
+        <h1>Order index</h1>
 
-    <table border="0" cellspacing="5" cellpadding="5">
-        <thead></thead>
-        <tbody><tr>
-            <td>Minimum date:</td>
-            <td><input type="text" id="min" name="min"></td>
-        </tr>
-        <tr>
-            <td>Maximum date:</td>
-            <td><input type="text" id="max" name="max"></td>
-        </tr>
-        </tbody></table>
-
-    <table class="table" id="example" class="display nowrap" style="width:100%">
-        <thead>
-        <tr>
-            <th>Id</th>
-            <th>Customer name</th>
-            <th>Customer email</th>
-            <th>Status</th>
-            <th>Courier email</th>
-            <th>Foods</th>
-            <th>WaitingTime</th>
-            <th class="sort-column" data-sort-order="null">Order date</th>
-            <th>Total income</th>
-            <th>actions</th>
-        </tr>
-        </thead>
-        <tbody >
-        {% for sub in suborder %}
-            <tr id="ez">
-                <td>{{ sub.id }}</td>
-                <td>{{ sub.parentOrder.customer.username }}</td>
-                <td>{{ sub.parentOrder.customer.email }}</td>
-                <td>{{ sub.status }}</td>
-                <td>{{ sub.courier?sub.courier.email:'' }}</td>
-                <td>
-                    <table class="table">
-
-                        <thead>
-                        <tr>
-                            <th>Id</th>
-                            <th>kep</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>FromDate</th>
-                            <th>ToDate</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        //27-93 sub.menus a menu
-                        {% for food in sub.foods %}
-                            <tr>
-                                <td>{{ food.id }}</td>
-                                <td>
-                                    {% for image in food.foodImages %}
-                                        <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the
-                                            picture!</a>
-                                        <br>
-                                    {% endfor %}
-                                </td>
-                                <td>{{ food.name }}</td>
-                                <td>{{ food.description }}</td>
-                                <td>{{ food.price }}</td> //110-123
-                                <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
-                                <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
-                            </tr>
-                        {% else %}
-
-                        {% endfor %}
-                        </tbody>
-
-                    </table>
-
-                </td>
-                <td >{{ sub.waitingTime ? sub.waitingTime|date('H:i:s') : sub.restaurant.waitingTime|date('H:i:s') }}</td>
-                <td >{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ sub.totalPrice }}</td>
-                <td><a href="{{ path('order_edit', {'id': sub.id}) }}">edit</a></td>
+        <table border="0" cellspacing="5" cellpadding="5">
+            <thead></thead>
+            <tbody><tr>
+                <td>Minimum date:</td>
+                <td><input type="text" id="min" name="min"></td>
             </tr>
-        {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td>Maximum date:</td>
+                <td><input type="text" id="max" name="max"></td>
             </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-<script>
+            </tbody></table>
+
+        <table class="table" id="example" class="display nowrap" style="width:100%">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Customer name</th>
+                <th>Customer address</th>
+                <th>Customer email</th>
+                <th>Status</th>
+                <th>Courier email</th>
+                <th>Foods</th>
+                <th>WaitingTime</th>
+                <th class="sort-column" data-sort-order="null">Order date</th>
+                <th>Total income</th>
+                <th>actions</th>
+            </tr>
+            </thead>
+            <tbody >
+            {% for sub in suborder %}
+                <tr id="ez">
+                    <td>{{ sub.id }}</td>
+                    <td>{{ sub.name }}</td>
+                    <td>{{ sub.address }}</td>
+                    <td>{{ sub.parentOrder.customer.email }}</td>
+                    <td>{{ sub.status }}</td>
+                    <td>{{ sub.courier?sub.courier.email:'' }}</td>
+                    <td>
+                        <table class="table">
+
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>kep</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>FromDate</th>
+                                <th>ToDate</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for food in sub.foods %}
+                                {% for men in sub.menus %}
+                                    <tr style="background-color: #ededed">
+                                        <td colspan="4">{{ men.name }}</td>
+                                        <td colspan="2">
+                                            {% set sum = 0 %}
+                                            {% for foo in men.foods %}
+                                                {% set sum = sum + foo.price %}
+                                            {% else %}
+
+                                            {% endfor %}
+                                            {% set saleSum = sum %}
+                                            {% for sale in men.yes %}
+                                                {% if (sub.parentOrder.date<=sale.end) %}
+                                                    {%  set saleSum = saleSum -(sum * (sale.percent/100)) %}<br>
+                                                    - {{ sale.percent }} % <br>
+                                                {% endif %}
+                                            {% else %}
+                                                price:{{ sum }}
+                                            {% endfor %}
+                                            {% if saleSum != sum %}
+                                                <p style="text-decoration: black line-through">{{ sum }}</p><br>
+                                                price:{{ saleSum }}
+                                            {% endif %}
+
+                                        </td>
+                                        <td>
+                                            <table class="table">
+                                                <tbody>
+                                                {% for cat in men.menuCategory %}
+                                                    <tr>
+                                                        <td>{{ cat.name }}</td>
+                                                    </tr>
+                                                {% else %}
+
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    {% for food in men.foods %}
+                                        <tr >
+                                            <td>{{ men.id }}</td>
+                                            <td>
+                                                {% for image in food.foodImages %}
+                                                    <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the picture!</a>
+                                                    <br>
+                                                {% endfor %}
+                                            </td>
+                                            <td>{{ food.name }}</td>
+                                            <td>{{ food.description }}</td>
+                                            <td>
+                                                {{ food.price }}
+                                            </td>
+                                            <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                                            <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                                        </tr>
+                                    {% else %}
+
+                                    {% endfor %}
+                                {% else %}
+
+                                {% endfor %}
+                                <tr>
+                                    <td>{{ food.id }}</td>
+                                    <td>
+                                        {% for image in food.foodImages %}
+                                            <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the
+                                                picture!</a>
+                                            <br>
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ food.name }}</td>
+                                    <td>{{ food.description }}</td>
+                                    <td>{%  set sum = food.price %}
+
+                                        {% for sale in food.yes %}
+                                            {% if (sub.parentOrder.date <= sale.end) %}
+                                                {%  set sum = sum -(food.price * (sale.percent/100)) %}
+                                                <p>- {{ sale.percent }} %</p> <br>
+                                            {% endif %}
+                                        {% else %}
+                                            {{ food.price }}
+                                        {% endfor %}
+                                        {% if sum != food.price %}
+                                            <p style="text-decoration: black line-through">{{ food.price }}</p><br>
+                                            {{ sum }}
+                                        {% endif %}</td>
+                                    <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                                    <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                                </tr>
+                            {% else %}
+
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+
+                    </td>
+                    <td >{{ sub.waitingTime ? sub.waitingTime|date('H:i:s') : sub.restaurant.waitingTime|date('H:i:s') }}</td>
+                    <td >{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ sub.totalPrice }}</td>
+                    <td><a href="{{ path('order_edit', {'id': sub.id}) }}">edit</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
         var minDate, maxDate;
 
         $.fn.dataTable.ext.search.push(
-        function( settings, data, dataIndex ) {
-        var min = minDate.val();
-        var max = maxDate.val();
-        var date = new Date( data[7] );
+            function( settings, data, dataIndex ) {
+                var min = minDate.val();
+                var max = maxDate.val();
+                var date = new Date( data[7] );
 
 
-        if (
-        ( min === null && max === null ) ||
-        ( min === null && date <= max ) ||
-        ( min <= date   && max === null ) ||
-        ( min <= date   && date <= max )
-        ) {
-        return true;
-    }
-        return false;
-    }
+                if (
+                    ( min === null && max === null ) ||
+                    ( min === null && date <= max ) ||
+                    ( min <= date   && max === null ) ||
+                    ( min <= date   && date <= max )
+                ) {
+                    return true;
+                }
+                return false;
+            }
         );
 
         $("#example").ready(function() {
-        // Create date inputs
-        minDate = new DateTime($('#min'), {
-            format: 'YYYY Do MMMM'
-        });
+            // Create date inputs
+            minDate = new DateTime($('#min'), {
+                format: 'YYYY Do MMMM'
+            });
             console.log(minDate);
-        maxDate = new DateTime($('#max'), {
-        format: 'YYYY Do MMMM'
-    });
-        // DataTables initialisation
-        var table = $('#example').DataTable();
+            maxDate = new DateTime($('#max'), {
+                format: 'YYYY Do MMMM'
+            });
+            // DataTables initialisation
+            var table = $('#example').DataTable();
 
-        // Refilter the table
-        $('#min, #max').on('change', function () {
-        table.draw();
-    });
-    });
-</script>
+            // Refilter the table
+            $('#min, #max').on('change', function () {
+                table.draw();
+            });
+        });
+    </script>
 
 {% endblock %}

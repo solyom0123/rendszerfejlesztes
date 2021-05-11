@@ -15,7 +15,7 @@
             <th>Foods</th>
             <th>Order date</th>
             <th>Total income</th>
-            <th>actions</th>
+            <th>Rating</th>
         </tr>
         </thead>
         <tbody>
@@ -38,6 +38,69 @@
                         </tr>
                         </thead>
                         <tbody>
+                        {% for men in sub.menus %}
+                            <tr style="background-color: #ededed">
+                                <td colspan="4">{{ men.name }}</td>
+                                <td colspan="2">
+                                    {% set sum = 0 %}
+                                    {% for foo in men.foods %}
+                                        {% set sum = sum + foo.price %}
+                                    {% else %}
+
+                                    {% endfor %}
+                                    {% set saleSum = sum %}
+                                    {% for sale in men.yes %}
+                                        {% if (sub.parentOrder.date<=sale.end) %}
+                                            {%  set saleSum = saleSum -(sum * (sale.percent/100)) %}<br>
+                                            - {{ sale.percent }} % <br>
+                                        {% endif %}
+                                    {% else %}
+                                        price:{{ sum }}
+                                    {% endfor %}
+                                    {% if saleSum != sum %}
+                                        <p style="text-decoration: black line-through">{{ sum }}</p><br>
+                                        price:{{ saleSum }}
+                                    {% endif %}
+
+                                </td>
+                                <td>
+                                    <table class="table">
+                                        <tbody>
+                                        {% for cat in men.menuCategory %}
+                                            <tr>
+                                                <td>{{ cat.name }}</td>
+                                            </tr>
+                                        {% else %}
+
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            {% for food in men.foods %}
+                                <tr >
+                                    <td>{{ men.id }}</td>
+                                    <td>
+                                        {% for image in food.foodImages %}
+                                            <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the picture!</a>
+                                            <br>
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ food.name }}</td>
+                                    <td>{{ food.description }}</td>
+                                    <td>
+                                        {{ food.price }}
+                                    </td>
+                                    <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                                    <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                                </tr>
+                            {% else %}
+
+                            {% endfor %}
+                        {% else %}
+
+                        {% endfor %}
+
                         {% for food in sub.foods %}
                             <tr>
                                 <td>{{ food.id }}</td>
@@ -50,7 +113,21 @@
                                 </td>
                                 <td>{{ food.name }}</td>
                                 <td>{{ food.description }}</td>
-                                <td>{{ food.price }}</td>
+                                <td>
+                                    {%  set sum = food.price %}
+
+                                    {% for sale in food.yes %}
+                                        {% if (sub.parentOrder.date <= sale.end) %}
+                                            {%  set sum = sum -(food.price * (sale.percent/100)) %}
+                                            <p>- {{ sale.percent }} %</p> <br>
+                                        {% endif %}
+                                    {% else %}
+                                        {{ food.price }}
+                                    {% endfor %}
+                                    {% if sum != food.price %}
+                                        <p style="text-decoration: black line-through">{{ food.price }}</p><br>
+                                        {{ sum }}
+                                    {% endif %}</td>
                                 <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
                                 <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
                             </tr>
