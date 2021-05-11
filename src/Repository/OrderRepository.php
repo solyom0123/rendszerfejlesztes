@@ -24,51 +24,86 @@ class OrderRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Suborder::class);
     }
+
     /** @return Collection|Suborder[] */
     public function findByRestaurant($value)
-    { $alma =$this->createQueryBuilder('c')
-        ->andWhere('c.restaurant = :val')
-        ->setParameter('val', $value)
-        ->orderBy('c.id', 'ASC')
-        ->getQuery();
+    {
+        $alma = $this->createQueryBuilder('c')
+            ->andWhere('c.restaurant = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery();
         return $alma->getResult();
     }
-    public function countByFoodAndSuborder($value,$value2)
-    {   $sql =      'select count(*) from suborder_food where food_id = '.$value.' and suborder_id = '.$value2;
+
+    public function countByFoodAndSuborder($value, $value2)
+    {
+        $sql = 'select count(*) from suborder_food where food_id = ' . $value . ' and suborder_id = ' . $value2;
         $statement = $this->getEntityManager()->getConnection()->prepare($sql);
 
         $statement->execute();
         $results = $statement->fetchColumn();
         return $results;
     }
-    public function findByUser(User $user){
+
+    public function findByUser(User $user)
+    {
         return $this->createQueryBuilder('c')
-            ->leftJoin('c.parentOrder','o')
+            ->leftJoin('c.parentOrder', 'o')
             ->where('o.customer = :customer')
             ->orderBy('c.id')
-            ->setParameter('customer',$user)
+            ->setParameter('customer', $user)
             ->getQuery()
             ->getResult();
     }
 
-    public function findAvailableOrders(CourierData $cd){
-        return $this->createQueryBuilder('q')
+    public function findAvailableOrders(CourierData $cd)
+    {
+        $q = $this->createQueryBuilder('q')
             ->where('q.status = :status')
             ->andWhere('q.courier IS NULL')
-            ->andWhere('LOWER(q.address) LIKE LOWER(:courierAddress)')
-            ->setParameter('status',OrderStatus::$DONE)
-            ->setParameter('courierAddress',"%".$cd->getLocation()."%")
+            ->setParameter('status', OrderStatus::$DONE);
+
+
+        $splitAddress = explode(' ', $cd->getLocation());
+
+        $filter = '';
+
+        foreach ($splitAddress as $sa) {
+            $filter .= '%' . $sa . '%' . ' ';
+        }
+
+        $filter = trim($filter);
+
+        $filterSplit = explode(' ',$filter);
+
+        $ors = '';
+
+        foreach($filterSplit as $k=>$f){
+            $ors.='LOWER(q.address) LIKE LOWER(?'.($k+1).') OR ';
+        }
+
+        $ors = substr($ors,0,strlen($ors)-4);
+
+        $q->andWhere($ors);
+
+        foreach($filterSplit as $k=>$f){
+            $q->setParameter(($k+1),$f);
+        }
+
+        return $q
             ->getQuery()
             ->getResult();
     }
 
-    public function findAssignedOrders(User $courier){
-            return $this->createQueryBuilder('q')
-                ->where('q.courier = :courier')
-                ->setParameter('courier',$courier)
-                ->orderBy('q.displayorder','ASC')
-                ->getQuery()
-                ->getResult();
+    public function findAssignedOrders(User $courier)
+    {
+        return $this->createQueryBuilder('q')
+            ->where('q.courier = :courier')
+            ->setParameter('courier', $courier)
+            ->orderBy('q.displayorder', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     // /**

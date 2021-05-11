@@ -36,6 +36,8 @@ class SuborderType extends AbstractType
             ->add('courier',EntityType::class,array(
                 'class' => User::class,
                 'multiple' => false,
+                'required'=>false,
+                'empty_data'=>"",
                 'choice_label'=>function(User $user){
                     $courier = $this->cdr->findOneBy(['user'=>$user]);
 
