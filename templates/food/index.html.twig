@@ -36,7 +36,7 @@
                             {% endfor %}
                         {% set saleSum = sum %}
                         {% for sale in men.yes %}
-                            {% if (date()<=sale.end) %} //subn.order.date
+                            {% if (date()<=sale.end) %}
                                 {%  set saleSum = saleSum -(sum * (sale.percent/100)) %}<br>
                                 - {{ sale.percent }} % <br>
                             {% endif %}

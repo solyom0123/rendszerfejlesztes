@@ -43,10 +43,24 @@
                     {% if d2['type'] == 'f' %}
                     <tr style="background-color: #ededed">
                             <td>
+
                                 {{ d2['food'].name }}
                             </td>
                             <td>
-                                {{ d2['food'].price }}
+                                {%  set sum = d2['food'].price %}
+
+                                {% for sale in d2['food'].yes %}
+                                    {% if (date() <= sale.end) %}
+                                        {%  set sum = sum -(d2['food'].price * (sale.percent/100)) %}
+                                        <p>- {{ sale.percent }} %</p> <br>
+                                    {% endif %}
+                                {% else %}
+                                    {{ d2['food'].price }}
+                                {% endfor %}
+                                {% if sum != d2['food'].price %}
+                                    <p style="text-decoration: black line-through">{{ d2['food'].price }}</p><br>
+                                    {{ sum }}
+                                {% endif %}
                             </td>
                         </tr>
                     {% else %}
@@ -55,13 +69,26 @@
                                 {{ d2['food'].name }}
                             </td>
                             <td>
-                                {% set sum = 0 %}
+                                {% set origin = 0 %}
                                 {% for foo in  d2['subfoods'] %}
-                                    {% set sum = sum + foo.price %}
+                                    {% set origin = origin + foo.price %}
                                 {% else %}
 
                                 {% endfor %}
-                                {{ sum }}
+                                {%  set sum = origin %}
+
+                                {% for sale in d2['food'].yes %}
+                                    {% if (date() <= sale.end) %}
+                                        {%  set sum = sum -(origin * (sale.percent/100)) %}
+                                        <p>- {{ sale.percent }} %</p> <br>
+                                    {% endif %}
+                                {% else %}
+                                    {{ origin }}
+                                {% endfor %}
+                                {% if sum != origin %}
+                                    <p style="text-decoration: black line-through">{{ origin }}</p><br>
+                                    {{ sum }}
+                                {% endif %}
                             </td>
                         </tr>
                         {% for food in d2['subfoods'] %}

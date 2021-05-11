@@ -35,13 +35,26 @@ class ShopListController extends AbstractController
             foreach ($shopList as $item){
                 if($item[1]=='f') {
                     $food = $foodRepository->find($item[0]);
+                    $salePrice = $food->getPrice();
+                    foreach ($food->getYes() as $sale){
+                       if(new \DateTime() <= $sale->getEnd()){
+                           $salePrice = $salePrice - ($food->getPrice() * $sale->getPercent()/100);
+                       }
+                    }
                     array_push($array, [
-                        'id' => $item[0], 'name' => $food->getName(), 'price' => $food->getPrice(), 'type'=>$item[1]
+                        'id' => $item[0], 'name' => $food->getName(), 'price' => $salePrice, 'type'=>$item[1]
                     ]);
                 }else{
                     $menu = $menuRepository->find($item[0]);
+
+                    $salePrice = $this->calcSum($menu);
+                    foreach ($menu->getYes() as $sale){
+                        if(new \DateTime() <= $sale->getEnd()){
+                            $salePrice = $salePrice - ($this->calcSum($menu) * $sale->getPercent()/100);
+                        }
+                    }
                     array_push($array, [
-                        'id' => $item[0], 'name' => $menu->getName(), 'price' => $this->calcSum($menu), 'type'=>$item[1]
+                        'id' => $item[0], 'name' => $menu->getName(), 'price' => $salePrice, 'type'=>$item[1]
                     ]);
                     /* @var $food Food */
                     foreach ($menu->getFoods() as $food){

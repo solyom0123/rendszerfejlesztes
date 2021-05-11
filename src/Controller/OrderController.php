@@ -117,12 +117,25 @@ class OrderController extends AbstractController
             $sum = 0;
             /* @var $item Food */
             foreach ($order->getFoods() as $item) {
-                $sum += $item->getPrice();
+                $salePrice = $item->getPrice();
+                foreach ($item->getYes() as $sale){
+                    if(new \DateTime() <= $sale->getEnd()){
+                        $salePrice = $salePrice - ($sale->getPercent()/100);
+                    }
+                }
+                $sum += $salePrice;
             }
             foreach ($order->getMenus() as $item) {
+                $salePrice = 0;
                 foreach ($item->getFoods() as $f) {
-                    $sum += $f->getPrice();
+                    $salePrice += $f->getPrice();
                 }
+                foreach ($item->getYes() as $sale){
+                    if(new \DateTime() <= $sale->getEnd()){
+                        $salePrice = $salePrice - ($sale->getPercent()/100);
+                    }
+                }
+                $sum += $salePrice;
             }
             $order->setTotal($sum);
             /**end main order**/
@@ -140,7 +153,13 @@ class OrderController extends AbstractController
                     foreach ($item["foods"] as $food) {
                         $suborder->addFood($food);
                         $suborder->setRestaurant($food->getRestaurant());
-                        $sum += $food->getPrice();
+                        $salePrice = $food->getPrice();
+                        foreach ($food->getYes() as $sale){
+                            if(new \DateTime() <= $sale->getEnd()){
+                                $salePrice = $salePrice - ($food->getPrice() * ($sale->getPercent()/100));
+                            }
+                        }
+                        $sum += $salePrice;
                     }
                 }
                 if (isset($item["menus"])) {
@@ -148,9 +167,17 @@ class OrderController extends AbstractController
                     foreach ($item["menus"] as $menu) {
                         $suborder->addMenu($menu);
                         $suborder->setRestaurant($menu->getRestaurant());
+                        $originPrice = 0;
                         foreach ($menu->getFoods() as $f) {
-                            $sum += $f->getPrice();
+                            $originPrice += $f->getPrice();
                         }
+                        $salePrice = $originPrice;
+                        foreach ($menu->getYes() as $sale){
+                            if(new \DateTime() <= $sale->getEnd()){
+                                $salePrice = $salePrice - ($originPrice * $sale->getPercent()/100);
+                            }
+                        }
+                        $sum += $salePrice;
                     }
                 }
                 $suborder->setParentOrder($order);
@@ -217,11 +244,23 @@ class OrderController extends AbstractController
                     $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()][] = $elem;
                 }
                 if ($sl[1] == 'f') {
-                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $food->getPrice();
+                    $salePrice = $food->getPrice();
+                    foreach ($food->getYes() as $sale){
+                        if(new \DateTime() <= $sale->getEnd()){
+                            $salePrice = $salePrice - ($food->getPrice() * ($sale->getPercent()/100));
+                        }
+                    }
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $salePrice;
                 } else {
 
                     /* @var $food Menu */
-                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $this->sum($food);
+                    $salePrice = $this->sum($food);
+                    foreach ($food->getYes() as $sale){
+                        if(new \DateTime() <= $sale->getEnd()){
+                            $salePrice = $salePrice - ( $this->sum($food) * ($sale->getPercent()/100));
+                        }
+                    }
+                    $formDataArr[$restaurant->getName() . '_' . $restaurant->getId()]['total'] += $salePrice;
                 }
 
             }
