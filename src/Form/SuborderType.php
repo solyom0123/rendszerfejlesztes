@@ -5,9 +5,11 @@ namespace App\Form;
 use App\Entity\CourierData;
 use App\Entity\Restaurant;
 use App\Entity\Suborder;
+use App\Entity\User;
 use App\Enums\OrderStatus;
 use App\Repository\CourierDataRepository;
 use App\Repository\RestaurantRepository;
+use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,14 +31,21 @@ class SuborderType extends AbstractType
     {
         $builder
             ->add('courier',EntityType::class,array(
-                'class' => CourierData::class,
+                'class' => User::class,
                 'multiple' => false,
-                'query_builder' => function (CourierDataRepository $repository) use($options){
-                    $qb = $repository->createQueryBuilder('c');
+                'query_builder' => function (UserRepository $repository) use($builder){
+                    $qb = $repository->createQueryBuilder('u');
                     /* @var $restaurant Restaurant*/
+                    $entity = $builder->getData();
                     $restaurant = $this->restaurantRepository->find($this->session->get("company"));
-                    $date = new \DateTime();
+                    $date = $entity->getParentOrder()->getDate();
                     $day =$date->format('w');
+                    $qb->leftJoin(
+                        'App\Entity\CourierData',
+                        'c',
+                        \Doctrine\ORM\Query\Expr\Join::WITH,
+                        'u = c.user'
+                    );
                     $qb->where($qb->expr()->upper('?1').' like \'%'.$qb->expr()->upper('c.location').'%\'' );
                     switch ($day){
                         case "0":{
@@ -72,6 +81,8 @@ class SuborderType extends AbstractType
                     $qb->setParameter('1', $restaurant->getAddress())
                         ->setParameter('2', $date->format('H:i:s'))
                         ->orderBy('c.id', 'ASC');
+                   dump($date->format('H:i:s'));
+                    dd($qb->getQuery());
                     return $qb;
                 }))
             ->add('waitingTime')
