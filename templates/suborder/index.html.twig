@@ -75,6 +75,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        //27-93 sub.menus a menu
                         {% for food in sub.foods %}
                             <tr>
                                 <td>{{ food.id }}</td>
@@ -87,7 +88,7 @@
                                 </td>
                                 <td>{{ food.name }}</td>
                                 <td>{{ food.description }}</td>
-                                <td>{{ food.price }}</td>
+                                <td>{{ food.price }}</td> //110-123
                                 <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
                                 <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
                             </tr>
