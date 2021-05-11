@@ -5,7 +5,7 @@
 {% block body %}
     <div class="container-2">
     <h1>Main</h1>
-    {% if is_granted("ROLE_OWNER") %}
+    {% if is_granted("ROLE_CUSTOMER") %}
         <h1>Customer</h1>
             <a class="inner-btn" href="{{ path('app_main_set_session_customer', {'id': app.user.id}) }}">Do you wanna eat something? :D</a>
     {% endif %}
