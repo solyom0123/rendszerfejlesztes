@@ -74,6 +74,16 @@ class Restaurant
      */
     private $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Sale::class, mappedBy="restaurant")
+     */
+    private $sales;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="restaurant")
+     */
+    private $notifications;
+
     public function __construct()
     {
         $this->openingTimes = new ArrayCollection();
@@ -82,6 +92,8 @@ class Restaurant
         $this->foodImages = new ArrayCollection();
         $this->food = new ArrayCollection();
         $this->menus = new ArrayCollection();
+        $this->sales = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -318,5 +330,65 @@ class Restaurant
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * @return Collection|Sale[]
+     */
+    public function getSales(): Collection
+    {
+        return $this->sales;
+    }
+
+    public function addSale(Sale $sale): self
+    {
+        if (!$this->sales->contains($sale)) {
+            $this->sales[] = $sale;
+            $sale->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSale(Sale $sale): self
+    {
+        if ($this->sales->removeElement($sale)) {
+            // set the owning side to null (unless already changed)
+            if ($sale->getRestaurant() === $this) {
+                $sale->setRestaurant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setRestaurant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getRestaurant() === $this) {
+                $notification->setRestaurant(null);
+            }
+        }
+
+        return $this;
     }
 }

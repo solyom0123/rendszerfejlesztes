@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Rendelés - kassza{% endblock %}
+
+{% block body %}
+    <div class="container-2">
+    <h1>Kassza</h1>
+
+{% set total = 0 %}
+    <form id="checkout-form">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Étterem</th>
+            <th>Étel(ek)</th>
+            <th>Fizetendő összesen</th>
+            <th>Név</th>
+            <th>Szállítási mód</th>
+            <th>Fizetési mód</th>
+            <th>Szállítási cím</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for k,d in data %}
+        <tr>
+            <input type="hidden" name="restaurant_id_{{ loop.index }}" value="{{ k|split('_')[1] }}">
+            <td>{{ k|split("_")[0] }}</td>
+            <td>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Név</th>
+                        <th>Ár</th>
+                    </tr>
+                    </thead>
+
+
+                    <tbody>
+
+            {% for d2 in d %}
+                {% if d2 is iterable %}
+                {% for i in range(0,d2['amount']-1) %}
+                    {% if d2['type'] == 'f' %}
+                    <tr style="background-color: #ededed">
+                            <td>
+
+                                {{ d2['food'].name }}
+                            </td>
+                            <td>
+                                {%  set sum = d2['food'].price %}
+
+                                {% for sale in d2['food'].yes %}
+                                    {% if (date() <= sale.end) %}
+                                        {%  set sum = sum -(d2['food'].price * (sale.percent/100)) %}
+                                        <p>- {{ sale.percent }} %</p> <br>
+                                    {% endif %}
+                                {% else %}
+                                    {{ d2['food'].price }}
+                                {% endfor %}
+                                {% if sum != d2['food'].price %}
+                                    <p style="text-decoration: black line-through">{{ d2['food'].price }}</p><br>
+                                    {{ sum }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr style="background-color: #ededed">
+                            <td>
+                                {{ d2['food'].name }}
+                            </td>
+                            <td>
+                                {% set origin = 0 %}
+                                {% for foo in  d2['subfoods'] %}
+                                    {% set origin = origin + foo.price %}
+                                {% else %}
+
+                                {% endfor %}
+                                {%  set sum = origin %}
+
+                                {% for sale in d2['food'].yes %}
+                                    {% if (date() <= sale.end) %}
+                                        {%  set sum = sum -(origin * (sale.percent/100)) %}
+                                        <p>- {{ sale.percent }} %</p> <br>
+                                    {% endif %}
+                                {% else %}
+                                    {{ origin }}
+                                {% endfor %}
+                                {% if sum != origin %}
+                                    <p style="text-decoration: black line-through">{{ origin }}</p><br>
+                                    {{ sum }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% for food in d2['subfoods'] %}
+                            <tr >
+                                <td colspan="2">{{ food.name }}</td>
+
+                            </tr>
+                        {% else %}
+
+                        {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+                    </tbody>
+                </table>
+            </td>
+            <td>{{ d['total'] }}
+
+            {% set total=total+d['total'] %}
+            </td>
+            <td><input type="text" name="name_{{ loop.index }}"></td>
+            <td>
+                <select name="delivery_mode_{{ loop.index }}">
+                    <option value="1">Szállítás</option>
+                    <option value="2">Elvitel</option>
+                </select>
+            </td>
+            <td>
+                <select name="payment_mode_{{ loop.index }}">
+                    <option value="1">Készpénz</option>
+                    <option value="2">Bankkártya</option>
+                </select>
+            </td>
+            <td><input type="text" name="address_{{ loop.index }}"></td>
+        </tr>
+            {% endfor %}
+    </table>
+    </form>
+
+    <h3>Teljes fizetendő összeg: {{ total }}</h3>
+
+    <button class="btn-primary" id="submit-order">Rendelés leadása</button>
+
+    <script>
+        finalizeOrder();
+    </script>
+    </div>
+{% endblock %}

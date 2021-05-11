@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Szabad rendelések{% endblock %}
+
+{% block body %}
+    <div class="container-2">
+        <h1>Szabad rendelések a területeden</h1>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Customer name</th>
+                <th>Address</th>
+                <th>Foods</th>
+                <th>Order date</th>
+                <th>Total income</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sub in suborder %}
+                <tr>
+                    <td>{{ sub.name?sub.name:'-'}}</td>
+                    <td>{{ sub.address?sub.address:'-' }}</td>
+                    <td>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for food in sub.foods %}
+                                <tr>
+                                    <td>{{ food.name }}</td>
+                                    <td>{{ food.price }}</td>
+                                </tr>
+                            {% else %}
+
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+
+                    </td>
+                    <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ sub.totalPrice }}</td>
+                    <td><a class="inner-btn" href="{{ path('courier_take_job',{so:sub.id}) }}">Felveszem</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <a class="inner-btn" href="{{ path('dashboard_courier') }}">&lt;&lt; Vissza</a>
+    </div>
+{% endblock %}

@@ -46,11 +46,17 @@ class Order
      */
     private $foods;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Menu::class)
+     */
+    private $menus;
+
 
     public function __construct()
     {
         $this->suborders = new ArrayCollection();
         $this->foods = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -144,6 +150,29 @@ class Order
     public function removeFood(Food $food): self
     {
         $this->foods->removeElement($food);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Menu[]
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+
+            $this->menus[] = $menu;
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        $this->menus->removeElement($menu);
 
         return $this;
     }

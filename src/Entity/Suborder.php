@@ -32,7 +32,7 @@ class Suborder
     private $courier;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=50)
      */
     private $status;
 
@@ -52,9 +52,50 @@ class Suborder
      */
     private $totalPrice;
 
+    /**
+     * @ORM\Column(type="time", nullable=true)
+     */
+    private $waitingTime;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $deliveryMethod;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $paymentMethod;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $address;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $userOrderRating;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $displayorder;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Menu::class)
+     */
+    private $menus;
+
     public function __construct()
     {
         $this->foods = new ArrayCollection();
+        $this->menus = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,5 +186,117 @@ class Suborder
     public function __toString()
     {
         return "".$this->getId();
+    }
+
+    public function getWaitingTime(): ?\DateTimeInterface
+    {
+        return $this->waitingTime;
+    }
+
+    public function setWaitingTime(?\DateTimeInterface $waitingTime): self
+    {
+        $this->waitingTime = $waitingTime;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getDeliveryMethod(): ?string
+    {
+        return $this->deliveryMethod;
+    }
+
+    public function setDeliveryMethod(?string $deliveryMethod): self
+    {
+        $this->deliveryMethod = $deliveryMethod;
+
+        return $this;
+    }
+
+    public function getPaymentMethod(): ?string
+    {
+        return $this->paymentMethod;
+    }
+
+    public function setPaymentMethod(?string $paymentMethod): self
+    {
+        $this->paymentMethod = $paymentMethod;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getUserOrderRating(): ?int
+    {
+        return $this->userOrderRating;
+    }
+
+    public function setUserOrderRating(?int $userOrderRating): self
+    {
+        $this->userOrderRating = $userOrderRating;
+
+        return $this;
+    }
+
+    public function getDisplayorder(): ?int
+    {
+        return $this->displayorder;
+    }
+
+    public function setDisplayorder(?int $displayorder): self
+    {
+        $this->displayorder = $displayorder;
+
+        return $this;
+    }
+    public function getSubOrderByCourier(?int $displayorder): self
+    {
+        $this->displayorder = $displayorder;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Menu[]
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+            $this->menus[] = $menu;
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        $this->menus->removeElement($menu);
+
+        return $this;
     }
 }

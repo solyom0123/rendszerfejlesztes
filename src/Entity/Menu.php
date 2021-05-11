@@ -39,10 +39,16 @@ class Menu
      */
     private $restaurant;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Sale::class, mappedBy="menus")
+     */
+    private $yes;
+
     public function __construct()
     {
         $this->menuCategory = new ArrayCollection();
         $this->foods = new ArrayCollection();
+        $this->yes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -120,6 +126,39 @@ class Menu
     public function setRestaurant(Restaurant $restaurant): self
     {
         $this->restaurant=$restaurant;
+
+        return $this;
+    }
+
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return Collection|Sale[]
+     */
+    public function getYes(): Collection
+    {
+        return $this->yes;
+    }
+
+    public function addYe(Sale $ye): self
+    {
+        if (!$this->yes->contains($ye)) {
+            $this->yes[] = $ye;
+            $ye->addMenu($this);
+        }
+
+        return $this;
+    }
+
+    public function removeYe(Sale $ye): self
+    {
+        if ($this->yes->removeElement($ye)) {
+            $ye->removeMenu($this);
+        }
 
         return $this;
     }

@@ -1,0 +1,231 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Szabad rendelések{% endblock %}
+
+{% block body %}
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/themes/smoothness/jquery-ui.css"/>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+    <script type="text/javascript">
+        $array=[];
+        $(function () {
+            $("#tblLocations").sortable({
+                items: 'tr:not(tr:first-child)',
+                cursor: 'pointer',
+                axis: 'y',
+                dropOnEmpty: false,
+                start: function (e, ui) {
+                    ui.item.addClass("selected");
+                },
+                stop: function (e, ui) {
+                    ui.item.removeClass("selected");
+                },
+                receive: function (e, ui) {
+                    $(this).find("tbody").append(ui.item);
+                }
+            });
+        });
+        $(document).ready(function (){
+            $(".displayorderc").each(function() {
+               $array.push(this.innerText)
+            });
+            console.log($array);
+        });
+
+        function feltolt(){
+            $array2=[];
+            $(".displayorderc").each(function() {
+                $array2.push(this.innerText)
+            });
+            console.log($array2);
+
+            $.ajax({
+                url:        "{{ path('courier_setorderjobs') }}",
+                type:       'POST',
+                data:{
+                    id: 1,
+                    array1: $array,
+                    array2: $array2,
+                },
+                async:      true,
+
+                success: function(data, status) {
+                    location.href=data.url;
+                },
+                error : function(xhr, textStatus, errorThrown) {
+                    alert('Ajax request failed.');
+                }
+            });
+
+        }
+    </script>
+
+
+
+    <div class="container-2">
+        <h1>Felvett/hozzárendelt rendelések</h1>
+
+        <table id="tblLocations" cellpadding="0" cellspacing="0" border="1">
+            <tr>
+                <th>Customer name</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Foods</th>
+                <th>Order date</th>
+                <th>Total income</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for sub in suborder %}
+                <tr>
+                    <td>{{ sub.name?sub.name:'-' }}</td>
+                    <td class='disabled'>{{ sub.address?sub.address:'-' }}</td>
+                    <td class='disabled'>{{ sub.status?sub.status:'-' }}</td>
+                    <td class='disabled'>
+                        <table class='disabled'>
+                            <thead class='disabled'>
+                            <tr>
+                                <th>Id</th>
+                                <th>kep</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>FromDate</th>
+                                <th>ToDate</th>
+                            </tr>
+                            </thead>
+                            <tbody class="row_position" class='disabled'>
+                            {% for men in sub.menus %}
+                                <tr style="background-color: #ededed">
+                                    <td colspan="4">{{ men.name }}</td>
+                                    <td colspan="2">
+                                        {% set sum = 0 %}
+                                        {% for foo in men.foods %}
+                                            {% set sum = sum + foo.price %}
+                                        {% else %}
+
+                                        {% endfor %}
+                                        {% set saleSum = sum %}
+                                        {% for sale in men.yes %}
+                                            {% if (sub.parentOrder.date<=sale.end) %}
+                                                {%  set saleSum = saleSum -(sum * (sale.percent/100)) %}<br>
+                                                - {{ sale.percent }} % <br>
+                                            {% endif %}
+                                        {% else %}
+                                            price:{{ sum }}
+                                        {% endfor %}
+                                        {% if saleSum != sum %}
+                                            <p style="text-decoration: black line-through">{{ sum }}</p><br>
+                                            price:{{ saleSum }}
+                                        {% endif %}
+
+                                    </td>
+                                    <td>
+                                        <table class="table" class='disabled'>
+                                            <tbody>
+                                            {% for cat in men.menuCategory %}
+                                                <tr>
+                                                    <td>{{ cat.name }}</td>
+                                                </tr>
+                                            {% else %}
+
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                {% for food in men.foods %}
+                                    <tr >
+                                        <td>{{ men.id }}</td>
+                                        <td>
+                                            {% for image in food.foodImages %}
+                                                <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the picture!</a>
+                                                <br>
+                                            {% endfor %}
+                                        </td>
+                                        <td>{{ food.name }}</td>
+                                        <td>{{ food.description }}</td>
+                                        <td>
+                                            {{ food.price }}
+                                        </td>
+                                        <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                                        <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                                    </tr>
+                                {% else %}
+
+                                {% endfor %}
+                            {% else %}
+
+                            {% endfor %}
+                            {% for food in sub.foods %}
+                                <tr>
+                                    <td>{{ food.id }}</td>
+                                    <td>
+                                        {% for image in food.foodImages %}
+                                            <a href="{{ asset('uploads/images/'~image.filePath) }}">Click here for the
+                                                picture!</a>
+                                            <br>
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{ food.name }}</td>
+                                    <td>{{ food.description }}</td>
+                                    <td>{%  set sum = food.price %}
+
+                                        {% for sale in food.yes %}
+                                            {% if (sub.parentOrder.date <= sale.end) %}
+                                                {%  set sum = sum -(food.price * (sale.percent/100)) %}
+                                                <p>- {{ sale.percent }} %</p> <br>
+                                            {% endif %}
+                                        {% else %}
+                                            {{ food.price }}
+                                        {% endfor %}
+                                        {% if sum != food.price %}
+                                            <p style="text-decoration: black line-through">{{ food.price }}</p><br>
+                                            {{ sum }}
+                                        {% endif %}</td>
+                                    <td>{{ food.fromDate ? food.fromDate|date('Y-m-d H:i:s') : '' }}</td>
+                                    <td>{{ food.toDate ? food.toDate|date('Y-m-d H:i:s') : '' }}</td>
+                                </tr>
+                            {% else %}
+
+                            {% endfor %}
+                            </tbody>
+
+                        </table>
+
+                    </td>
+                    <td>{{ sub.parentOrder.date? sub.parentOrder.date|date('Y-m-d H:i:s') : '' }}</td>
+                    <td>{{ sub.totalPrice }}</td>
+                    <td>
+                        {% if not(sub.status == 'ORDERED' or sub.status == 'ACCEPTED' or sub.status == 'IN_PROGRESS' or sub.status == 'DELIVERY_STATUS_FINISHED' or sub.status == 'DELIVERY_STATUS_FAILED' or sub.status == 'DELIVERY_STATUS_CANCELLED') %}
+                            <a class="inner-btn" href="{{ path('courier_set_delivery_status',{'type':'cancel','so':sub.id}) }}">Visszautasítom</a>
+                            &nbsp;
+                        {% endif %}
+                        {% if not(sub.status == 'DELIVERY_STATUS_IN_PROGRESS' or sub.status == 'ORDERED' or sub.status == 'ACCEPTED' or sub.status == 'IN_PROGRESS' or sub.status == 'DELIVERY_STATUS_CANCELLED' or sub.status == 'DELIVERY_STATUS_FINISHED' or sub.status == 'DELIVERY_STATUS_FAILED') %}
+                            <a class="inner-btn" href="{{ path('courier_set_delivery_status',{'type':'start','so':sub.id}) }}">Elkezdem</a>
+                            &nbsp;
+                        {% endif %}
+                        {% if  not(sub.status == 'DELIVERY_STATUS_ASSIGNED' or sub.status == 'DONE' or sub.status == 'ORDERED' or sub.status == 'ACCEPTED' or sub.status == 'IN_PROGRESS' or sub.status == 'DELIVERY_STATUS_FINISHED' or sub.status == 'DELIVERY_STATUS_FAILED' or sub.status == 'DELIVERY_STATUS_CANCELLED') %}
+                            <a class="inner-btn" href="{{ path('courier_set_delivery_status',{'type':'finish', 'so':sub.id}) }}">Leszállítottam</a>
+                            &nbsp;
+                        {% endif %}
+                        {% if not(sub.status == 'DELIVERY_STATUS_ASSIGNED' or sub.status == 'DELIVERY_STATUS_FAILED' or sub.status == 'DONE' or sub.status == 'ORDERED' or sub.status == 'ACCEPTED' or sub.status == 'IN_PROGRESS' or sub.status == 'DELIVERY_STATUS_FINISHED' or sub.status == 'DELIVERY_STATUS_CANCELLED') %}
+                            <a class="inner-btn" href="{{ path('courier_set_delivery_status',{'type':'failed', 'so':sub.id}) }}">Meghíúsult</a>
+                            &nbsp;
+                        {% endif %}
+                        <span hidden class="displayorderc">{{sub.displayorder}}</span>
+                    </td>                
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">no records found</td>
+                </tr>
+            {% endfor %}
+
+        </table>
+        &nbsp;
+        <button class="inner-btn" onclick="feltolt()">Update Preference</button>
+        &nbsp;
+        <a class="inner-btn" href="{{ path('dashboard_courier') }}">&lt;&lt; Vissza</a>
+    </div>
+{% endblock %}

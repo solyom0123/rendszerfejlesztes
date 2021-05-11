@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit RestaurantCategory{% endblock %}
+
+{% block body %}
+<div class="container-2">
+    <h1>Edit Suborder</h1>
+
+    {{ include('suborder/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('order_index') }}">back to list</a>
+</div>
+{% endblock %}

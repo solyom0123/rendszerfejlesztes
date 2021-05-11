@@ -27,12 +27,12 @@ class CourierDataRepository extends ServiceEntityRepository
             ->where('c.user = :val')
             ->setParameter('val', $value)
             ->orderBy('c.id', 'ASC')
-            ->getQuery()
-
-            ;
+            ->getQuery();
 
             return $builder->getResult();
     }
+
+
     // /**
     //  * @return CourierData[] Returns an array of CourierData objects
     //  */

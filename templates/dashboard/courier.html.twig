@@ -7,7 +7,11 @@
     <a href="{{ path('dashboard_clear',{'type': 'courier'})}}"> I don't wanna work.</a>
     <br>
     {% if courierData %}
-        <a href="{{ path('courier_data_edit', {'id': app.user.id}) }}">edit</a>
+        <a class="inner-btn" href="{{ path('courier_data_edit', {'id': app.user.id}) }}">edit</a>
+        <br>
+        <a class="inner-btn" href="{{ path('courier_available_jobs') }}">Szabad rendelések a területeden</a>
+        <br>
+        <a class="inner-btn" href="{{ path('courier_assigned_jobs') }}">Felvett/hozzárendelt rendelések</a>
     {% else %}
         <a href="{{ path('courier_data_new') }}">Új Futár</a>
     {% endif %}

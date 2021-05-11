@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\CourierData;
 use App\Entity\Order;
 use App\Entity\Suborder;
+use App\Entity\User;
+use App\Enums\OrderStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,23 +24,75 @@ class OrderRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Suborder::class);
     }
+
     /** @return Collection|Suborder[] */
     public function findByRestaurant($value)
-    { $alma =$this->createQueryBuilder('c')
-        ->andWhere('c.restaurant = :val')
-        ->setParameter('val', $value)
-        ->orderBy('c.id', 'ASC')
-        ->getQuery();
+    {
+        $alma = $this->createQueryBuilder('c')
+            ->andWhere('c.restaurant = :val')
+            ->setParameter('val', $value)
+            ->orderBy('c.id', 'ASC')
+            ->getQuery();
         return $alma->getResult();
     }
-    public function countByFoodAndSuborder($value,$value2)
-    {   $sql =      'select count(*) from suborder_food where food_id = '.$value.' and suborder_id = '.$value2;
+
+    public function countByFoodAndSuborder($value, $value2)
+    {
+        $sql = 'select count(*) from suborder_food where food_id = ' . $value . ' and suborder_id = ' . $value2;
         $statement = $this->getEntityManager()->getConnection()->prepare($sql);
 
         $statement->execute();
         $results = $statement->fetchColumn();
         return $results;
     }
+
+    public function countByMenuAndSuborder($value, $value2)
+    {
+        $sql = 'select count(*) from suborder_menu where menu_id = ' . $value . ' and suborder_id = ' . $value2;
+        $statement = $this->getEntityManager()->getConnection()->prepare($sql);
+
+        $statement->execute();
+        $results = $statement->fetchColumn();
+        return $results;
+    }
+
+    public function findByUser(User $user)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.parentOrder', 'o')
+            ->where('o.customer = :customer')
+            ->orderBy('c.id')
+            ->setParameter('customer', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findAvailableOrders(CourierData $cd)
+    {
+        $q = $this->createQueryBuilder('q')
+            ->leftJoin("q.restaurant", "r")
+            ->where('q.status = :status')
+            ->andWhere('q.courier IS NULL')
+            ->andWhere('LOWER(r.address) LIKE  LOWER(:location)')
+            ->setParameter('status', OrderStatus::$DONE)
+            ->setParameter('location', '%' . $cd->getLocation() . '%');
+
+        return $q->getQuery()
+            ->getResult();
+
+
+    }
+
+    public function findAssignedOrders(User $courier)
+    {
+        return $this->createQueryBuilder('q')
+            ->where('q.courier = :courier')
+            ->setParameter('courier', $courier)
+            ->orderBy('q.displayorder', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return Order[] Returns an array of Order objects
     //  */
