@@ -22,7 +22,7 @@ class Order
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $customer;
 
@@ -50,6 +50,11 @@ class Order
      * @ORM\ManyToMany(targetEntity=Menu::class)
      */
     private $menus;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $sessionId;
 
 
     public function __construct()
@@ -173,6 +178,18 @@ class Order
     public function removeMenu(Menu $menu): self
     {
         $this->menus->removeElement($menu);
+
+        return $this;
+    }
+
+    public function getSessionId(): ?string
+    {
+        return $this->sessionId;
+    }
+
+    public function setSessionId(?string $sessionId): self
+    {
+        $this->sessionId = $sessionId;
 
         return $this;
     }

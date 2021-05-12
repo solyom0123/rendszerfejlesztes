@@ -111,7 +111,13 @@ class OrderController extends AbstractController
 
         if (count($shopList) > 0) {
             /**set main order**/
-            $order->setCustomer($this->getUser());
+            $customer =$session->get("customer");
+            if(!str_contains($customer, 's:')){
+                $order->setCustomer($this->getUser());
+            }else{
+                $order->setSessionId($customer);
+            }
+
             $order->setDate(new \DateTime());
 
             foreach ($shopList as $item) {
@@ -355,15 +361,21 @@ class OrderController extends AbstractController
         $user = $this->getUser();
         $customer = $session->get('customer');
 
-        if (!$user || !$customer) {
+        if (!$user && !$customer) {
             throw new \Exception("Nincs felhasználó vagy vendég megadva!");
         }
 
         $em = $this->getDoctrine()->getManager();
-
         $orderRepository = $em->getRepository(Order::class);
 
-        $suborder = $orderRepository->findByUser($user);
+        if(!str_contains($customer, 's:') ){
+            $suborder = $orderRepository->findByUser($user);
+
+        }else{
+            $suborder = $orderRepository->findBySessionId($customer);
+        }
+
+
 
         foreach ($suborder as $sub) {
             foreach ($sub->getFoods() as $food) {

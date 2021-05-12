@@ -67,6 +67,17 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+    public function findBySessionId($sessionId)
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.parentOrder', 'o')
+            ->where('o.sessionId = :customer')
+            ->orderBy('c.id')
+            ->setParameter('customer', $sessionId)
+            ->getQuery()
+            ->getResult();
+    }
     public function findAvailableOrders(CourierData $cd)
     {
         $q = $this->createQueryBuilder('q')

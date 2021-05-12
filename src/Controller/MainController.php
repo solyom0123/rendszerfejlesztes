@@ -64,9 +64,14 @@ class MainController extends AbstractController
     /**
      * @Route("/main/save/session/customer/{id}", name="app_main_set_session_customer", methods={"GET"})
      */
-    public function saveCustomerChooseInSession($id): Response
+    public function saveCustomerChooseInSession($id, SessionInterface $session): Response
     {
-        $this->session->set("customer", $id);
+        if($id == 0){
+            $sessionString = "s:".$session->getId();
+            $this->session->set("customer",$sessionString);
+        }else{
+            $this->session->set("customer", $id);
+        }
         return new RedirectResponse($this->urlGenerator->generate('dashboard_customer'));
 
     }

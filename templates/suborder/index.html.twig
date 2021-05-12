@@ -59,7 +59,7 @@
                     <td>{{ sub.id }}</td>
                     <td>{{ sub.name }}</td>
                     <td>{{ sub.address }}</td>
-                    <td>{{ sub.parentOrder.customer.email }}</td>
+                    <td>{{ sub.parentOrder.customer ? sub.parentOrder.customer.email : sub.parentOrder.sessionId }}</td>
                     <td>{{ sub.status }}</td>
                     <td>{{ sub.courier?sub.courier.email:'' }}</td>
                     <td>
